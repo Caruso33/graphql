@@ -1,5 +1,7 @@
 import { GraphQLServer } from "graphql-yoga";
 
+let COUNTER_OF_IDS = "12";
+
 // scalar types:
 //      String, Boolean, Int, Float, ID
 const users = [
@@ -84,6 +86,10 @@ const typeDefs = `
         me: User!
     }
 
+    type Mutation {
+      createUser(name: String!, email: String!, age: Int): User!
+    }
+
     type User {
         id: ID!
         name: String!
@@ -119,7 +125,9 @@ const resolvers = {
       return users.filter(u => u.name.toLowerCase().includes(args.query));
     },
     queue(parent, args) {
-      return queues.filter(q => q.title.toLowerCase().includes(args.query.toLowerCase()));
+      return queues.filter(q =>
+        q.title.toLowerCase().includes(args.query.toLowerCase())
+      );
     },
     comment(p, args) {
       return args.query
@@ -134,12 +142,29 @@ const resolvers = {
       };
     }
   },
+  Mutation: {
+    createUser(parent, args, context, info) {
+      const { name, email, age } = args;
+
+      const emailTaken = users.some(u => u.email === email);
+      if (emailTaken) throw new Error("Email taken.");
+
+      const user = {
+        id: COUNTER_OF_IDS++,
+        name,
+        email,
+        age,
+        comments: []
+      };
+      users.push(user);
+      return user;
+    }
+  },
   Queue: {
     user(parent, args, ctx, info) {
       return users.find(u => u.id === parent.user);
     },
     comments(parent) {
-      console.log(parent)
       return comments.filter(c => parent.comments.includes(c.id));
     }
   },
