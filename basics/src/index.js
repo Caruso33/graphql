@@ -14,7 +14,8 @@ const queues = [
     title: "Hospital Medication",
     processed: false,
     how_many_before: 0,
-    user: "3"
+    user: "3",
+    comments: []
   },
   {
     id: "5",
@@ -22,14 +23,15 @@ const queues = [
     processed: false,
     how_many_before: 1,
     user: "1",
-    comment: "9"
+    comments: ["9"]
   },
   {
     id: "6",
     title: "Hospital Medication",
     processed: false,
     how_many_before: 2,
-    user: "2"
+    user: "2",
+    comments: []
   },
   {
     id: "7",
@@ -37,7 +39,7 @@ const queues = [
     processed: false,
     how_many_before: 0,
     user: "2",
-    comment: "10"
+    comments: ["10"]
   },
   {
     id: "8",
@@ -45,7 +47,7 @@ const queues = [
     processed: false,
     how_many_before: 1,
     user: "3",
-    comment: "11"
+    comments: ["11"]
   }
 ];
 
@@ -97,7 +99,7 @@ const typeDefs = `
       processed: Boolean!
       how_many_before: Int!
       user: User!
-      comment: Comment
+      comments: [Comment!]!
     }
 
     type Comment {
@@ -117,7 +119,7 @@ const resolvers = {
       return users.filter(u => u.name.toLowerCase().includes(args.query));
     },
     queue(parent, args) {
-      return queues.filter(q => q.title === args.query);
+      return queues.filter(q => q.title.toLowerCase().includes(args.query.toLowerCase()));
     },
     comment(p, args) {
       return args.query
@@ -136,8 +138,9 @@ const resolvers = {
     user(parent, args, ctx, info) {
       return users.find(u => u.id === parent.user);
     },
-    comment(parent) {
-      return comments.find(c => c.id === parent.comment);
+    comments(parent) {
+      console.log(parent)
+      return comments.filter(c => parent.comments.includes(c.id));
     }
   },
   User: {
