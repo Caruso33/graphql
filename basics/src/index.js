@@ -88,6 +88,7 @@ const typeDefs = `
 
     type Mutation {
       createUser(name: String!, email: String!, age: Int): User!
+      createComment(title: String!, body: String!, queue: ID!, user: ID!): Comment!
     }
 
     type User {
@@ -158,6 +159,25 @@ const resolvers = {
       };
       users.push(user);
       return user;
+    },
+    createComment(parent, args) {
+      const { title, body, queue, user } = args;
+
+      const userExists = users.some(u => u.id === user);
+      const queueExists = queues.some(q => q.id === queue);
+
+      if (!userExists) throw new Error("User does not exist");
+      else if (!queueExists) throw new Error("Queue does not exist");
+
+      const comment = {
+        id: COUNTER_OF_IDS++,
+        title,
+        body,
+        queue,
+        user
+      };
+      comments.push(comment);
+      return comment;
     }
   },
   Queue: {
