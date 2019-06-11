@@ -80,15 +80,34 @@ const comments = [
 // type definitions ( schema )
 const typeDefs = ` 
     type Query {
-        users(query: String): [User!]!
-        queue(query: ID!): [Queue!]!
-        comment(query: ID): [Comment!]!
+        users(name: String): [User!]!
+        queue(name: String!): [Queue!]!
+        comment(title: String): [Comment!]!
         me: User!
     }
 
     type Mutation {
-      createUser(name: String!, email: String!, age: Int): User!
-      createComment(title: String!, body: String!, queue: ID!, user: ID!): Comment!
+      createUser(data: CreateUserInput): User!
+      createQueue(data: CreateQueueInput): Queue!
+      createComment(data: CreateCommentInput): Comment!
+    }
+
+    input CreateUserInput {
+      name: String!
+      email: String!
+      age: Int
+    }
+
+    input CreateQueueInput {
+      title: String!
+      user: ID!
+    }
+    
+    input CreateCommentInput {
+      title: String!
+      body: String!
+      queue: ID! 
+      user: ID!
     }
 
     type User {
@@ -123,16 +142,16 @@ const resolvers = {
   Query: {
     users(parent, args) {
       if (!args.query) return users;
-      return users.filter(u => u.name.toLowerCase().includes(args.query));
+      return users.filter(u => u.name.toLowerCase().includes(args.name));
     },
     queue(parent, args) {
       return queues.filter(q =>
-        q.title.toLowerCase().includes(args.query.toLowerCase())
+        q.title.toLowerCase().includes(args.name.toLowerCase())
       );
     },
     comment(p, args) {
-      return args.query
-        ? comments.filter(c => c.title === args.query)
+      return args.title
+        ? comments.filter(c => c.title === args.title)
         : comments;
     },
     me() {
@@ -145,23 +164,38 @@ const resolvers = {
   },
   Mutation: {
     createUser(parent, args, context, info) {
-      const { name, email, age } = args;
+      const { email } = args.data;
 
       const emailTaken = users.some(u => u.email === email);
       if (emailTaken) throw new Error("Email taken.");
 
       const user = {
         id: COUNTER_OF_IDS++,
-        name,
-        email,
-        age,
+        ...args.data,
         comments: []
       };
       users.push(user);
       return user;
     },
+
+    createQueue(parent, args) {
+      const { user } = args.data;
+
+      const queue = {
+        id: COUNTER_OF_IDS++,
+        ...args.data,
+        user: users.find(u => u.id === user),
+        processed: false,
+        how_many_before: 0,
+        comments: []
+      };
+
+      queues.push(queue);
+      return queue;
+    },
+
     createComment(parent, args) {
-      const { title, body, queue, user } = args;
+      const { queue, user } = args.data;
 
       const userExists = users.some(u => u.id === user);
       const queueExists = queues.some(q => q.id === queue);
@@ -171,10 +205,7 @@ const resolvers = {
 
       const comment = {
         id: COUNTER_OF_IDS,
-        title,
-        body,
-        queue,
-        user
+        ...args.data
       };
       comments.push(comment);
 
