@@ -4,13 +4,13 @@ let COUNTER_OF_IDS = "12";
 
 // scalar types:
 //      String, Boolean, Int, Float, ID
-const users = [
+let users = [
   { id: "1", name: "Mui", email: "mui@lu.com", age: 11, comments: ["9"] },
   { id: "2", name: "Tobi", email: "tobi@lu.com", age: 12, comments: [] },
   { id: "3", name: "Tui", email: "tui@lu.com", age: 13, comments: ["10", "11"] }
 ];
 
-const queues = [
+let queues = [
   {
     id: "4",
     title: "Hospital Medication",
@@ -53,7 +53,7 @@ const queues = [
   }
 ];
 
-const comments = [
+let comments = [
   {
     id: "9",
     title: "Hilarious!",
@@ -88,8 +88,13 @@ const typeDefs = `
 
     type Mutation {
       createUser(data: CreateUserInput): User!
+      deleteUser(id: ID!): User!
+
       createQueue(data: CreateQueueInput): Queue!
+      deleteQueue(id: ID!): Queue!
+
       createComment(data: CreateCommentInput): Comment!
+      deleteComment(id: ID!): Comment!
     }
 
     input CreateUserInput {
@@ -177,14 +182,26 @@ const resolvers = {
       users.push(user);
       return user;
     },
+    deleteUser(parent, args, context, info) {
+      const userIndex = users.findIndex(u => u.id === args.id);
+
+      if (userIndex === -1) throw new Error("User not found");
+      const deletedUser = users.splice(userIndex, 1);
+
+      queues = queues.filter(q => {
+        const match = q.user === args.id;
+        if (match) comments = comments.filter(c => c.queue !== q.id);
+        return !match;
+      });
+      comments = comments.filter(c => c.user !== args.id);
+
+      return deletedUser[0];
+    },
 
     createQueue(parent, args) {
-      const { user } = args.data;
-
       const queue = {
         id: COUNTER_OF_IDS++,
         ...args.data,
-        user: users.find(u => u.id === user),
         processed: false,
         how_many_before: 0,
         comments: []
@@ -192,6 +209,16 @@ const resolvers = {
 
       queues.push(queue);
       return queue;
+    },
+    deleteQueue(parent, args) {
+      const queueIndex = queues.findIndex(q => q.id === args.id);
+
+      if (queueIndex === -1) throw new Error("Queue not found");
+      const deletedQueue = queues.splice(queueIndex, 1);
+
+      comments = comments.filter(c => c.queue === args.id);
+
+      return deletedQueue[0];
     },
 
     createComment(parent, args) {
@@ -217,8 +244,29 @@ const resolvers = {
 
       COUNTER_OF_IDS++;
       return comment;
+    },
+    deleteComment(parent, args) {
+      const commentIndex = comments.findIndex(q => q.id === args.id);
+
+      if (commentIndex === -1) throw new Error("Comment not found");
+      const deletedComment = comments.splice(commentIndex, 1);
+
+      queues = queues.map(q =>
+        q.comments.includes(args.id)
+          ? { ...q, comments: q.comments.filter(c => c !== args.id) }
+          : q
+      );
+
+      users = users.map(u =>
+        u.comments.includes(args.id)
+          ? { ...u, comments: u.comments.filter(c => c !== args.id) }
+          : u
+      );
+
+      return deletedComment[0];
     }
   },
+
   Queue: {
     user(parent, args, ctx, info) {
       return users.find(u => u.id === parent.user);
@@ -227,6 +275,7 @@ const resolvers = {
       return comments.filter(c => parent.comments.includes(c.id));
     }
   },
+
   User: {
     queues(parent, args, ctx, info) {
       return queues.filter(q => q.user === parent.id);
@@ -235,6 +284,7 @@ const resolvers = {
       return comments.filter(c => parent.comments.includes(c.id));
     }
   },
+
   Comment: {
     queue(parent) {
       return queues.find(q => q.id === parent.queue);
