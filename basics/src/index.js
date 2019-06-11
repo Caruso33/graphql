@@ -170,13 +170,21 @@ const resolvers = {
       else if (!queueExists) throw new Error("Queue does not exist");
 
       const comment = {
-        id: COUNTER_OF_IDS++,
+        id: COUNTER_OF_IDS,
         title,
         body,
         queue,
         user
       };
       comments.push(comment);
+
+      const userIndex = users.findIndex(u => u.id === user);
+      users[userIndex].comments.push(COUNTER_OF_IDS);
+
+      const queueIndex = queues.findIndex(q => q.id === queue);
+      queues[queueIndex].comments.push(COUNTER_OF_IDS);
+
+      COUNTER_OF_IDS++;
       return comment;
     }
   },
