@@ -13,6 +13,26 @@ const Mutation = {
     db.users.push(user);
     return user;
   },
+  updateUser(parent, { id, data }, { db }, info) {
+    const user = db.users.find(u => u.id === id);
+
+    if (!user) throw Error("User not found");
+
+    if (typeof data.email === "string") {
+      const emailTaken = db.users.some(u => u.email === data.email);
+
+      if (emailTaken) throw Error("Email taken");
+
+      user.email = data.email;
+    }
+
+    if (typeof data.name === "string") user.name = data.name;
+
+    // can be null for resetting
+    if (typeof data.age !== "undefined") user.age = data.age;
+
+    return user;
+  },
   deleteUser(parent, args, { db }, info) {
     const userIndex = db.users.findIndex(u => u.id === args.id);
 
@@ -39,6 +59,27 @@ const Mutation = {
     };
 
     db.queues.push(queue);
+    return queue;
+  },
+  updateQueue(
+    parent,
+    {
+      id,
+      data: { title, user, processed, how_many_before, comments }
+    },
+    { db }
+  ) {
+    const queue = db.queues.find(q => q.id === id);
+
+    if (!queue) throw new Error("Queue not found");
+
+    if (typeof title === "string") queue.title = title;
+    if (typeof user === "string") queue.user = user;
+    if (typeof processed === "boolean") queue.processed = processed;
+    if (typeof how_many_before === "number")
+      queue.how_many_before = how_many_before;
+    if (typeof comments === "string") queue.comments.push(comments);
+
     return queue;
   },
   deleteQueue(parent, args, { db }) {
@@ -74,6 +115,25 @@ const Mutation = {
     db.queues[queueIndex].comments.push(db.COUNTER_OF_IDS);
 
     db.COUNTER_OF_IDS++;
+    return comment;
+  },
+  updateComment(
+    parent,
+    {
+      id,
+      data: { title, body, queue, user }
+    },
+    { db }
+  ) {
+    const comment = db.comments.find(c => c.id === id);
+
+    if (!comment) throw new Error("Comment not found");
+
+    if (typeof title === "string") comment.title = title;
+    if (typeof body === "string") comment.body = body;
+    if (typeof queue === "string") comment.queue = queue;
+    if (typeof user === "string") comment.user = user;
+
     return comment;
   },
   deleteComment(parent, args, { db }) {

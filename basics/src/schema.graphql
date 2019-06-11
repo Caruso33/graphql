@@ -7,12 +7,15 @@ type Query {
 
 type Mutation {
   createUser(data: CreateUserInput): User!
+  updateUser(id: ID!, data: UpdateUserInput!): User!
   deleteUser(id: ID!): User!
 
   createQueue(data: CreateQueueInput): Queue!
+  updateQueue(id: ID!, data: UpdateQueueInput!): Queue!
   deleteQueue(id: ID!): Queue!
 
   createComment(data: CreateCommentInput): Comment!
+  updateComment(id: ID!, data: UpdateCommentInput!): Comment!
   deleteComment(id: ID!): Comment!
 }
 
@@ -22,9 +25,23 @@ input CreateUserInput {
   age: Int
 }
 
+input UpdateUserInput {
+  name: String
+  email: String
+  age: Int
+}
+
 input CreateQueueInput {
   title: String!
   user: ID!
+}
+
+input UpdateQueueInput {
+  title: String
+  user: ID
+  processed: Boolean
+  how_many_before: Int
+  comments: ID
 }
 
 input CreateCommentInput {
@@ -32,6 +49,13 @@ input CreateCommentInput {
   body: String!
   queue: ID!
   user: ID!
+}
+
+input UpdateCommentInput {
+  title: String
+  body: String
+  queue: ID
+  user: ID
 }
 
 type User {
