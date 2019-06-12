@@ -21,6 +21,8 @@ type Mutation {
 
 type Subscription {
   count: Int!
+  comment(queueId: ID!): Comment!
+  queue: Queue!
 }
 
 input CreateUserInput {

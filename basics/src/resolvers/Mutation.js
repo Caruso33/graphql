@@ -49,7 +49,7 @@ const Mutation = {
     return deletedUser[0];
   },
 
-  createQueue(parent, args, { db }) {
+  createQueue(parent, args, { db, pubsub }) {
     const queue = {
       id: db.COUNTER_OF_IDS++,
       ...args.data,
@@ -59,6 +59,7 @@ const Mutation = {
     };
 
     db.queues.push(queue);
+    pubsub.publish("queue", { queue });
     return queue;
   },
   updateQueue(
@@ -93,7 +94,7 @@ const Mutation = {
     return deletedQueue[0];
   },
 
-  createComment(parent, args, { db }) {
+  createComment(parent, args, { pubsub, db }) {
     const { queue, user } = args.data;
 
     const userExists = db.users.some(u => u.id === user);
@@ -107,6 +108,9 @@ const Mutation = {
       ...args.data
     };
     db.comments.push(comment);
+    pubsub.publish(`comment: ${args.data.queue}`, {
+      comment
+    });
 
     const userIndex = db.users.findIndex(u => u.id === user);
     db.users[userIndex].comments.push(db.COUNTER_OF_IDS);
