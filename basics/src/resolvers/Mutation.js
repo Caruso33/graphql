@@ -59,7 +59,7 @@ const Mutation = {
     };
 
     db.queues.push(queue);
-    pubsub.publish("queue", { queue });
+    pubsub.publish("queue", { queue: { mutation: "CREATED", data: queue } });
     return queue;
   },
   updateQueue(
@@ -68,7 +68,7 @@ const Mutation = {
       id,
       data: { title, user, processed, how_many_before, comments }
     },
-    { db }
+    { db, pubsub }
   ) {
     const queue = db.queues.find(q => q.id === id);
 
@@ -81,17 +81,20 @@ const Mutation = {
       queue.how_many_before = how_many_before;
     if (typeof comments === "string") queue.comments.push(comments);
 
+    pubsub.publish("queue", { queue: { mutation: "UPDATED", data: queue } });
     return queue;
   },
-  deleteQueue(parent, args, { db }) {
+  deleteQueue(parent, args, { db, pubsub }) {
     const queueIndex = db.queues.findIndex(q => q.id === args.id);
 
     if (queueIndex === -1) throw new Error("Queue not found");
-    const deletedQueue = db.queues.splice(queueIndex, 1);
+    const [deletedQueue] = db.queues.splice(queueIndex, 1);
 
     db.comments = db.comments.filter(c => c.queue === args.id);
-
-    return deletedQueue[0];
+    pubsub.publish("queue", {
+      queue: { mutation: "DELETED", data: deletedQueue }
+    });
+    return deletedQueue;
   },
 
   createComment(parent, args, { pubsub, db }) {
@@ -109,7 +112,7 @@ const Mutation = {
     };
     db.comments.push(comment);
     pubsub.publish(`comment: ${args.data.queue}`, {
-      comment
+      comment: { mutation: "CREATED", data: comment }
     });
 
     const userIndex = db.users.findIndex(u => u.id === user);
@@ -127,7 +130,7 @@ const Mutation = {
       id,
       data: { title, body, queue, user }
     },
-    { db }
+    { db, pubsub }
   ) {
     const comment = db.comments.find(c => c.id === id);
 
@@ -138,13 +141,16 @@ const Mutation = {
     if (typeof queue === "string") comment.queue = queue;
     if (typeof user === "string") comment.user = user;
 
+    pubsub.publish(`comment: ${comment.queue}`, {
+      comment: { mutation: "UPDATED", data: comment }
+    });
     return comment;
   },
-  deleteComment(parent, args, { db }) {
+  deleteComment(parent, args, { pubsub, db }) {
     const commentIndex = db.comments.findIndex(q => q.id === args.id);
 
     if (commentIndex === -1) throw new Error("Comment not found");
-    const deletedComment = db.comments.splice(commentIndex, 1);
+    const [deletedComment] = db.comments.splice(commentIndex, 1);
 
     db.queues = db.queues.map(q =>
       q.comments.includes(args.id)
@@ -157,8 +163,10 @@ const Mutation = {
         ? { ...u, comments: u.comments.filter(c => c !== args.id) }
         : u
     );
-
-    return deletedComment[0];
+    pubsub.publish(`comment: ${deletedComment.queue}`, {
+      comment: { mutation: "DELETED", data: deletedComment }
+    });
+    return deletedComment;
   }
 };
 

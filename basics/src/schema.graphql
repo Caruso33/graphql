@@ -21,8 +21,8 @@ type Mutation {
 
 type Subscription {
   count: Int!
-  comment(queueId: ID!): Comment!
-  queue: Queue!
+  comment(queueId: ID!): CommentSubscriptionPayload!
+  queue: QueueSubscriptionPayload!
 }
 
 input CreateUserInput {
@@ -88,4 +88,14 @@ type Comment {
   body: String!
   queue: Queue!
   user: User!
+}
+
+type QueueSubscriptionPayload {
+  mutation: String!
+  data: Queue!
+}
+
+type CommentSubscriptionPayload {
+  mutation: String!
+  data: Comment!
 }
