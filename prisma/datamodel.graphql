@@ -1,0 +1,26 @@
+type User {
+  id: ID! @id
+  name: String!
+  email: String! @unique
+}
+
+type Queue {
+  id: ID! @id
+  title: String!
+}
+
+type Slip {
+  id: ID! @id
+  processed: Boolean!
+  how_many_before: Int!
+  queue: Queue!
+  user: User!
+}
+
+type Comment {
+  id: ID! @id
+  title: String!
+  body: String!
+  queue: Queue!
+  author: User!
+}
