@@ -90,12 +90,18 @@ type Comment {
   user: User!
 }
 
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
 type QueueSubscriptionPayload {
-  mutation: String!
+  mutation: MutationType!
   data: Queue!
 }
 
 type CommentSubscriptionPayload {
-  mutation: String!
+  mutation: MutationType!
   data: Comment!
 }
