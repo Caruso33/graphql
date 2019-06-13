@@ -11,6 +11,14 @@ var models = [
   {
     name: "Queue",
     embedded: false
+  },
+  {
+    name: "Slip",
+    embedded: false
+  },
+  {
+    name: "Comment",
+    embedded: false
   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({

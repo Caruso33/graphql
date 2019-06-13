@@ -1,0 +1,107 @@
+type Query {
+  users(name: String): [User!]!
+  queue(name: String!): [Queue!]!
+  comment(title: String): [Comment!]!
+  me: User!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput): User!
+  updateUser(id: ID!, data: UpdateUserInput!): User!
+  deleteUser(id: ID!): User!
+
+  createQueue(data: CreateQueueInput): Queue!
+  updateQueue(id: ID!, data: UpdateQueueInput!): Queue!
+  deleteQueue(id: ID!): Queue!
+
+  createComment(data: CreateCommentInput): Comment!
+  updateComment(id: ID!, data: UpdateCommentInput!): Comment!
+  deleteComment(id: ID!): Comment!
+}
+
+type Subscription {
+  count: Int!
+  comment(queueId: ID!): CommentSubscriptionPayload!
+  queue: QueueSubscriptionPayload!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Int
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  age: Int
+}
+
+input CreateQueueInput {
+  title: String!
+  user: ID!
+}
+
+input UpdateQueueInput {
+  title: String
+  user: ID
+  processed: Boolean
+  how_many_before: Int
+  comments: ID
+}
+
+input CreateCommentInput {
+  title: String!
+  body: String!
+  queue: ID!
+  user: ID!
+}
+
+input UpdateCommentInput {
+  title: String
+  body: String
+  queue: ID
+  user: ID
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  age: Int
+  queues: [Queue!]!
+  comments: [Comment]!
+}
+
+type Queue {
+  id: ID!
+  title: String!
+  processed: Boolean!
+  how_many_before: Int!
+  user: User!
+  comments: [Comment!]!
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  body: String!
+  queue: Queue!
+  user: User!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type QueueSubscriptionPayload {
+  mutation: MutationType!
+  data: Queue!
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  data: Comment!
+}
