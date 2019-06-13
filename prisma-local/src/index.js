@@ -6,6 +6,7 @@ import Query from "./resolvers/Query";
 import Queue from "./resolvers/Queue";
 import Subscription from "./resolvers/Subscription";
 import User from "./resolvers/User";
+import "./prisma";
 
 const pubsub = new PubSub();
 

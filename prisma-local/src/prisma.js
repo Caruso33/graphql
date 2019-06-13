@@ -1,7 +1,9 @@
-import { Prisma } from "prisma-binding";
+import { Prisma } from './generated/prisma-client'
 
 const prisma = new Prisma({
-  typeDefs: "./generated/prisma-client/prisma-schema.js",
-  endpoint: "localhost:4466"
+  endpoint: "http://localhost:4466"
 });
 
+prisma.users(null, "{ id name email }").then(data => {
+  console.log(data);
+});
