@@ -2,25 +2,29 @@ type User {
   id: ID! @id
   name: String!
   email: String! @unique
+  comments: [Comment!]!  @relation(name: "CommentToUser", onDelete: CASCADE)
+  slips: [Slip!]! @relation(name: "SlipToUser", onDelete: CASCADE)
 }
 
 type Queue {
   id: ID! @id
-  title: String!
+  title: String! @unique
+  slips: [Slip!]! @relation(name: "SlipToQueue", onDelete: CASCADE)
+  comments: [Comment!]! @relation(name: "CommentToQueue", onDelete: CASCADE)
 }
 
 type Slip {
   id: ID! @id
   processed: Boolean!
   how_many_before: Int!
-  queue: Queue!
-  user: User!
+  queue: Queue! @relation(name: "SlipToQueue", onDelete: SET_NULL)
+  user: User! @relation(name: "SlipToUser", onDelete: SET_NULL)
 }
 
 type Comment {
   id: ID! @id
   title: String!
   body: String!
-  queue: Queue!
-  author: User!
+  queue: Queue! @relation(name: "CommentToQueue", onDelete: SET_NULL)
+  author: User!  @relation(name: "CommentToUser", onDelete: SET_NULL)
 }

@@ -6,10 +6,9 @@ import Query from "./resolvers/Query";
 import Queue from "./resolvers/Queue";
 import Subscription from "./resolvers/Subscription";
 import User from "./resolvers/User";
-import { prisma } from './generated/prisma-client'
+import { prisma } from "./generated/prisma-client";
 
 const pubsub = new PubSub();
-
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
   resolvers: { Query, User, Comment, Subscription, Mutation, Queue },
@@ -17,11 +16,5 @@ const server = new GraphQLServer({
 });
 
 server.start(() => {
-  console.log("server is up");
-
-console.log(prisma.mutation)
+  console.log("nodejs graphql server is up on port 4000");
 });
-
-// prisma.users(null, "{ id name email }").then(data => {
-//   console.log(data);
-// });

@@ -1,18 +1,39 @@
 const Query = {
-  users(parent, args, { db }) {
-    if (!args.query) return db.users;
-    return db.users.filter(u => u.name.toLowerCase().includes(args.name));
+  users(parent, args, { prisma }, info) {
+    const opArgs = {};
+
+    if (args.query)
+      opArgs.where = {
+        OR: [{ name_contain: args.query }, { email_contain: args.query }]
+      };
+    return prisma.users(opArgs, info);
+
+    // if (!args.query) return db.users;
+    // return db.users.filter(u => u.name.toLowerCase().includes(args.name));
   },
-  queue(parent, args, { db }) {
-    return db.queues.filter(q =>
-      q.title.toLowerCase().includes(args.name.toLowerCase())
-    );
+  queues(parent, args, { prisma }, info) {
+    const opArgs = {};
+
+    if (args.query) opArgs.where = { title_contains: args.query };
+
+    return prisma.queues(opArgs, info);
   },
-  comment(p, args, { db }) {
-    return args.title
-      ? db.comments.filter(c => c.title === args.title)
-      : db.comments;
+
+  slips(parent, args, { prisma }, info) {
+    const opArgs = {};
+    if (args.query) opArgs.where = { title_contains: args.query };
+
+    return prisma.slips(opArgs, info);
   },
+
+  comments(p, args, { prisma }, info) {
+    const opArgs = {};
+
+    if (args.query) opArgs.where = { title_contains: args.query };
+
+    return prisma.comments(opArgs, info);
+  },
+
   me() {
     return {
       id: "123-456",

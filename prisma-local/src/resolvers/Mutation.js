@@ -1,100 +1,72 @@
 const Mutation = {
-  createUser(parent, args, { db }, info) {
-    const { email } = args.data;
-
-    const emailTaken = db.users.some(u => u.email === email);
+  async createUser(parent, { data }, { prisma }, info) {
+    const emailTaken = await prisma.$exists.user({
+      email: data.email
+    });
     if (emailTaken) throw new Error("Email taken.");
 
-    const user = {
-      id: db.COUNTER_OF_IDS++,
-      ...args.data,
-      comments: []
-    };
-    db.users.push(user);
-    return user;
-  },
-  updateUser(parent, { id, data }, { db }, info) {
-    const user = db.users.find(u => u.id === id);
-
-    if (!user) throw Error("User not found");
-
-    if (typeof data.email === "string") {
-      const emailTaken = db.users.some(u => u.email === data.email);
-
-      if (emailTaken) throw Error("Email taken");
-
-      user.email = data.email;
-    }
-
-    if (typeof data.name === "string") user.name = data.name;
-
-    // can be null for resetting
-    if (typeof data.age !== "undefined") user.age = data.age;
-
-    return user;
-  },
-  deleteUser(parent, args, { db }, info) {
-    const userIndex = db.users.findIndex(u => u.id === args.id);
-
-    if (userIndex === -1) throw new Error("User not found");
-    const deletedUser = db.users.splice(userIndex, 1);
-
-    db.queues = db.queues.filter(q => {
-      const match = q.user === args.id;
-      if (match) db.comments = db.comments.filter(c => c.queue !== q.id);
-      return !match;
-    });
-    db.comments = db.comments.filter(c => c.user !== args.id);
-
-    return deletedUser[0];
+    return prisma.createUser(data, info);
   },
 
-  createQueue(parent, args, { db, pubsub }) {
-    const queue = {
-      id: db.COUNTER_OF_IDS++,
-      ...args.data,
-      processed: false,
-      how_many_before: 0,
-      comments: []
-    };
+  async updateUser(parent, { id, data }, { prisma }, info) {
+    return prisma.updateUser({ where: { id }, data }, info);
+  },
 
-    db.queues.push(queue);
+  async deleteUser(parent, args, { prisma }, info) {
+    const userExists = await prisma.$exists.user({ id: args.id });
+
+    if (!userExists) throw new Error("User not found");
+
+    return prisma.deleteUser({ id: args.id });
+  },
+
+  async createQueue(parent, { data }, { prisma, pubsub }, info) {
+    const queue = await prisma.createQueue(data, info);
     pubsub.publish("queue", { queue: { mutation: "CREATED", data: queue } });
     return queue;
   },
-  updateQueue(
-    parent,
-    {
-      id,
-      data: { title, user, processed, how_many_before, comments }
-    },
-    { db, pubsub }
-  ) {
-    const queue = db.queues.find(q => q.id === id);
 
-    if (!queue) throw new Error("Queue not found");
+  async updateQueue(parent, { id, data }, { prisma, pubsub }, info) {
+    const queueExists = prisma.$exists.queue({ id });
 
-    if (typeof title === "string") queue.title = title;
-    if (typeof user === "string") queue.user = user;
-    if (typeof processed === "boolean") queue.processed = processed;
-    if (typeof how_many_before === "number")
-      queue.how_many_before = how_many_before;
-    if (typeof comments === "string") queue.comments.push(comments);
+    if (!queueExists) throw new Error("Queue not found");
 
+    const queue = await prisma.updateQueue({ where: { id }, data }, info);
     pubsub.publish("queue", { queue: { mutation: "UPDATED", data: queue } });
     return queue;
   },
-  deleteQueue(parent, args, { db, pubsub }) {
-    const queueIndex = db.queues.findIndex(q => q.id === args.id);
 
-    if (queueIndex === -1) throw new Error("Queue not found");
-    const [deletedQueue] = db.queues.splice(queueIndex, 1);
-
-    db.comments = db.comments.filter(c => c.queue === args.id);
+  async deleteQueue(parent, { id }, { prisma, pubsub }) {
+    const queue = await prisma.deleteQueue({ id });
     pubsub.publish("queue", {
-      queue: { mutation: "DELETED", data: deletedQueue }
+      queue: { mutation: "DELETED", data: queue }
     });
-    return deletedQueue;
+    return queue;
+  },
+
+  async createSlip(parent, { data }, { prisma }, info) {
+    const dat = { ...data, processed: false, how_many_before: 0 };
+    const slip = await prisma.createSlip(dat, info);
+    pubsub.publish("slip", { slip: { mutation: "CREATED", data: slip } });
+    return slip;
+  },
+
+  async updateSlip(parent, { id, data }, { prisma }, info) {
+    const slipExists = prisma.$exists.slip({ id });
+
+    if (!slipExists) throw new Error("Slip not found");
+
+    const slip = await prisma.updateSlip(data, info);
+    pubsub.publish("slip", { slip: { mutation: "UPDATED", data: slip } });
+    return slip;
+  },
+
+  async deleteSlip(parent, { id }, { prisma, pubsub }) {
+    const slip = await prisma.deleteSlip(id);
+    pubsub.publish("slip", {
+      slip: { mutation: "DELETED", data: slip }
+    });
+    return slip;
   },
 
   createComment(parent, args, { pubsub, db }) {

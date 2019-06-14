@@ -1,21 +1,7 @@
 const Subscription = {
-  count: {
-    subscribe(parent, args, { pubsub }, info) {
-      let count = 0;
-
-      setInterval(() => {
-        count++;
-        pubsub.publish("count", {
-          count
-        });
-      }, 1000);
-
-      return pubsub.asyncIterator("count");
-    }
-  },
   comment: {
-    subscribe(parent, { queueId }, { db, pubsub }, info) {
-      const queue = db.queues.find(q => q.id === queueId);
+    subscribe(parent, { queueId }, { prisma, pubsub }, info) {
+      const queue = prisma.queues.find(q => q.id === queueId);
 
       if (!queue) throw new Error("Queue not found");
 
@@ -25,6 +11,11 @@ const Subscription = {
   queue: {
     subscribe(parent, {}, { pubsub }) {
       return pubsub.asyncIterator("queue");
+    }
+  },
+  slip: {
+    subscribe(parent, {}, { pubsub }) {
+      return pubsub.asyncIterator("slip");
     }
   }
 };

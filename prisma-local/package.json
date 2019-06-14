@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js --ext js,graphql",
-    "get:schema": "graphql get-schema -p prisma",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "schema": "prisma generate",
+    "deploy": "npm run schema && prisma deploy"
   },
   "author": "",
   "license": "ISC",

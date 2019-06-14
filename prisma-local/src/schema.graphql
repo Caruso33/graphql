@@ -1,7 +1,8 @@
 type Query {
-  users(name: String): [User!]!
-  queue(name: String!): [Queue!]!
-  comment(title: String): [Comment!]!
+  users(query: String): [User!]!
+  queues(query: String): [Queue!]!
+  slips(query: String): [Slip!]!
+  comments(query: String): [Comment!]!
   me: User!
 }
 
@@ -14,6 +15,10 @@ type Mutation {
   updateQueue(id: ID!, data: UpdateQueueInput!): Queue!
   deleteQueue(id: ID!): Queue!
 
+  createSlip(data: CreateSlipInput): Slip!
+  updateSlip(id: ID!, data: UpdateSlipInput!): Slip!
+  deleteSlip(id: ID!): Slip!
+
   createComment(data: CreateCommentInput): Comment!
   updateComment(id: ID!, data: UpdateCommentInput!): Comment!
   deleteComment(id: ID!): Comment!
@@ -23,23 +28,21 @@ type Subscription {
   count: Int!
   comment(queueId: ID!): CommentSubscriptionPayload!
   queue: QueueSubscriptionPayload!
+  slip: SlipSubscriptionPayload!
 }
 
 input CreateUserInput {
   name: String!
   email: String!
-  age: Int
 }
 
 input UpdateUserInput {
   name: String
   email: String
-  age: Int
 }
 
 input CreateQueueInput {
   title: String!
-  user: ID!
 }
 
 input UpdateQueueInput {
@@ -48,6 +51,16 @@ input UpdateQueueInput {
   processed: Boolean
   how_many_before: Int
   comments: ID
+}
+
+input CreateSlipInput {
+  user: ID!
+  queue: ID!
+}
+
+input UpdateSlipInput {
+  user: ID
+  queue: ID
 }
 
 input CreateCommentInput {
@@ -82,6 +95,14 @@ type Queue {
   comments: [Comment!]!
 }
 
+type Slip {
+  id: ID!
+  processed: Boolean!
+  how_many_before: Int!
+  queue: Queue! 
+  user: User!
+}
+
 type Comment {
   id: ID!
   title: String!
@@ -99,6 +120,11 @@ enum MutationType {
 type QueueSubscriptionPayload {
   mutation: MutationType!
   data: Queue!
+}
+
+type SlipSubscriptionPayload {
+  mutation: MutationType!
+  data: Slip!
 }
 
 type CommentSubscriptionPayload {
