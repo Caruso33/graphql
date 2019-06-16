@@ -25,7 +25,6 @@ type Mutation {
 }
 
 type Subscription {
-  count: Int!
   comment(queueId: ID!): CommentSubscriptionPayload!
   queue: QueueSubscriptionPayload!
   slip: SlipSubscriptionPayload!

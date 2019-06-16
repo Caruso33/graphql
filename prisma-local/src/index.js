@@ -1,18 +1,16 @@
-import { GraphQLServer, PubSub } from "graphql-yoga";
-import db from "./db";
-import Comment from "./resolvers/Comment";
-import Mutation from "./resolvers/Mutation";
-import Query from "./resolvers/Query";
-import Queue from "./resolvers/Queue";
-import Subscription from "./resolvers/Subscription";
-import User from "./resolvers/User";
-import { prisma } from "./generated/prisma-client";
+import { GraphQLServer } from "graphql-yoga";
+import { resolvers } from "./resolvers";
+import { prisma } from "./prisma";
 
-const pubsub = new PubSub();
 const server = new GraphQLServer({
-  typeDefs: "./src/schema.graphql",
-  resolvers: { Query, User, Comment, Subscription, Mutation, Queue },
-  context: { db, pubsub, prisma }
+  typeDefs: "./src/db/schema.graphql",
+  resolvers,
+  context: ({ req }) => ({
+    request: req,
+    prisma
+  }),
+  playground: process.env.NODE_ENV === "development",
+  debug: process.env.NODE_ENV === "development"
 });
 
 server.start(({ port }) => {

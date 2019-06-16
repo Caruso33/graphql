@@ -1,0 +1,1480 @@
+# source: http://localhost:4466
+# timestamp: Sun Jun 16 2019 19:09:18 GMT+0700 (Indochina Time)
+
+type AggregateComment {
+  count: Int!
+}
+
+type AggregateQueue {
+  count: Int!
+}
+
+type AggregateSlip {
+  count: Int!
+}
+
+type AggregateUser {
+  count: Int!
+}
+
+type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
+  count: Long!
+}
+
+type Comment implements Node {
+  id: ID!
+  title: String!
+  body: String!
+  queue: Queue!
+  author: User!
+}
+
+"""A connection to a list of items."""
+type CommentConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CommentEdge]!
+  aggregate: AggregateComment!
+}
+
+input CommentCreateInput {
+  id: ID
+  title: String!
+  body: String!
+  queue: QueueCreateOneWithoutCommentsInput!
+  author: UserCreateOneWithoutCommentsInput!
+}
+
+input CommentCreateManyWithoutAuthorInput {
+  create: [CommentCreateWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutQueueInput {
+  create: [CommentCreateWithoutQueueInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateWithoutAuthorInput {
+  id: ID
+  title: String!
+  body: String!
+  queue: QueueCreateOneWithoutCommentsInput!
+}
+
+input CommentCreateWithoutQueueInput {
+  id: ID
+  title: String!
+  body: String!
+  author: UserCreateOneWithoutCommentsInput!
+}
+
+"""An edge in a connection."""
+type CommentEdge {
+  """The item at the end of the edge."""
+  node: Comment!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CommentOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  body_ASC
+  body_DESC
+}
+
+type CommentPreviousValues {
+  id: ID!
+  title: String!
+  body: String!
+}
+
+input CommentScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CommentScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CommentScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CommentScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  body: String
+
+  """All values that are not equal to given value."""
+  body_not: String
+
+  """All values that are contained in given list."""
+  body_in: [String!]
+
+  """All values that are not contained in given list."""
+  body_not_in: [String!]
+
+  """All values less than the given value."""
+  body_lt: String
+
+  """All values less than or equal the given value."""
+  body_lte: String
+
+  """All values greater than the given value."""
+  body_gt: String
+
+  """All values greater than or equal the given value."""
+  body_gte: String
+
+  """All values containing the given string."""
+  body_contains: String
+
+  """All values not containing the given string."""
+  body_not_contains: String
+
+  """All values starting with the given string."""
+  body_starts_with: String
+
+  """All values not starting with the given string."""
+  body_not_starts_with: String
+
+  """All values ending with the given string."""
+  body_ends_with: String
+
+  """All values not ending with the given string."""
+  body_not_ends_with: String
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  node: Comment
+  updatedFields: [String!]
+  previousValues: CommentPreviousValues
+}
+
+input CommentSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CommentSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CommentSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CommentSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CommentWhereInput
+}
+
+input CommentUpdateInput {
+  title: String
+  body: String
+  queue: QueueUpdateOneRequiredWithoutCommentsInput
+  author: UserUpdateOneRequiredWithoutCommentsInput
+}
+
+input CommentUpdateManyDataInput {
+  title: String
+  body: String
+}
+
+input CommentUpdateManyMutationInput {
+  title: String
+  body: String
+}
+
+input CommentUpdateManyWithoutAuthorInput {
+  create: [CommentCreateWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  delete: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input CommentUpdateManyWithoutQueueInput {
+  create: [CommentCreateWithoutQueueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  delete: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutQueueInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutQueueInput!]
+}
+
+input CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput!
+  data: CommentUpdateManyDataInput!
+}
+
+input CommentUpdateWithoutAuthorDataInput {
+  title: String
+  body: String
+  queue: QueueUpdateOneRequiredWithoutCommentsInput
+}
+
+input CommentUpdateWithoutQueueDataInput {
+  title: String
+  body: String
+  author: UserUpdateOneRequiredWithoutCommentsInput
+}
+
+input CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutAuthorDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutQueueInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutQueueDataInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutAuthorDataInput!
+  create: CommentCreateWithoutAuthorInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutQueueInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutQueueDataInput!
+  create: CommentCreateWithoutQueueInput!
+}
+
+input CommentWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CommentWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CommentWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CommentWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  body: String
+
+  """All values that are not equal to given value."""
+  body_not: String
+
+  """All values that are contained in given list."""
+  body_in: [String!]
+
+  """All values that are not contained in given list."""
+  body_not_in: [String!]
+
+  """All values less than the given value."""
+  body_lt: String
+
+  """All values less than or equal the given value."""
+  body_lte: String
+
+  """All values greater than the given value."""
+  body_gt: String
+
+  """All values greater than or equal the given value."""
+  body_gte: String
+
+  """All values containing the given string."""
+  body_contains: String
+
+  """All values not containing the given string."""
+  body_not_contains: String
+
+  """All values starting with the given string."""
+  body_starts_with: String
+
+  """All values not starting with the given string."""
+  body_not_starts_with: String
+
+  """All values ending with the given string."""
+  body_ends_with: String
+
+  """All values not ending with the given string."""
+  body_not_ends_with: String
+  queue: QueueWhereInput
+  author: UserWhereInput
+}
+
+input CommentWhereUniqueInput {
+  id: ID
+}
+
+"""Raw JSON value"""
+scalar Json
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Mutation {
+  createUser(data: UserCreateInput!): User!
+  createQueue(data: QueueCreateInput!): Queue!
+  createSlip(data: SlipCreateInput!): Slip!
+  createComment(data: CommentCreateInput!): Comment!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateQueue(data: QueueUpdateInput!, where: QueueWhereUniqueInput!): Queue
+  updateSlip(data: SlipUpdateInput!, where: SlipWhereUniqueInput!): Slip
+  updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteQueue(where: QueueWhereUniqueInput!): Queue
+  deleteSlip(where: SlipWhereUniqueInput!): Slip
+  deleteComment(where: CommentWhereUniqueInput!): Comment
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertQueue(where: QueueWhereUniqueInput!, create: QueueCreateInput!, update: QueueUpdateInput!): Queue!
+  upsertSlip(where: SlipWhereUniqueInput!, create: SlipCreateInput!, update: SlipUpdateInput!): Slip!
+  upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyQueues(data: QueueUpdateManyMutationInput!, where: QueueWhereInput): BatchPayload!
+  updateManySlips(data: SlipUpdateManyMutationInput!, where: SlipWhereInput): BatchPayload!
+  updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyQueues(where: QueueWhereInput): BatchPayload!
+  deleteManySlips(where: SlipWhereInput): BatchPayload!
+  deleteManyComments(where: CommentWhereInput): BatchPayload!
+  executeRaw(database: PrismaDatabase, query: String!): Json!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+enum PrismaDatabase {
+  default
+}
+
+type Query {
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  queues(where: QueueWhereInput, orderBy: QueueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Queue]!
+  slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip]!
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
+  user(where: UserWhereUniqueInput!): User
+  queue(where: QueueWhereUniqueInput!): Queue
+  slip(where: SlipWhereUniqueInput!): Slip
+  comment(where: CommentWhereUniqueInput!): Comment
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  queuesConnection(where: QueueWhereInput, orderBy: QueueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): QueueConnection!
+  slipsConnection(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SlipConnection!
+  commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Queue implements Node {
+  id: ID!
+  title: String!
+  slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+}
+
+"""A connection to a list of items."""
+type QueueConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [QueueEdge]!
+  aggregate: AggregateQueue!
+}
+
+input QueueCreateInput {
+  id: ID
+  title: String!
+  slips: SlipCreateManyWithoutQueueInput
+  comments: CommentCreateManyWithoutQueueInput
+}
+
+input QueueCreateOneWithoutCommentsInput {
+  create: QueueCreateWithoutCommentsInput
+  connect: QueueWhereUniqueInput
+}
+
+input QueueCreateOneWithoutSlipsInput {
+  create: QueueCreateWithoutSlipsInput
+  connect: QueueWhereUniqueInput
+}
+
+input QueueCreateWithoutCommentsInput {
+  id: ID
+  title: String!
+  slips: SlipCreateManyWithoutQueueInput
+}
+
+input QueueCreateWithoutSlipsInput {
+  id: ID
+  title: String!
+  comments: CommentCreateManyWithoutQueueInput
+}
+
+"""An edge in a connection."""
+type QueueEdge {
+  """The item at the end of the edge."""
+  node: Queue!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum QueueOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+}
+
+type QueuePreviousValues {
+  id: ID!
+  title: String!
+}
+
+type QueueSubscriptionPayload {
+  mutation: MutationType!
+  node: Queue
+  updatedFields: [String!]
+  previousValues: QueuePreviousValues
+}
+
+input QueueSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [QueueSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [QueueSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [QueueSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: QueueWhereInput
+}
+
+input QueueUpdateInput {
+  title: String
+  slips: SlipUpdateManyWithoutQueueInput
+  comments: CommentUpdateManyWithoutQueueInput
+}
+
+input QueueUpdateManyMutationInput {
+  title: String
+}
+
+input QueueUpdateOneRequiredWithoutCommentsInput {
+  create: QueueCreateWithoutCommentsInput
+  connect: QueueWhereUniqueInput
+  update: QueueUpdateWithoutCommentsDataInput
+  upsert: QueueUpsertWithoutCommentsInput
+}
+
+input QueueUpdateOneRequiredWithoutSlipsInput {
+  create: QueueCreateWithoutSlipsInput
+  connect: QueueWhereUniqueInput
+  update: QueueUpdateWithoutSlipsDataInput
+  upsert: QueueUpsertWithoutSlipsInput
+}
+
+input QueueUpdateWithoutCommentsDataInput {
+  title: String
+  slips: SlipUpdateManyWithoutQueueInput
+}
+
+input QueueUpdateWithoutSlipsDataInput {
+  title: String
+  comments: CommentUpdateManyWithoutQueueInput
+}
+
+input QueueUpsertWithoutCommentsInput {
+  update: QueueUpdateWithoutCommentsDataInput!
+  create: QueueCreateWithoutCommentsInput!
+}
+
+input QueueUpsertWithoutSlipsInput {
+  update: QueueUpdateWithoutSlipsDataInput!
+  create: QueueCreateWithoutSlipsInput!
+}
+
+input QueueWhereInput {
+  """Logical AND on all given filters."""
+  AND: [QueueWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [QueueWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [QueueWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  slips_every: SlipWhereInput
+  slips_some: SlipWhereInput
+  slips_none: SlipWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
+}
+
+input QueueWhereUniqueInput {
+  id: ID
+  title: String
+}
+
+type Slip implements Node {
+  id: ID!
+  processed: Boolean!
+  how_many_before: Int!
+  queue: Queue!
+  user: User!
+}
+
+"""A connection to a list of items."""
+type SlipConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SlipEdge]!
+  aggregate: AggregateSlip!
+}
+
+input SlipCreateInput {
+  id: ID
+  processed: Boolean!
+  how_many_before: Int!
+  queue: QueueCreateOneWithoutSlipsInput!
+  user: UserCreateOneWithoutSlipsInput!
+}
+
+input SlipCreateManyWithoutQueueInput {
+  create: [SlipCreateWithoutQueueInput!]
+  connect: [SlipWhereUniqueInput!]
+}
+
+input SlipCreateManyWithoutUserInput {
+  create: [SlipCreateWithoutUserInput!]
+  connect: [SlipWhereUniqueInput!]
+}
+
+input SlipCreateWithoutQueueInput {
+  id: ID
+  processed: Boolean!
+  how_many_before: Int!
+  user: UserCreateOneWithoutSlipsInput!
+}
+
+input SlipCreateWithoutUserInput {
+  id: ID
+  processed: Boolean!
+  how_many_before: Int!
+  queue: QueueCreateOneWithoutSlipsInput!
+}
+
+"""An edge in a connection."""
+type SlipEdge {
+  """The item at the end of the edge."""
+  node: Slip!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SlipOrderByInput {
+  id_ASC
+  id_DESC
+  processed_ASC
+  processed_DESC
+  how_many_before_ASC
+  how_many_before_DESC
+}
+
+type SlipPreviousValues {
+  id: ID!
+  processed: Boolean!
+  how_many_before: Int!
+}
+
+input SlipScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SlipScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SlipScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SlipScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  processed: Boolean
+
+  """All values that are not equal to given value."""
+  processed_not: Boolean
+  how_many_before: Int
+
+  """All values that are not equal to given value."""
+  how_many_before_not: Int
+
+  """All values that are contained in given list."""
+  how_many_before_in: [Int!]
+
+  """All values that are not contained in given list."""
+  how_many_before_not_in: [Int!]
+
+  """All values less than the given value."""
+  how_many_before_lt: Int
+
+  """All values less than or equal the given value."""
+  how_many_before_lte: Int
+
+  """All values greater than the given value."""
+  how_many_before_gt: Int
+
+  """All values greater than or equal the given value."""
+  how_many_before_gte: Int
+}
+
+type SlipSubscriptionPayload {
+  mutation: MutationType!
+  node: Slip
+  updatedFields: [String!]
+  previousValues: SlipPreviousValues
+}
+
+input SlipSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SlipSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SlipSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SlipSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SlipWhereInput
+}
+
+input SlipUpdateInput {
+  processed: Boolean
+  how_many_before: Int
+  queue: QueueUpdateOneRequiredWithoutSlipsInput
+  user: UserUpdateOneRequiredWithoutSlipsInput
+}
+
+input SlipUpdateManyDataInput {
+  processed: Boolean
+  how_many_before: Int
+}
+
+input SlipUpdateManyMutationInput {
+  processed: Boolean
+  how_many_before: Int
+}
+
+input SlipUpdateManyWithoutQueueInput {
+  create: [SlipCreateWithoutQueueInput!]
+  connect: [SlipWhereUniqueInput!]
+  set: [SlipWhereUniqueInput!]
+  disconnect: [SlipWhereUniqueInput!]
+  delete: [SlipWhereUniqueInput!]
+  update: [SlipUpdateWithWhereUniqueWithoutQueueInput!]
+  updateMany: [SlipUpdateManyWithWhereNestedInput!]
+  deleteMany: [SlipScalarWhereInput!]
+  upsert: [SlipUpsertWithWhereUniqueWithoutQueueInput!]
+}
+
+input SlipUpdateManyWithoutUserInput {
+  create: [SlipCreateWithoutUserInput!]
+  connect: [SlipWhereUniqueInput!]
+  set: [SlipWhereUniqueInput!]
+  disconnect: [SlipWhereUniqueInput!]
+  delete: [SlipWhereUniqueInput!]
+  update: [SlipUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [SlipUpdateManyWithWhereNestedInput!]
+  deleteMany: [SlipScalarWhereInput!]
+  upsert: [SlipUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input SlipUpdateManyWithWhereNestedInput {
+  where: SlipScalarWhereInput!
+  data: SlipUpdateManyDataInput!
+}
+
+input SlipUpdateWithoutQueueDataInput {
+  processed: Boolean
+  how_many_before: Int
+  user: UserUpdateOneRequiredWithoutSlipsInput
+}
+
+input SlipUpdateWithoutUserDataInput {
+  processed: Boolean
+  how_many_before: Int
+  queue: QueueUpdateOneRequiredWithoutSlipsInput
+}
+
+input SlipUpdateWithWhereUniqueWithoutQueueInput {
+  where: SlipWhereUniqueInput!
+  data: SlipUpdateWithoutQueueDataInput!
+}
+
+input SlipUpdateWithWhereUniqueWithoutUserInput {
+  where: SlipWhereUniqueInput!
+  data: SlipUpdateWithoutUserDataInput!
+}
+
+input SlipUpsertWithWhereUniqueWithoutQueueInput {
+  where: SlipWhereUniqueInput!
+  update: SlipUpdateWithoutQueueDataInput!
+  create: SlipCreateWithoutQueueInput!
+}
+
+input SlipUpsertWithWhereUniqueWithoutUserInput {
+  where: SlipWhereUniqueInput!
+  update: SlipUpdateWithoutUserDataInput!
+  create: SlipCreateWithoutUserInput!
+}
+
+input SlipWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SlipWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SlipWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SlipWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  processed: Boolean
+
+  """All values that are not equal to given value."""
+  processed_not: Boolean
+  how_many_before: Int
+
+  """All values that are not equal to given value."""
+  how_many_before_not: Int
+
+  """All values that are contained in given list."""
+  how_many_before_in: [Int!]
+
+  """All values that are not contained in given list."""
+  how_many_before_not_in: [Int!]
+
+  """All values less than the given value."""
+  how_many_before_lt: Int
+
+  """All values less than or equal the given value."""
+  how_many_before_lte: Int
+
+  """All values greater than the given value."""
+  how_many_before_gt: Int
+
+  """All values greater than or equal the given value."""
+  how_many_before_gte: Int
+  queue: QueueWhereInput
+  user: UserWhereInput
+}
+
+input SlipWhereUniqueInput {
+  id: ID
+}
+
+type Subscription {
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  queue(where: QueueSubscriptionWhereInput): QueueSubscriptionPayload
+  slip(where: SlipSubscriptionWhereInput): SlipSubscriptionPayload
+  comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  email: String!
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  id: ID
+  name: String!
+  email: String!
+  comments: CommentCreateManyWithoutAuthorInput
+  slips: SlipCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSlipsInput {
+  create: UserCreateWithoutSlipsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutCommentsInput {
+  id: ID
+  name: String!
+  email: String!
+  slips: SlipCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutSlipsInput {
+  id: ID
+  name: String!
+  email: String!
+  comments: CommentCreateManyWithoutAuthorInput
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserWhereInput
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  comments: CommentUpdateManyWithoutAuthorInput
+  slips: SlipUpdateManyWithoutUserInput
+}
+
+input UserUpdateManyMutationInput {
+  name: String
+  email: String
+}
+
+input UserUpdateOneRequiredWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutCommentsDataInput
+  upsert: UserUpsertWithoutCommentsInput
+}
+
+input UserUpdateOneRequiredWithoutSlipsInput {
+  create: UserCreateWithoutSlipsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutSlipsDataInput
+  upsert: UserUpsertWithoutSlipsInput
+}
+
+input UserUpdateWithoutCommentsDataInput {
+  name: String
+  email: String
+  slips: SlipUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutSlipsDataInput {
+  name: String
+  email: String
+  comments: CommentUpdateManyWithoutAuthorInput
+}
+
+input UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput!
+  create: UserCreateWithoutCommentsInput!
+}
+
+input UserUpsertWithoutSlipsInput {
+  update: UserUpdateWithoutSlipsDataInput!
+  create: UserCreateWithoutSlipsInput!
+}
+
+input UserWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
+  slips_every: SlipWhereInput
+  slips_some: SlipWhereInput
+  slips_none: SlipWhereInput
+}
+
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
