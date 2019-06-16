@@ -15,6 +15,6 @@ const server = new GraphQLServer({
   context: { db, pubsub, prisma }
 });
 
-server.start(() => {
-  console.log("nodejs graphql server is up on port 4000");
+server.start(({ port }) => {
+  console.log("nodejs graphql server is up on port", port);
 });

@@ -67,7 +67,7 @@ input CreateCommentInput {
   title: String!
   body: String!
   queue: ID!
-  user: ID!
+  author: ID!
 }
 
 input UpdateCommentInput {
@@ -81,17 +81,14 @@ type User {
   id: ID!
   name: String!
   email: String!
-  age: Int
-  queues: [Queue!]!
-  comments: [Comment]!
+  comments: [Comment!]!
+  slips: [Slip!]!
 }
 
 type Queue {
   id: ID!
   title: String!
-  processed: Boolean!
-  how_many_before: Int!
-  user: User!
+  slips: [Slip!]!
   comments: [Comment!]!
 }
 
@@ -108,7 +105,7 @@ type Comment {
   title: String!
   body: String!
   queue: Queue!
-  user: User!
+  author: User!
 }
 
 enum MutationType {

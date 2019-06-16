@@ -20,125 +20,68 @@ const Mutation = {
     return prisma.deleteUser({ id: args.id });
   },
 
-  async createQueue(parent, { data }, { prisma, pubsub }, info) {
-    const queue = await prisma.createQueue(data, info);
-    pubsub.publish("queue", { queue: { mutation: "CREATED", data: queue } });
-    return queue;
+  createQueue(parent, { data }, { prisma, pubsub }, info) {
+    return prisma.createQueue(data, info);
   },
 
   async updateQueue(parent, { id, data }, { prisma, pubsub }, info) {
-    const queueExists = prisma.$exists.queue({ id });
+    const queueExists = await prisma.$exists.queue({ id });
 
     if (!queueExists) throw new Error("Queue not found");
 
-    const queue = await prisma.updateQueue({ where: { id }, data }, info);
-    pubsub.publish("queue", { queue: { mutation: "UPDATED", data: queue } });
-    return queue;
+    return prisma.updateQueue({ where: { id }, data }, info);
   },
 
-  async deleteQueue(parent, { id }, { prisma, pubsub }) {
-    const queue = await prisma.deleteQueue({ id });
-    pubsub.publish("queue", {
-      queue: { mutation: "DELETED", data: queue }
-    });
-    return queue;
+  deleteQueue(parent, { id }, { prisma, pubsub }) {
+    return prisma.deleteQueue({ id });
   },
 
   async createSlip(parent, { data }, { prisma }, info) {
-    const dat = { ...data, processed: false, how_many_before: 0 };
-    const slip = await prisma.createSlip(dat, info);
-    pubsub.publish("slip", { slip: { mutation: "CREATED", data: slip } });
-    return slip;
+    return prisma.createSlip(
+      {
+        processed: false,
+        how_many_before: 0,
+        queue: { connect: { id: data.queue } },
+        user: { connect: { id: data.user } }
+      },
+      info
+    );
   },
 
   async updateSlip(parent, { id, data }, { prisma }, info) {
-    const slipExists = prisma.$exists.slip({ id });
+    const slipExists = await prisma.$exists.slip({ id });
 
     if (!slipExists) throw new Error("Slip not found");
 
-    const slip = await prisma.updateSlip(data, info);
-    pubsub.publish("slip", { slip: { mutation: "UPDATED", data: slip } });
-    return slip;
+    return prisma.updateSlip({ where: { id }, data }, info);
   },
 
-  async deleteSlip(parent, { id }, { prisma, pubsub }) {
-    const slip = await prisma.deleteSlip(id);
-    pubsub.publish("slip", {
-      slip: { mutation: "DELETED", data: slip }
-    });
-    return slip;
+  deleteSlip(parent, { id }, { prisma }) {
+    return prisma.deleteSlip({ id });
   },
 
-  createComment(parent, args, { pubsub, db }) {
-    const { queue, user } = args.data;
-
-    const userExists = db.users.some(u => u.id === user);
-    const queueExists = db.queues.some(q => q.id === queue);
-
-    if (!userExists) throw new Error("User does not exist");
-    else if (!queueExists) throw new Error("Queue does not exist");
-
-    const comment = {
-      id: db.COUNTER_OF_IDS,
-      ...args.data
-    };
-    db.comments.push(comment);
-    pubsub.publish(`comment: ${args.data.queue}`, {
-      comment: { mutation: "CREATED", data: comment }
-    });
-
-    const userIndex = db.users.findIndex(u => u.id === user);
-    db.users[userIndex].comments.push(db.COUNTER_OF_IDS);
-
-    const queueIndex = db.queues.findIndex(q => q.id === queue);
-    db.queues[queueIndex].comments.push(db.COUNTER_OF_IDS);
-
-    db.COUNTER_OF_IDS++;
-    return comment;
-  },
-  updateComment(
-    parent,
-    {
-      id,
-      data: { title, body, queue, user }
-    },
-    { db, pubsub }
-  ) {
-    const comment = db.comments.find(c => c.id === id);
-
-    if (!comment) throw new Error("Comment not found");
-
-    if (typeof title === "string") comment.title = title;
-    if (typeof body === "string") comment.body = body;
-    if (typeof queue === "string") comment.queue = queue;
-    if (typeof user === "string") comment.user = user;
-
-    pubsub.publish(`comment: ${comment.queue}`, {
-      comment: { mutation: "UPDATED", data: comment }
-    });
-    return comment;
-  },
-  deleteComment(parent, args, { pubsub, db }) {
-    const commentIndex = db.comments.findIndex(q => q.id === args.id);
-
-    if (commentIndex === -1) throw new Error("Comment not found");
-    const [deletedComment] = db.comments.splice(commentIndex, 1);
-
-    db.queues = db.queues.map(q =>
-      q.comments.includes(args.id)
-        ? { ...q, comments: q.comments.filter(c => c !== args.id) }
-        : q
+  createComment(parent, { data }, { prisma }, info) {
+    return prisma.createComment(
+      {
+        title: data.title,
+        body: data.body,
+        queue: { connect: { id: data.queue } },
+        author: { connect: { id: data.author } }
+      },
+      info
     );
+  },
 
-    db.users = db.users.map(u =>
-      u.comments.includes(args.id)
-        ? { ...u, comments: u.comments.filter(c => c !== args.id) }
-        : u
-    );
-    pubsub.publish(`comment: ${deletedComment.queue}`, {
-      comment: { mutation: "DELETED", data: deletedComment }
-    });
-    return deletedComment;
+  async updateComment(parent, { id, data }, { prisma }, info) {
+    const commentExists = await prisma.$exists.comment({ id });
+
+    if (!commentExists) throw new Error("Comment not found");
+
+    return prisma.updateComment({ where: { id }, data }, info);
+  },
+
+  deleteComment(parent, { id }, { prisma }) {
+    return prisma.deleteComment(id);
   }
 };
 
