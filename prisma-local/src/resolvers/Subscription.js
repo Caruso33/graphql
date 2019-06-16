@@ -1,21 +1,17 @@
 const Subscription = {
   comment: {
-    subscribe(parent, { queueId }, { prisma, pubsub }, info) {
-      const queue = prisma.queues.find(q => q.id === queueId);
-
-      if (!queue) throw new Error("Queue not found");
-
-      return pubsub.asyncIterator(`comment: ${queueId}`);
+    subscribe(parent, { queueId }, { prisma }, info) {
+      return prisma.$subscribe.comment(null, info);
     }
   },
   queue: {
-    subscribe(parent, {}, { pubsub }) {
-      return pubsub.asyncIterator("queue");
+    subscribe(parent, {}, { prisma }, info) {
+      return prisma.$subscribe.queue(null, info);
     }
   },
   slip: {
-    subscribe(parent, {}, { pubsub }) {
-      return pubsub.asyncIterator("slip");
+    subscribe(parent, {}, { prisma }, info) {
+      return prisma.$subscribe.slip(null, info);
     }
   }
 };

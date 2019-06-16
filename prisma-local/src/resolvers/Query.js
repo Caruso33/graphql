@@ -1,10 +1,11 @@
 const Query = {
   users(parent, args, { prisma }, info) {
+    console.log('info', info)
     const opArgs = {};
 
     if (args.query)
       opArgs.where = {
-        OR: [{ name_contain: args.query }, { email_contain: args.query }]
+        OR: [{ name_contains: args.query }, { email_contains: args.query }]
       };
     return prisma.users(opArgs, info);
 
@@ -13,7 +14,6 @@ const Query = {
   },
   queues(parent, args, { prisma }, info) {
     const opArgs = {};
-
     if (args.query) opArgs.where = { title_contains: args.query };
 
     return prisma.queues(opArgs, info);
