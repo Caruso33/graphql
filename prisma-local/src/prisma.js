@@ -1,6 +1,9 @@
-import Bindings from "prisma-binding";
-import Client from "./schema/generated/prisma-client";
+// import Bindings from "prisma-binding";
+// import Client from "./schema/generated/prisma-client";
 import { fragmentReplacements } from "./resolvers";
+
+const Bindings = require('prisma-binding')
+const Client = require('./schema/generated/prisma-client')
 
 console.log('Bindings', Bindings, Client)
 module.exports = {
