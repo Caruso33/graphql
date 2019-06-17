@@ -115,15 +115,15 @@ enum MutationType {
 
 type QueueSubscriptionPayload {
   mutation: MutationType!
-  node: Queue!
+  node: Queue
 }
 
 type SlipSubscriptionPayload {
   mutation: MutationType!
-  node: Slip!
+  node: Slip
 }
 
 type CommentSubscriptionPayload {
   mutation: MutationType!
-  node: Comment!
+  node: Comment
 }
