@@ -1,7 +1,14 @@
 const Subscription = {
   comment: {
     subscribe(parent, { queueId }, { prisma }, info) {
-      return prisma.bindings.subscription.comment(null, info);
+      return prisma.bindings.subscription.comment(
+        {
+          where: {
+            node: { queue: { id: queueId } }
+          }
+        },
+        info
+      );
     }
   },
   queue: {

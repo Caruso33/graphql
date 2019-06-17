@@ -77,22 +77,22 @@ input UpdateCommentInput {
 }
 
 type User {
-  id: ID!
+  id: ID! @id
   name: String!
-  email: String!
+  email: String! @unique
   comments: [Comment!]!
   slips: [Slip!]!
 }
 
 type Queue {
-  id: ID!
+  id: ID! @id
   title: String!
   slips: [Slip!]!
   comments: [Comment!]!
 }
 
 type Slip {
-  id: ID!
+  id: ID! @id
   processed: Boolean!
   how_many_before: Int!
   queue: Queue! 
@@ -100,7 +100,7 @@ type Slip {
 }
 
 type Comment {
-  id: ID!
+  id: ID! @id
   title: String!
   body: String!
   queue: Queue!

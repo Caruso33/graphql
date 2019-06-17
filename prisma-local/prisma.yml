@@ -1,7 +1,8 @@
 endpoint: ${env:PRISMA_ENDPOINT}
-datamodel: 
+datamodel:
   - ./src/db/schema.graphql
 
+secret: ${env:PRISMA_SECRET}
 generate:
   - generator: javascript-client
     output: ./src/schema/generated/prisma-client/
