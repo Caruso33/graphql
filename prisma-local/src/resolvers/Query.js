@@ -1,13 +1,12 @@
 const Query = {
   users(parent, args, { prisma }, info) {
-    console.log('info', info)
     const opArgs = {};
 
     if (args.query)
       opArgs.where = {
         OR: [{ name_contains: args.query }, { email_contains: args.query }]
       };
-    return prisma.users(opArgs, info);
+    return prisma.bindings.query.users(opArgs, info);
 
     // if (!args.query) return db.users;
     // return db.users.filter(u => u.name.toLowerCase().includes(args.name));
@@ -16,22 +15,21 @@ const Query = {
     const opArgs = {};
     if (args.query) opArgs.where = { title_contains: args.query };
 
-    return prisma.queues(opArgs, info);
+    return prisma.bindings.query.queues(opArgs, info);
   },
 
   slips(parent, args, { prisma }, info) {
     const opArgs = {};
     if (args.query) opArgs.where = { title_contains: args.query };
 
-    return prisma.slips(opArgs, info);
+    return prisma.bindings.query.slips(opArgs, info);
   },
 
   comments(p, args, { prisma }, info) {
     const opArgs = {};
-
     if (args.query) opArgs.where = { title_contains: args.query };
 
-    return prisma.comments(opArgs, info);
+    return prisma.bindings.query.comments(opArgs, info);
   },
 
   me() {

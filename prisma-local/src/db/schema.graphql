@@ -73,7 +73,7 @@ input UpdateCommentInput {
   title: String
   body: String
   queue: ID
-  user: ID
+  author: ID
 }
 
 type User {

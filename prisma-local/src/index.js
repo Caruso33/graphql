@@ -2,7 +2,6 @@ import { GraphQLServer } from "graphql-yoga";
 import { resolvers } from "./resolvers";
 import prisma from "./prisma";
 
-console.log("prisma", prisma);
 const server = new GraphQLServer({
   typeDefs: "./src/db/schema.graphql",
   resolvers,

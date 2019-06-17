@@ -1,22 +1,19 @@
-// import Bindings from "prisma-binding";
-// import Client from "./schema/generated/prisma-client";
 import { fragmentReplacements } from "./resolvers";
 
-const Bindings = require('prisma-binding')
-const Client = require('./schema/generated/prisma-client')
+const Bindings = require("prisma-binding");
+const Client = require("./schema/generated/prisma-client");
 
-console.log('Bindings', Bindings, Client)
 module.exports = {
   client: new Client.Prisma({
     fragmentReplacements,
-    endpoint: process.env.PRISMA_ENDPOINT,
+    endpoint: "http://localhost:4466",
     // secret: process.env.PRISMA_SECRET,
     debug: false
   }),
   bindings: new Bindings.Prisma({
     typeDefs: "src/schema/generated/prisma.graphql",
     fragmentReplacements,
-    endpoint: process.env.PRISMA_ENDPOINT,
+    endpoint: "http://localhost:4466",
     // secret: process.env.PRISMA_SECRET,
     debug: false
   })
