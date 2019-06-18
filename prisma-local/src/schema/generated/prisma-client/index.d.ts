@@ -246,7 +246,9 @@ export type UserOrderByInput =
   | "name_ASC"
   | "name_DESC"
   | "email_ASC"
-  | "email_DESC";
+  | "email_DESC"
+  | "password_ASC"
+  | "password_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -263,6 +265,7 @@ export interface UserCreateWithoutCommentsInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
+  password: String;
   slips?: Maybe<SlipCreateManyWithoutUserInput>;
 }
 
@@ -349,6 +352,20 @@ export interface UserWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
   comments_every?: Maybe<CommentWhereInput>;
   comments_some?: Maybe<CommentWhereInput>;
   comments_none?: Maybe<CommentWhereInput>;
@@ -424,6 +441,7 @@ export interface CommentCreateManyWithoutQueueInput {
 export interface UserUpdateManyMutationInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface CommentCreateWithoutQueueInput {
@@ -437,6 +455,7 @@ export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
+  password: String;
   comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
   slips?: Maybe<SlipCreateManyWithoutUserInput>;
 }
@@ -543,6 +562,7 @@ export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
 export interface UserUpdateWithoutSlipsDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
 }
 
@@ -622,6 +642,7 @@ export interface UserCreateWithoutSlipsInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
+  password: String;
   comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
 }
 
@@ -760,6 +781,7 @@ export interface CommentUpdateManyDataInput {
 export interface UserUpdateInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
   slips?: Maybe<SlipUpdateManyWithoutUserInput>;
 }
@@ -876,6 +898,7 @@ export type QueueWhereUniqueInput = AtLeastOne<{
 export interface UserUpdateWithoutCommentsDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   slips?: Maybe<SlipUpdateManyWithoutUserInput>;
 }
 
@@ -993,6 +1016,7 @@ export interface UserPreviousValues {
   id: ID_Output;
   name: String;
   email: String;
+  password: String;
 }
 
 export interface UserPreviousValuesPromise
@@ -1001,6 +1025,7 @@ export interface UserPreviousValuesPromise
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -1009,6 +1034,7 @@ export interface UserPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Queue {
@@ -1500,12 +1526,14 @@ export interface User {
   id: ID_Output;
   name: String;
   email: String;
+  password: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
   comments: <T = FragmentableArray<Comment>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;
@@ -1532,6 +1560,7 @@ export interface UserSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
   comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;
@@ -1558,6 +1587,7 @@ export interface UserNullablePromise
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
   comments: <T = FragmentableArray<Comment>>(args?: {
     where?: CommentWhereInput;
     orderBy?: CommentOrderByInput;
