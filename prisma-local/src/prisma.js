@@ -16,7 +16,7 @@ module.exports = {
     typeDefs: "src/schema/generated/prisma.graphql",
     fragmentReplacements,
     endpoint: process.env.PRISMA_ENDPOINT,
-    // secret: process.env.PRISMA_SECRET,
+    secret: process.env.PRISMA_SECRET,
     debug: false
   })
 }
