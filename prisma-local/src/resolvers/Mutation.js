@@ -1,20 +1,21 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-require("dotenv").config()
-
-console.log("process.env.JWT_SECRET", process.env.JWT_SECRET)
-
-const token = jwt.sign({ id: 5, name: "EggehAt" }, process.env.JWT_SECRET)
-console.log("token", token)
-
-const decode = jwt.decode(token)
-console.log("decode", decode)
-
-const verify = jwt.verify(token, process.env.JWT_SECRET)
-console.log("verify", verify)
-
 const Mutation = {
+  async login(parent, { data }, { prisma }, info) {
+    const user = await prisma.bindings.query.user({
+      where: { email: data.email }
+    })
+    if (!user) throw new Error("No user found.")
+
+    const isMatch = await bcrypt.compare(data.password, user.password)
+    if (!isMatch) throw new Error("Unable to login.")
+
+    return {
+      user,
+      token: jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+    }
+  },
   async createUser(parent, { data }, { prisma }, info) {
     const emailTaken = await prisma.client.$exists.user({
       email: data.email
@@ -29,14 +30,14 @@ const Mutation = {
       Number(process.env.BCRYPT_SALT_ROUNDS)
     )
 
-    // jwt.sign({
+    const user = await prisma.bindings.mutation.createUser({
+      data: { ...data, password }
+    }) // LEAVE __INFO__ FIELD OFF WHEN CREATING CUSTOM OBJECTS
 
-    // }, process.env.JWT_SECRET)
-
-    return prisma.bindings.mutation.createUser(
-      { data: { ...data, password } },
-      info
-    )
+    return {
+      user,
+      token: jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+    }
   },
 
   async updateUser(parent, { id, data }, { prisma }, info) {

@@ -7,19 +7,21 @@ type Query {
 }
 
 type Mutation {
-  createUser(data: CreateUserInput): User!
+  login(data: LoginUserInput!): AuthPayload!
+
+  createUser(data: CreateUserInput!): AuthPayload!
   updateUser(id: ID!, data: UpdateUserInput!): User!
   deleteUser(id: ID!): User!
 
-  createQueue(data: CreateQueueInput): Queue!
+  createQueue(data: CreateQueueInput!): Queue!
   updateQueue(id: ID!, data: UpdateQueueInput!): Queue!
   deleteQueue(id: ID!): Queue!
 
-  createSlip(data: CreateSlipInput): Slip!
+  createSlip(data: CreateSlipInput!): Slip!
   updateSlip(id: ID!, data: UpdateSlipInput!): Slip!
   deleteSlip(id: ID!): Slip!
 
-  createComment(data: CreateCommentInput): Comment!
+  createComment(data: CreateCommentInput!): Comment!
   updateComment(id: ID!, data: UpdateCommentInput!): Comment!
   deleteComment(id: ID!): Comment!
 }
@@ -28,6 +30,16 @@ type Subscription {
   comment(queueId: ID!): CommentSubscriptionPayload!
   queue: QueueSubscriptionPayload!
   slip: SlipSubscriptionPayload!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
 }
 
 input CreateUserInput {
