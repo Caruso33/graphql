@@ -10,6 +10,7 @@ const Query = {
       }
     return prisma.bindings.query.users(opArgs, info)
   },
+
   queues(parent, args, { prisma }, info) {
     const opArgs = {}
     if (args.query) opArgs.where = { title_contains: args.query }
@@ -35,12 +36,10 @@ const Query = {
     return prisma.bindings.query.comments(opArgs, info)
   },
 
-  me() {
-    return {
-      id: "123-456",
-      name: "Tobsn",
-      email: "caruso33@web.de"
-    }
+  me(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request)
+
+    return prisma.bindings.query.user({ where: { id: userId } })
   }
 }
 
