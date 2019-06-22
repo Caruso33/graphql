@@ -61,20 +61,23 @@ const Mutation = {
   },
 
   createQueue(parent, { data }, { prisma, request }, info) {
-    const userId = getUserId(request)
+    getUserId(request)
 
     return prisma.bindings.mutation.createQueue({ data }, info)
   },
 
-  async updateQueue(parent, { id, data }, { prisma }, info) {
-    const queueExists = await prisma.client.$exists.queue({ id })
+  async updateQueue(parent, { id, data }, { prisma, request }, info) {
+    getUserId(request)
 
+    const queueExists = await prisma.client.$exists.queue({ id })
     if (!queueExists) throw new Error("Queue not found")
 
     return prisma.bindings.mutation.updateQueue({ where: { id }, data }, info)
   },
 
-  deleteQueue(parent, { id }, { prisma }, info) {
+  deleteQueue(parent, { id }, { prisma, request }, info) {
+    getUserId(request)
+
     return prisma.bindings.mutation.deleteQueue({ where: { id } }, info)
   },
 
