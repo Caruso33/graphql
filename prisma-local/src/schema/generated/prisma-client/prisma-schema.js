@@ -335,6 +335,12 @@ type PageInfo {
   endCursor: String
 }
 
+enum ProcessedType {
+  WAITING
+  PROCESSED
+  CANCELLED
+}
+
 type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
@@ -519,7 +525,7 @@ input QueueWhereUniqueInput {
 
 type Slip {
   id: ID!
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
   queue: Queue!
   user: User!
@@ -533,7 +539,7 @@ type SlipConnection {
 
 input SlipCreateInput {
   id: ID
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
   queue: QueueCreateOneWithoutSlipsInput!
   user: UserCreateOneWithoutSlipsInput!
@@ -551,14 +557,14 @@ input SlipCreateManyWithoutUserInput {
 
 input SlipCreateWithoutQueueInput {
   id: ID
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
   user: UserCreateOneWithoutSlipsInput!
 }
 
 input SlipCreateWithoutUserInput {
   id: ID
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
   queue: QueueCreateOneWithoutSlipsInput!
 }
@@ -579,7 +585,7 @@ enum SlipOrderByInput {
 
 type SlipPreviousValues {
   id: ID!
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
 }
 
@@ -598,8 +604,10 @@ input SlipScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  processed: Boolean
-  processed_not: Boolean
+  processed: ProcessedType
+  processed_not: ProcessedType
+  processed_in: [ProcessedType!]
+  processed_not_in: [ProcessedType!]
   how_many_before: Int
   how_many_before_not: Int
   how_many_before_in: [Int!]
@@ -632,19 +640,19 @@ input SlipSubscriptionWhereInput {
 }
 
 input SlipUpdateInput {
-  processed: Boolean
+  processed: ProcessedType
   how_many_before: Int
   queue: QueueUpdateOneRequiredWithoutSlipsInput
   user: UserUpdateOneRequiredWithoutSlipsInput
 }
 
 input SlipUpdateManyDataInput {
-  processed: Boolean
+  processed: ProcessedType
   how_many_before: Int
 }
 
 input SlipUpdateManyMutationInput {
-  processed: Boolean
+  processed: ProcessedType
   how_many_before: Int
 }
 
@@ -678,13 +686,13 @@ input SlipUpdateManyWithWhereNestedInput {
 }
 
 input SlipUpdateWithoutQueueDataInput {
-  processed: Boolean
+  processed: ProcessedType
   how_many_before: Int
   user: UserUpdateOneRequiredWithoutSlipsInput
 }
 
 input SlipUpdateWithoutUserDataInput {
-  processed: Boolean
+  processed: ProcessedType
   how_many_before: Int
   queue: QueueUpdateOneRequiredWithoutSlipsInput
 }
@@ -726,8 +734,10 @@ input SlipWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  processed: Boolean
-  processed_not: Boolean
+  processed: ProcessedType
+  processed_not: ProcessedType
+  processed_in: [ProcessedType!]
+  processed_not_in: [ProcessedType!]
   how_many_before: Int
   how_many_before_not: Int
   how_many_before_in: [Int!]

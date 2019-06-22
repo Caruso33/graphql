@@ -102,9 +102,15 @@ type Queue {
   comments: [Comment!]!
 }
 
+enum ProcessedType {
+  PROCESSED
+  CANCELLED
+  WAITING
+}
+
 type Slip {
   id: ID!
-  processed: Boolean!
+  processed: ProcessedType!
   how_many_before: Int!
   queue: Queue!
   user: User!

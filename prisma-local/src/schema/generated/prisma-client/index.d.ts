@@ -226,6 +226,8 @@ export type SlipOrderByInput =
   | "how_many_before_ASC"
   | "how_many_before_DESC";
 
+export type ProcessedType = "WAITING" | "PROCESSED" | "CANCELLED";
+
 export type CommentOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -261,24 +263,6 @@ export type CommentWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface UserCreateWithoutCommentsInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  slips?: Maybe<SlipCreateManyWithoutUserInput>;
-}
-
-export interface CommentUpdateWithWhereUniqueWithoutQueueInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutQueueDataInput;
-}
-
-export interface SlipCreateManyWithoutUserInput {
-  create?: Maybe<SlipCreateWithoutUserInput[] | SlipCreateWithoutUserInput>;
-  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
-}
-
 export interface CommentUpdateManyWithoutAuthorInput {
   create?: Maybe<
     CommentCreateWithoutAuthorInput[] | CommentCreateWithoutAuthorInput
@@ -302,11 +286,49 @@ export interface CommentUpdateManyWithoutAuthorInput {
   >;
 }
 
-export interface SlipCreateWithoutUserInput {
+export interface QueueWhereInput {
   id?: Maybe<ID_Input>;
-  processed: Boolean;
-  how_many_before: Int;
-  queue: QueueCreateOneWithoutSlipsInput;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  slips_every?: Maybe<SlipWhereInput>;
+  slips_some?: Maybe<SlipWhereInput>;
+  slips_none?: Maybe<SlipWhereInput>;
+  comments_every?: Maybe<CommentWhereInput>;
+  comments_some?: Maybe<CommentWhereInput>;
+  comments_none?: Maybe<CommentWhereInput>;
+  AND?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+  OR?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+  NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutAuthorDataInput;
 }
 
 export interface UserWhereInput {
@@ -377,20 +399,27 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
+export interface SlipCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  processed: ProcessedType;
+  how_many_before: Int;
+  queue: QueueCreateOneWithoutSlipsInput;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutQueueInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutQueueDataInput;
+}
+
 export interface QueueCreateOneWithoutSlipsInput {
   create?: Maybe<QueueCreateWithoutSlipsInput>;
   connect?: Maybe<QueueWhereUniqueInput>;
 }
 
-export interface SlipSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<SlipWhereInput>;
-  AND?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
-  OR?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
-  NOT?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
+export interface CommentUpdateWithoutAuthorDataInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
 }
 
 export interface QueueCreateWithoutSlipsInput {
@@ -399,36 +428,15 @@ export interface QueueCreateWithoutSlipsInput {
   comments?: Maybe<CommentCreateManyWithoutQueueInput>;
 }
 
-export interface SlipWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  processed?: Maybe<Boolean>;
-  processed_not?: Maybe<Boolean>;
-  how_many_before?: Maybe<Int>;
-  how_many_before_not?: Maybe<Int>;
-  how_many_before_in?: Maybe<Int[] | Int>;
-  how_many_before_not_in?: Maybe<Int[] | Int>;
-  how_many_before_lt?: Maybe<Int>;
-  how_many_before_lte?: Maybe<Int>;
-  how_many_before_gt?: Maybe<Int>;
-  how_many_before_gte?: Maybe<Int>;
-  queue?: Maybe<QueueWhereInput>;
-  user?: Maybe<UserWhereInput>;
-  AND?: Maybe<SlipWhereInput[] | SlipWhereInput>;
-  OR?: Maybe<SlipWhereInput[] | SlipWhereInput>;
-  NOT?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+export interface UserSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<UserWhereInput>;
+  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
 export interface CommentCreateManyWithoutQueueInput {
@@ -438,10 +446,15 @@ export interface CommentCreateManyWithoutQueueInput {
   connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
 }
 
-export interface UserUpdateManyMutationInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
+export interface QueueSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<QueueWhereInput>;
+  AND?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+  OR?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+  NOT?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
 }
 
 export interface CommentCreateWithoutQueueInput {
@@ -451,13 +464,10 @@ export interface CommentCreateWithoutQueueInput {
   author: UserCreateOneWithoutCommentsInput;
 }
 
-export interface UserCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
-  slips?: Maybe<SlipCreateManyWithoutUserInput>;
+export interface UserUpdateManyMutationInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface CommentUpdateInput {
@@ -467,9 +477,12 @@ export interface CommentUpdateInput {
   author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
 }
 
-export interface SlipUpdateManyMutationInput {
-  processed?: Maybe<Boolean>;
-  how_many_before?: Maybe<Int>;
+export interface UserUpdateInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
+  slips?: Maybe<SlipUpdateManyWithoutUserInput>;
 }
 
 export interface QueueUpdateOneRequiredWithoutCommentsInput {
@@ -479,12 +492,9 @@ export interface QueueUpdateOneRequiredWithoutCommentsInput {
   connect?: Maybe<QueueWhereUniqueInput>;
 }
 
-export interface SlipCreateInput {
-  id?: Maybe<ID_Input>;
-  processed: Boolean;
-  how_many_before: Int;
-  queue: QueueCreateOneWithoutSlipsInput;
-  user: UserCreateOneWithoutSlipsInput;
+export interface SlipUpdateManyMutationInput {
+  processed?: Maybe<ProcessedType>;
+  how_many_before?: Maybe<Int>;
 }
 
 export interface QueueUpdateWithoutCommentsDataInput {
@@ -516,17 +526,13 @@ export interface SlipUpdateManyWithoutQueueInput {
   >;
 }
 
-export interface QueueCreateInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  slips?: Maybe<SlipCreateManyWithoutQueueInput>;
-  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
+export interface QueueUpdateManyMutationInput {
+  title?: Maybe<String>;
 }
 
-export interface CommentUpdateWithoutQueueDataInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
+export interface QueueUpsertWithoutSlipsInput {
+  update: QueueUpdateWithoutSlipsDataInput;
+  create: QueueCreateWithoutSlipsInput;
 }
 
 export type UserWhereUniqueInput = AtLeastOne<{
@@ -535,15 +541,14 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface SlipUpdateWithoutQueueDataInput {
-  processed?: Maybe<Boolean>;
+  processed?: Maybe<ProcessedType>;
   how_many_before?: Maybe<Int>;
   user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
 }
 
-export interface SlipUpsertWithWhereUniqueWithoutUserInput {
-  where: SlipWhereUniqueInput;
-  update: SlipUpdateWithoutUserDataInput;
-  create: SlipCreateWithoutUserInput;
+export interface CommentUpdateManyMutationInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
 }
 
 export interface UserUpdateOneRequiredWithoutSlipsInput {
@@ -553,10 +558,10 @@ export interface UserUpdateOneRequiredWithoutSlipsInput {
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
-  where: CommentWhereUniqueInput;
-  update: CommentUpdateWithoutQueueDataInput;
-  create: CommentCreateWithoutQueueInput;
+export interface SlipUpsertWithWhereUniqueWithoutUserInput {
+  where: SlipWhereUniqueInput;
+  update: SlipUpdateWithoutUserDataInput;
+  create: SlipCreateWithoutUserInput;
 }
 
 export interface UserUpdateWithoutSlipsDataInput {
@@ -574,7 +579,7 @@ export interface CommentCreateInput {
   author: UserCreateOneWithoutCommentsInput;
 }
 
-export interface QueueWhereInput {
+export interface CommentWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -603,15 +608,25 @@ export interface QueueWhereInput {
   title_not_starts_with?: Maybe<String>;
   title_ends_with?: Maybe<String>;
   title_not_ends_with?: Maybe<String>;
-  slips_every?: Maybe<SlipWhereInput>;
-  slips_some?: Maybe<SlipWhereInput>;
-  slips_none?: Maybe<SlipWhereInput>;
-  comments_every?: Maybe<CommentWhereInput>;
-  comments_some?: Maybe<CommentWhereInput>;
-  comments_none?: Maybe<CommentWhereInput>;
-  AND?: Maybe<QueueWhereInput[] | QueueWhereInput>;
-  OR?: Maybe<QueueWhereInput[] | QueueWhereInput>;
-  NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  queue?: Maybe<QueueWhereInput>;
+  author?: Maybe<UserWhereInput>;
+  AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+  OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+  NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
 }
 
 export interface QueueCreateWithoutCommentsInput {
@@ -620,22 +635,23 @@ export interface QueueCreateWithoutCommentsInput {
   slips?: Maybe<SlipCreateManyWithoutQueueInput>;
 }
 
-export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
+export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
   where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutAuthorDataInput;
+  update: CommentUpdateWithoutQueueDataInput;
+  create: CommentCreateWithoutQueueInput;
 }
 
 export interface SlipCreateWithoutQueueInput {
   id?: Maybe<ID_Input>;
-  processed: Boolean;
+  processed: ProcessedType;
   how_many_before: Int;
   user: UserCreateOneWithoutSlipsInput;
 }
 
-export interface CommentUpdateWithoutAuthorDataInput {
+export interface CommentUpdateWithoutQueueDataInput {
   title?: Maybe<String>;
   body?: Maybe<String>;
-  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
+  author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
 }
 
 export interface UserCreateWithoutSlipsInput {
@@ -707,7 +723,20 @@ export interface CommentScalarWhereInput {
   NOT?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
 }
 
-export interface CommentWhereInput {
+export interface UserCreateWithoutCommentsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  slips?: Maybe<SlipCreateManyWithoutUserInput>;
+}
+
+export interface CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput;
+  data: CommentUpdateManyDataInput;
+}
+
+export interface SlipWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -722,55 +751,23 @@ export interface CommentWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  body?: Maybe<String>;
-  body_not?: Maybe<String>;
-  body_in?: Maybe<String[] | String>;
-  body_not_in?: Maybe<String[] | String>;
-  body_lt?: Maybe<String>;
-  body_lte?: Maybe<String>;
-  body_gt?: Maybe<String>;
-  body_gte?: Maybe<String>;
-  body_contains?: Maybe<String>;
-  body_not_contains?: Maybe<String>;
-  body_starts_with?: Maybe<String>;
-  body_not_starts_with?: Maybe<String>;
-  body_ends_with?: Maybe<String>;
-  body_not_ends_with?: Maybe<String>;
+  processed?: Maybe<ProcessedType>;
+  processed_not?: Maybe<ProcessedType>;
+  processed_in?: Maybe<ProcessedType[] | ProcessedType>;
+  processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
+  how_many_before?: Maybe<Int>;
+  how_many_before_not?: Maybe<Int>;
+  how_many_before_in?: Maybe<Int[] | Int>;
+  how_many_before_not_in?: Maybe<Int[] | Int>;
+  how_many_before_lt?: Maybe<Int>;
+  how_many_before_lte?: Maybe<Int>;
+  how_many_before_gt?: Maybe<Int>;
+  how_many_before_gte?: Maybe<Int>;
   queue?: Maybe<QueueWhereInput>;
-  author?: Maybe<UserWhereInput>;
-  AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
-  OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
-  NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
-}
-
-export interface CommentUpdateManyWithWhereNestedInput {
-  where: CommentScalarWhereInput;
-  data: CommentUpdateManyDataInput;
-}
-
-export interface QueueSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<QueueWhereInput>;
-  AND?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
-  OR?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
-  NOT?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+  user?: Maybe<UserWhereInput>;
+  AND?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+  OR?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+  NOT?: Maybe<SlipWhereInput[] | SlipWhereInput>;
 }
 
 export interface CommentUpdateManyDataInput {
@@ -778,12 +775,15 @@ export interface CommentUpdateManyDataInput {
   body?: Maybe<String>;
 }
 
-export interface UserUpdateInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
-  slips?: Maybe<SlipUpdateManyWithoutUserInput>;
+export interface CommentSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<CommentWhereInput>;
+  AND?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
+  OR?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
+  NOT?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
 }
 
 export interface UserUpsertWithoutSlipsInput {
@@ -791,11 +791,13 @@ export interface UserUpsertWithoutSlipsInput {
   create: UserCreateWithoutSlipsInput;
 }
 
-export interface SlipUpdateInput {
-  processed?: Maybe<Boolean>;
-  how_many_before?: Maybe<Int>;
-  queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
-  user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
+  slips?: Maybe<SlipCreateManyWithoutUserInput>;
 }
 
 export interface SlipUpsertWithWhereUniqueWithoutQueueInput {
@@ -804,10 +806,12 @@ export interface SlipUpsertWithWhereUniqueWithoutQueueInput {
   create: SlipCreateWithoutQueueInput;
 }
 
-export interface QueueUpdateInput {
-  title?: Maybe<String>;
-  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
-  comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
+export interface SlipCreateInput {
+  id?: Maybe<ID_Input>;
+  processed: ProcessedType;
+  how_many_before: Int;
+  queue: QueueCreateOneWithoutSlipsInput;
+  user: UserCreateOneWithoutSlipsInput;
 }
 
 export interface SlipScalarWhereInput {
@@ -825,8 +829,10 @@ export interface SlipScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  processed?: Maybe<Boolean>;
-  processed_not?: Maybe<Boolean>;
+  processed?: Maybe<ProcessedType>;
+  processed_not?: Maybe<ProcessedType>;
+  processed_in?: Maybe<ProcessedType[] | ProcessedType>;
+  processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
   how_many_before?: Maybe<Int>;
   how_many_before_not?: Maybe<Int>;
   how_many_before_in?: Maybe<Int[] | Int>;
@@ -840,9 +846,11 @@ export interface SlipScalarWhereInput {
   NOT?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
 }
 
-export interface UserUpsertWithoutCommentsInput {
-  update: UserUpdateWithoutCommentsDataInput;
-  create: UserCreateWithoutCommentsInput;
+export interface QueueCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  slips?: Maybe<SlipCreateManyWithoutQueueInput>;
+  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
 }
 
 export interface SlipUpdateManyWithWhereNestedInput {
@@ -856,7 +864,7 @@ export interface SlipCreateManyWithoutQueueInput {
 }
 
 export interface SlipUpdateManyDataInput {
-  processed?: Maybe<Boolean>;
+  processed?: Maybe<ProcessedType>;
   how_many_before?: Maybe<Int>;
 }
 
@@ -872,15 +880,9 @@ export interface QueueUpsertWithoutCommentsInput {
   create: QueueCreateWithoutCommentsInput;
 }
 
-export interface UserSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserWhereInput>;
-  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+export interface SlipCreateManyWithoutUserInput {
+  create?: Maybe<SlipCreateWithoutUserInput[] | SlipCreateWithoutUserInput>;
+  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
 }
 
 export interface UserUpdateOneRequiredWithoutCommentsInput {
@@ -902,9 +904,10 @@ export interface UserUpdateWithoutCommentsDataInput {
   slips?: Maybe<SlipUpdateManyWithoutUserInput>;
 }
 
-export interface CommentUpdateManyMutationInput {
+export interface QueueUpdateInput {
   title?: Maybe<String>;
-  body?: Maybe<String>;
+  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
+  comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
 }
 
 export interface SlipUpdateManyWithoutUserInput {
@@ -978,20 +981,20 @@ export interface QueueUpdateOneRequiredWithoutSlipsInput {
 }
 
 export interface SlipUpdateWithoutUserDataInput {
-  processed?: Maybe<Boolean>;
+  processed?: Maybe<ProcessedType>;
   how_many_before?: Maybe<Int>;
   queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
 }
 
-export interface CommentSubscriptionWhereInput {
+export interface SlipSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<CommentWhereInput>;
-  AND?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
-  OR?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
-  NOT?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
+  node?: Maybe<SlipWhereInput>;
+  AND?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
+  OR?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
+  NOT?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
 }
 
 export interface UserCreateOneWithoutSlipsInput {
@@ -999,13 +1002,16 @@ export interface UserCreateOneWithoutSlipsInput {
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface QueueUpsertWithoutSlipsInput {
-  update: QueueUpdateWithoutSlipsDataInput;
-  create: QueueCreateWithoutSlipsInput;
+export interface UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput;
+  create: UserCreateWithoutCommentsInput;
 }
 
-export interface QueueUpdateManyMutationInput {
-  title?: Maybe<String>;
+export interface SlipUpdateInput {
+  processed?: Maybe<ProcessedType>;
+  how_many_before?: Maybe<Int>;
+  queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
+  user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
 }
 
 export interface NodeNode {
@@ -1115,29 +1121,38 @@ export interface QueueNullablePromise
   }) => T;
 }
 
-export interface SlipSubscriptionPayload {
-  mutation: MutationType;
-  node: Slip;
-  updatedFields: String[];
-  previousValues: SlipPreviousValues;
+export interface Slip {
+  id: ID_Output;
+  processed: ProcessedType;
+  how_many_before: Int;
 }
 
-export interface SlipSubscriptionPayloadPromise
-  extends Promise<SlipSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = SlipPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = SlipPreviousValuesPromise>() => T;
+export interface SlipPromise extends Promise<Slip>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  processed: () => Promise<ProcessedType>;
+  how_many_before: () => Promise<Int>;
+  queue: <T = QueuePromise>() => T;
+  user: <T = UserPromise>() => T;
 }
 
-export interface SlipSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<SlipSubscriptionPayload>>,
+export interface SlipSubscription
+  extends Promise<AsyncIterator<Slip>>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = SlipSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = SlipPreviousValuesSubscription>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  processed: () => Promise<AsyncIterator<ProcessedType>>;
+  how_many_before: () => Promise<AsyncIterator<Int>>;
+  queue: <T = QueueSubscription>() => T;
+  user: <T = UserSubscription>() => T;
+}
+
+export interface SlipNullablePromise
+  extends Promise<Slip | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  processed: () => Promise<ProcessedType>;
+  how_many_before: () => Promise<Int>;
+  queue: <T = QueuePromise>() => T;
+  user: <T = UserPromise>() => T;
 }
 
 export interface AggregateComment {
@@ -1154,372 +1169,6 @@ export interface AggregateCommentSubscription
   extends Promise<AsyncIterator<AggregateComment>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface CommentEdge {
-  node: Comment;
-  cursor: String;
-}
-
-export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
-  node: <T = CommentPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface CommentEdgeSubscription
-  extends Promise<AsyncIterator<CommentEdge>>,
-    Fragmentable {
-  node: <T = CommentSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateUser {
-  count: Int;
-}
-
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateSlip {
-  count: Int;
-}
-
-export interface AggregateSlipPromise
-  extends Promise<AggregateSlip>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateSlipSubscription
-  extends Promise<AsyncIterator<AggregateSlip>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface CommentConnection {
-  pageInfo: PageInfo;
-  edges: CommentEdge[];
-}
-
-export interface CommentConnectionPromise
-  extends Promise<CommentConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<CommentEdge>>() => T;
-  aggregate: <T = AggregateCommentPromise>() => T;
-}
-
-export interface CommentConnectionSubscription
-  extends Promise<AsyncIterator<CommentConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateCommentSubscription>() => T;
-}
-
-export interface SlipPreviousValues {
-  id: ID_Output;
-  processed: Boolean;
-  how_many_before: Int;
-}
-
-export interface SlipPreviousValuesPromise
-  extends Promise<SlipPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  processed: () => Promise<Boolean>;
-  how_many_before: () => Promise<Int>;
-}
-
-export interface SlipPreviousValuesSubscription
-  extends Promise<AsyncIterator<SlipPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  processed: () => Promise<AsyncIterator<Boolean>>;
-  how_many_before: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Comment {
-  id: ID_Output;
-  title: String;
-  body: String;
-}
-
-export interface CommentPromise extends Promise<Comment>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  queue: <T = QueuePromise>() => T;
-  author: <T = UserPromise>() => T;
-}
-
-export interface CommentSubscription
-  extends Promise<AsyncIterator<Comment>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
-  queue: <T = QueueSubscription>() => T;
-  author: <T = UserSubscription>() => T;
-}
-
-export interface CommentNullablePromise
-  extends Promise<Comment | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  queue: <T = QueuePromise>() => T;
-  author: <T = UserPromise>() => T;
-}
-
-export interface SlipConnection {
-  pageInfo: PageInfo;
-  edges: SlipEdge[];
-}
-
-export interface SlipConnectionPromise
-  extends Promise<SlipConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SlipEdge>>() => T;
-  aggregate: <T = AggregateSlipPromise>() => T;
-}
-
-export interface SlipConnectionSubscription
-  extends Promise<AsyncIterator<SlipConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<SlipEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateSlipSubscription>() => T;
-}
-
-export interface CommentSubscriptionPayload {
-  mutation: MutationType;
-  node: Comment;
-  updatedFields: String[];
-  previousValues: CommentPreviousValues;
-}
-
-export interface CommentSubscriptionPayloadPromise
-  extends Promise<CommentSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = CommentPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = CommentPreviousValuesPromise>() => T;
-}
-
-export interface CommentSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<CommentSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = CommentSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = CommentPreviousValuesSubscription>() => T;
-}
-
-export interface QueueEdge {
-  node: Queue;
-  cursor: String;
-}
-
-export interface QueueEdgePromise extends Promise<QueueEdge>, Fragmentable {
-  node: <T = QueuePromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface QueueEdgeSubscription
-  extends Promise<AsyncIterator<QueueEdge>>,
-    Fragmentable {
-  node: <T = QueueSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface CommentPreviousValues {
-  id: ID_Output;
-  title: String;
-  body: String;
-}
-
-export interface CommentPreviousValuesPromise
-  extends Promise<CommentPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-}
-
-export interface CommentPreviousValuesSubscription
-  extends Promise<AsyncIterator<CommentPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface Slip {
-  id: ID_Output;
-  processed: Boolean;
-  how_many_before: Int;
-}
-
-export interface SlipPromise extends Promise<Slip>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  processed: () => Promise<Boolean>;
-  how_many_before: () => Promise<Int>;
-  queue: <T = QueuePromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface SlipSubscription
-  extends Promise<AsyncIterator<Slip>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  processed: () => Promise<AsyncIterator<Boolean>>;
-  how_many_before: () => Promise<AsyncIterator<Int>>;
-  queue: <T = QueueSubscription>() => T;
-  user: <T = UserSubscription>() => T;
-}
-
-export interface SlipNullablePromise
-  extends Promise<Slip | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  processed: () => Promise<Boolean>;
-  how_many_before: () => Promise<Int>;
-  queue: <T = QueuePromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface QueuePreviousValues {
-  id: ID_Output;
-  title: String;
-}
-
-export interface QueuePreviousValuesPromise
-  extends Promise<QueuePreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-}
-
-export interface QueuePreviousValuesSubscription
-  extends Promise<AsyncIterator<QueuePreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-}
-
-export interface QueueSubscriptionPayload {
-  mutation: MutationType;
-  node: Queue;
-  updatedFields: String[];
-  previousValues: QueuePreviousValues;
-}
-
-export interface QueueSubscriptionPayloadPromise
-  extends Promise<QueueSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = QueuePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = QueuePreviousValuesPromise>() => T;
-}
-
-export interface QueueSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<QueueSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = QueueSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = QueuePreviousValuesSubscription>() => T;
 }
 
 export interface User {
@@ -1608,20 +1257,255 @@ export interface UserNullablePromise
   }) => T;
 }
 
-export interface SlipEdge {
-  node: Slip;
+export interface CommentEdge {
+  node: Comment;
   cursor: String;
 }
 
-export interface SlipEdgePromise extends Promise<SlipEdge>, Fragmentable {
-  node: <T = SlipPromise>() => T;
+export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
+  node: <T = CommentPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface SlipEdgeSubscription
-  extends Promise<AsyncIterator<SlipEdge>>,
+export interface CommentEdgeSubscription
+  extends Promise<AsyncIterator<CommentEdge>>,
     Fragmentable {
+  node: <T = CommentSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface Comment {
+  id: ID_Output;
+  title: String;
+  body: String;
+}
+
+export interface CommentPromise extends Promise<Comment>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  queue: <T = QueuePromise>() => T;
+  author: <T = UserPromise>() => T;
+}
+
+export interface CommentSubscription
+  extends Promise<AsyncIterator<Comment>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+  queue: <T = QueueSubscription>() => T;
+  author: <T = UserSubscription>() => T;
+}
+
+export interface CommentNullablePromise
+  extends Promise<Comment | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  queue: <T = QueuePromise>() => T;
+  author: <T = UserPromise>() => T;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface SlipSubscriptionPayload {
+  mutation: MutationType;
+  node: Slip;
+  updatedFields: String[];
+  previousValues: SlipPreviousValues;
+}
+
+export interface SlipSubscriptionPayloadPromise
+  extends Promise<SlipSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = SlipPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = SlipPreviousValuesPromise>() => T;
+}
+
+export interface SlipSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<SlipSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
   node: <T = SlipSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = SlipPreviousValuesSubscription>() => T;
+}
+
+export interface CommentConnection {
+  pageInfo: PageInfo;
+  edges: CommentEdge[];
+}
+
+export interface CommentConnectionPromise
+  extends Promise<CommentConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CommentEdge>>() => T;
+  aggregate: <T = AggregateCommentPromise>() => T;
+}
+
+export interface CommentConnectionSubscription
+  extends Promise<AsyncIterator<CommentConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCommentSubscription>() => T;
+}
+
+export interface CommentSubscriptionPayload {
+  mutation: MutationType;
+  node: Comment;
+  updatedFields: String[];
+  previousValues: CommentPreviousValues;
+}
+
+export interface CommentSubscriptionPayloadPromise
+  extends Promise<CommentSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CommentPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CommentPreviousValuesPromise>() => T;
+}
+
+export interface CommentSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CommentSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CommentSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CommentPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateSlip {
+  count: Int;
+}
+
+export interface AggregateSlipPromise
+  extends Promise<AggregateSlip>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateSlipSubscription
+  extends Promise<AsyncIterator<AggregateSlip>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface SlipConnection {
+  pageInfo: PageInfo;
+  edges: SlipEdge[];
+}
+
+export interface SlipConnectionPromise
+  extends Promise<SlipConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SlipEdge>>() => T;
+  aggregate: <T = AggregateSlipPromise>() => T;
+}
+
+export interface SlipConnectionSubscription
+  extends Promise<AsyncIterator<SlipConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SlipEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSlipSubscription>() => T;
+}
+
+export interface CommentPreviousValues {
+  id: ID_Output;
+  title: String;
+  body: String;
+}
+
+export interface CommentPreviousValuesPromise
+  extends Promise<CommentPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface CommentPreviousValuesSubscription
+  extends Promise<AsyncIterator<CommentPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+}
+
+export interface QueueEdge {
+  node: Queue;
+  cursor: String;
+}
+
+export interface QueueEdgePromise extends Promise<QueueEdge>, Fragmentable {
+  node: <T = QueuePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface QueueEdgeSubscription
+  extends Promise<AsyncIterator<QueueEdge>>,
+    Fragmentable {
+  node: <T = QueueSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
@@ -1648,6 +1532,111 @@ export interface UserSubscriptionPayloadSubscription
   node: <T = UserSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
   previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface QueuePreviousValues {
+  id: ID_Output;
+  title: String;
+}
+
+export interface QueuePreviousValuesPromise
+  extends Promise<QueuePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+}
+
+export interface QueuePreviousValuesSubscription
+  extends Promise<AsyncIterator<QueuePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+}
+
+export interface QueueSubscriptionPayload {
+  mutation: MutationType;
+  node: Queue;
+  updatedFields: String[];
+  previousValues: QueuePreviousValues;
+}
+
+export interface QueueSubscriptionPayloadPromise
+  extends Promise<QueueSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = QueuePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = QueuePreviousValuesPromise>() => T;
+}
+
+export interface QueueSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<QueueSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = QueueSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = QueuePreviousValuesSubscription>() => T;
+}
+
+export interface SlipPreviousValues {
+  id: ID_Output;
+  processed: ProcessedType;
+  how_many_before: Int;
+}
+
+export interface SlipPreviousValuesPromise
+  extends Promise<SlipPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  processed: () => Promise<ProcessedType>;
+  how_many_before: () => Promise<Int>;
+}
+
+export interface SlipPreviousValuesSubscription
+  extends Promise<AsyncIterator<SlipPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  processed: () => Promise<AsyncIterator<ProcessedType>>;
+  how_many_before: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateUser {
+  count: Int;
+}
+
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface QueueConnection {
@@ -1687,10 +1676,22 @@ export interface AggregateQueueSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
-*/
-export type Int = number;
+export interface SlipEdge {
+  node: Slip;
+  cursor: String;
+}
+
+export interface SlipEdgePromise extends Promise<SlipEdge>, Fragmentable {
+  node: <T = SlipPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SlipEdgeSubscription
+  extends Promise<AsyncIterator<SlipEdge>>,
+    Fragmentable {
+  node: <T = SlipSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
 
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
@@ -1704,11 +1705,16 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+*/
+export type Int = number;
+
+export type Long = string;
+
+/*
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
-
-export type Long = string;
 
 /**
  * Model Metadata
@@ -1729,6 +1735,10 @@ export const models: Model[] = [
   },
   {
     name: "Comment",
+    embedded: false
+  },
+  {
+    name: "ProcessedType",
     embedded: false
   }
 ];
