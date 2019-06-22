@@ -41,16 +41,23 @@ const Mutation = {
     }
   },
 
-  async updateUser(parent, { id, data }, { prisma }, info) {
-    return prisma.bindings.mutation.updateUser({ where: { id }, data }, info)
+  async updateUser(parent, { data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+
+    return prisma.bindings.mutation.updateUser(
+      { where: { id: userId }, data },
+      info
+    )
   },
 
-  async deleteUser(parent, args, { prisma }, info) {
-    const userExists = await prisma.client.$exists.user({ id: args.id })
+  async deleteUser(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request)
+
+    const userExists = await prisma.client.$exists.user({ id: userId })
 
     if (!userExists) throw new Error("User not found")
 
-    return prisma.bindings.mutation.deleteUser({ where: { id: args.id } }, info)
+    return prisma.bindings.mutation.deleteUser({ where: { id: userId } }, info)
   },
 
   createQueue(parent, { data }, { prisma, request }, info) {

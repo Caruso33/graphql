@@ -10,8 +10,8 @@ type Mutation {
   login(data: LoginUserInput!): AuthPayload!
 
   createUser(data: CreateUserInput!): AuthPayload!
-  updateUser(id: ID!, data: UpdateUserInput!): User!
-  deleteUser(id: ID!): User!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser: User!
 
   createQueue(data: CreateQueueInput!): Queue!
   updateQueue(id: ID!, data: UpdateQueueInput!): Queue!
