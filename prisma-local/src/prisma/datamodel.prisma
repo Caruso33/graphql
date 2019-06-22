@@ -17,7 +17,6 @@ type Queue {
 type Slip {
   id: ID! @id
   processed: ProcessedType!
-  how_many_before: Int!
   queue: Queue! @relation(name: "SlipToQueue", onDelete: SET_NULL)
   user: User! @relation(name: "SlipToUser", onDelete: SET_NULL)
 }

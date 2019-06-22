@@ -526,7 +526,6 @@ input QueueWhereUniqueInput {
 type Slip {
   id: ID!
   processed: ProcessedType!
-  how_many_before: Int!
   queue: Queue!
   user: User!
 }
@@ -540,7 +539,6 @@ type SlipConnection {
 input SlipCreateInput {
   id: ID
   processed: ProcessedType!
-  how_many_before: Int!
   queue: QueueCreateOneWithoutSlipsInput!
   user: UserCreateOneWithoutSlipsInput!
 }
@@ -558,14 +556,12 @@ input SlipCreateManyWithoutUserInput {
 input SlipCreateWithoutQueueInput {
   id: ID
   processed: ProcessedType!
-  how_many_before: Int!
   user: UserCreateOneWithoutSlipsInput!
 }
 
 input SlipCreateWithoutUserInput {
   id: ID
   processed: ProcessedType!
-  how_many_before: Int!
   queue: QueueCreateOneWithoutSlipsInput!
 }
 
@@ -579,14 +575,11 @@ enum SlipOrderByInput {
   id_DESC
   processed_ASC
   processed_DESC
-  how_many_before_ASC
-  how_many_before_DESC
 }
 
 type SlipPreviousValues {
   id: ID!
   processed: ProcessedType!
-  how_many_before: Int!
 }
 
 input SlipScalarWhereInput {
@@ -608,14 +601,6 @@ input SlipScalarWhereInput {
   processed_not: ProcessedType
   processed_in: [ProcessedType!]
   processed_not_in: [ProcessedType!]
-  how_many_before: Int
-  how_many_before_not: Int
-  how_many_before_in: [Int!]
-  how_many_before_not_in: [Int!]
-  how_many_before_lt: Int
-  how_many_before_lte: Int
-  how_many_before_gt: Int
-  how_many_before_gte: Int
   AND: [SlipScalarWhereInput!]
   OR: [SlipScalarWhereInput!]
   NOT: [SlipScalarWhereInput!]
@@ -641,19 +626,16 @@ input SlipSubscriptionWhereInput {
 
 input SlipUpdateInput {
   processed: ProcessedType
-  how_many_before: Int
   queue: QueueUpdateOneRequiredWithoutSlipsInput
   user: UserUpdateOneRequiredWithoutSlipsInput
 }
 
 input SlipUpdateManyDataInput {
   processed: ProcessedType
-  how_many_before: Int
 }
 
 input SlipUpdateManyMutationInput {
   processed: ProcessedType
-  how_many_before: Int
 }
 
 input SlipUpdateManyWithoutQueueInput {
@@ -687,13 +669,11 @@ input SlipUpdateManyWithWhereNestedInput {
 
 input SlipUpdateWithoutQueueDataInput {
   processed: ProcessedType
-  how_many_before: Int
   user: UserUpdateOneRequiredWithoutSlipsInput
 }
 
 input SlipUpdateWithoutUserDataInput {
   processed: ProcessedType
-  how_many_before: Int
   queue: QueueUpdateOneRequiredWithoutSlipsInput
 }
 
@@ -738,14 +718,6 @@ input SlipWhereInput {
   processed_not: ProcessedType
   processed_in: [ProcessedType!]
   processed_not_in: [ProcessedType!]
-  how_many_before: Int
-  how_many_before_not: Int
-  how_many_before_in: [Int!]
-  how_many_before_not_in: [Int!]
-  how_many_before_lt: Int
-  how_many_before_lte: Int
-  how_many_before_gt: Int
-  how_many_before_gte: Int
   queue: QueueWhereInput
   user: UserWhereInput
   AND: [SlipWhereInput!]

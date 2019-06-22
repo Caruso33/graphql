@@ -222,9 +222,7 @@ export type SlipOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "processed_ASC"
-  | "processed_DESC"
-  | "how_many_before_ASC"
-  | "how_many_before_DESC";
+  | "processed_DESC";
 
 export type ProcessedType = "WAITING" | "PROCESSED" | "CANCELLED";
 
@@ -286,6 +284,61 @@ export interface CommentUpdateManyWithoutAuthorInput {
   >;
 }
 
+export interface CommentWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  queue?: Maybe<QueueWhereInput>;
+  author?: Maybe<UserWhereInput>;
+  AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+  OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+  NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutAuthorDataInput;
+}
+
 export interface QueueWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -326,83 +379,9 @@ export interface QueueWhereInput {
   NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
 }
 
-export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutAuthorDataInput;
-}
-
-export interface UserWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  comments_every?: Maybe<CommentWhereInput>;
-  comments_some?: Maybe<CommentWhereInput>;
-  comments_none?: Maybe<CommentWhereInput>;
-  slips_every?: Maybe<SlipWhereInput>;
-  slips_some?: Maybe<SlipWhereInput>;
-  slips_none?: Maybe<SlipWhereInput>;
-  AND?: Maybe<UserWhereInput[] | UserWhereInput>;
-  OR?: Maybe<UserWhereInput[] | UserWhereInput>;
-  NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
-}
-
 export interface SlipCreateWithoutUserInput {
   id?: Maybe<ID_Input>;
   processed: ProcessedType;
-  how_many_before: Int;
   queue: QueueCreateOneWithoutSlipsInput;
 }
 
@@ -494,7 +473,6 @@ export interface QueueUpdateOneRequiredWithoutCommentsInput {
 
 export interface SlipUpdateManyMutationInput {
   processed?: Maybe<ProcessedType>;
-  how_many_before?: Maybe<Int>;
 }
 
 export interface QueueUpdateWithoutCommentsDataInput {
@@ -542,7 +520,6 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface SlipUpdateWithoutQueueDataInput {
   processed?: Maybe<ProcessedType>;
-  how_many_before?: Maybe<Int>;
   user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
 }
 
@@ -579,7 +556,7 @@ export interface CommentCreateInput {
   author: UserCreateOneWithoutCommentsInput;
 }
 
-export interface CommentWhereInput {
+export interface UserWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -594,39 +571,57 @@ export interface CommentWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  body?: Maybe<String>;
-  body_not?: Maybe<String>;
-  body_in?: Maybe<String[] | String>;
-  body_not_in?: Maybe<String[] | String>;
-  body_lt?: Maybe<String>;
-  body_lte?: Maybe<String>;
-  body_gt?: Maybe<String>;
-  body_gte?: Maybe<String>;
-  body_contains?: Maybe<String>;
-  body_not_contains?: Maybe<String>;
-  body_starts_with?: Maybe<String>;
-  body_not_starts_with?: Maybe<String>;
-  body_ends_with?: Maybe<String>;
-  body_not_ends_with?: Maybe<String>;
-  queue?: Maybe<QueueWhereInput>;
-  author?: Maybe<UserWhereInput>;
-  AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
-  OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
-  NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  comments_every?: Maybe<CommentWhereInput>;
+  comments_some?: Maybe<CommentWhereInput>;
+  comments_none?: Maybe<CommentWhereInput>;
+  slips_every?: Maybe<SlipWhereInput>;
+  slips_some?: Maybe<SlipWhereInput>;
+  slips_none?: Maybe<SlipWhereInput>;
+  AND?: Maybe<UserWhereInput[] | UserWhereInput>;
+  OR?: Maybe<UserWhereInput[] | UserWhereInput>;
+  NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
 export interface QueueCreateWithoutCommentsInput {
@@ -644,7 +639,6 @@ export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
 export interface SlipCreateWithoutQueueInput {
   id?: Maybe<ID_Input>;
   processed: ProcessedType;
-  how_many_before: Int;
   user: UserCreateOneWithoutSlipsInput;
 }
 
@@ -755,14 +749,6 @@ export interface SlipWhereInput {
   processed_not?: Maybe<ProcessedType>;
   processed_in?: Maybe<ProcessedType[] | ProcessedType>;
   processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
-  how_many_before?: Maybe<Int>;
-  how_many_before_not?: Maybe<Int>;
-  how_many_before_in?: Maybe<Int[] | Int>;
-  how_many_before_not_in?: Maybe<Int[] | Int>;
-  how_many_before_lt?: Maybe<Int>;
-  how_many_before_lte?: Maybe<Int>;
-  how_many_before_gt?: Maybe<Int>;
-  how_many_before_gte?: Maybe<Int>;
   queue?: Maybe<QueueWhereInput>;
   user?: Maybe<UserWhereInput>;
   AND?: Maybe<SlipWhereInput[] | SlipWhereInput>;
@@ -809,7 +795,6 @@ export interface SlipUpsertWithWhereUniqueWithoutQueueInput {
 export interface SlipCreateInput {
   id?: Maybe<ID_Input>;
   processed: ProcessedType;
-  how_many_before: Int;
   queue: QueueCreateOneWithoutSlipsInput;
   user: UserCreateOneWithoutSlipsInput;
 }
@@ -833,14 +818,6 @@ export interface SlipScalarWhereInput {
   processed_not?: Maybe<ProcessedType>;
   processed_in?: Maybe<ProcessedType[] | ProcessedType>;
   processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
-  how_many_before?: Maybe<Int>;
-  how_many_before_not?: Maybe<Int>;
-  how_many_before_in?: Maybe<Int[] | Int>;
-  how_many_before_not_in?: Maybe<Int[] | Int>;
-  how_many_before_lt?: Maybe<Int>;
-  how_many_before_lte?: Maybe<Int>;
-  how_many_before_gt?: Maybe<Int>;
-  how_many_before_gte?: Maybe<Int>;
   AND?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
   OR?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
   NOT?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
@@ -865,7 +842,6 @@ export interface SlipCreateManyWithoutQueueInput {
 
 export interface SlipUpdateManyDataInput {
   processed?: Maybe<ProcessedType>;
-  how_many_before?: Maybe<Int>;
 }
 
 export interface CommentCreateManyWithoutAuthorInput {
@@ -982,7 +958,6 @@ export interface QueueUpdateOneRequiredWithoutSlipsInput {
 
 export interface SlipUpdateWithoutUserDataInput {
   processed?: Maybe<ProcessedType>;
-  how_many_before?: Maybe<Int>;
   queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
 }
 
@@ -1009,7 +984,6 @@ export interface UserUpsertWithoutCommentsInput {
 
 export interface SlipUpdateInput {
   processed?: Maybe<ProcessedType>;
-  how_many_before?: Maybe<Int>;
   queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
 }
@@ -1124,13 +1098,11 @@ export interface QueueNullablePromise
 export interface Slip {
   id: ID_Output;
   processed: ProcessedType;
-  how_many_before: Int;
 }
 
 export interface SlipPromise extends Promise<Slip>, Fragmentable {
   id: () => Promise<ID_Output>;
   processed: () => Promise<ProcessedType>;
-  how_many_before: () => Promise<Int>;
   queue: <T = QueuePromise>() => T;
   user: <T = UserPromise>() => T;
 }
@@ -1140,7 +1112,6 @@ export interface SlipSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   processed: () => Promise<AsyncIterator<ProcessedType>>;
-  how_many_before: () => Promise<AsyncIterator<Int>>;
   queue: <T = QueueSubscription>() => T;
   user: <T = UserSubscription>() => T;
 }
@@ -1150,7 +1121,6 @@ export interface SlipNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   processed: () => Promise<ProcessedType>;
-  how_many_before: () => Promise<Int>;
   queue: <T = QueuePromise>() => T;
   user: <T = UserPromise>() => T;
 }
@@ -1604,7 +1574,6 @@ export interface QueueSubscriptionPayloadSubscription
 export interface SlipPreviousValues {
   id: ID_Output;
   processed: ProcessedType;
-  how_many_before: Int;
 }
 
 export interface SlipPreviousValuesPromise
@@ -1612,7 +1581,6 @@ export interface SlipPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   processed: () => Promise<ProcessedType>;
-  how_many_before: () => Promise<Int>;
 }
 
 export interface SlipPreviousValuesSubscription
@@ -1620,7 +1588,6 @@ export interface SlipPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   processed: () => Promise<AsyncIterator<ProcessedType>>;
-  how_many_before: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface AggregateUser {

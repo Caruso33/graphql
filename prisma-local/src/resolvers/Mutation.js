@@ -87,8 +87,7 @@ const Mutation = {
     return prisma.bindings.mutation.createSlip(
       {
         data: {
-          processed: false,
-          how_many_before: 0,
+          processed: "WAITING",
           queue: { connect: { id: data.queue } },
           user: { connect: { id: userId } }
         }
