@@ -120,15 +120,27 @@ const Mutation = {
     )
   },
 
-  async updateComment(parent, { id, data }, { prisma }, info) {
-    const commentExists = await prisma.client.$exists.comment({ id })
+  async updateComment(parent, { id, data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+    const commentExists = await prisma.client.$exists.comment({
+      id,
+      author: { id: userId }
+    })
 
     if (!commentExists) throw new Error("Comment not found")
 
     return prisma.bindings.mutation.updateComment({ where: { id }, data }, info)
   },
 
-  deleteComment(parent, { id }, { prisma }, info) {
+  async deleteComment(parent, { id }, { prisma, request }, info) {
+    const userId = getUserId(request)
+    const commentExists = await prisma.bindings.exists.Comment({
+      id,
+      author: { id: userId }
+    })
+
+    if (!commentExists) throw new Error("Comment not found")
+
     return prisma.bindings.mutation.deleteComment({ where: { id } }, info)
   }
 }
