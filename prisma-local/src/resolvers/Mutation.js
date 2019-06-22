@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import getUserId from "../utils/getUserId"
 
 const Mutation = {
   async login(parent, { data }, { prisma }, info) {
@@ -52,7 +53,9 @@ const Mutation = {
     return prisma.bindings.mutation.deleteUser({ where: { id: args.id } }, info)
   },
 
-  createQueue(parent, { data }, { prisma }, info) {
+  createQueue(parent, { data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+
     return prisma.bindings.mutation.createQueue({ data }, info)
   },
 
@@ -94,14 +97,16 @@ const Mutation = {
     return prisma.bindings.mutation.deleteSlip({ where: { id } }, info)
   },
 
-  createComment(parent, { data }, { prisma }, info) {
+  createComment(parent, { data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+
     return prisma.bindings.mutation.createComment(
       {
         data: {
           title: data.title,
           body: data.body,
           queue: { connect: { id: data.queue } },
-          author: { connect: { id: data.author } }
+          author: { connect: { id: userId } }
         }
       },
       info

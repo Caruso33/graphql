@@ -5,8 +5,8 @@ import { resolvers } from "./resolvers"
 const server = new GraphQLServer({
   typeDefs: "./src/schema/schema.graphql",
   resolvers,
-  context: ({ req }) => ({
-    request: req,
+  context: request => ({
+    request,
     prisma
   }),
   playground: process.env.NODE_ENV === "development",

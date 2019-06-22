@@ -1,6 +1,6 @@
 endpoint: ${env:PRISMA_ENDPOINT}
 datamodel:
-  - ./src/db/datamodel.prisma
+  - ./src/prisma/datamodel.prisma
 
 secret: ${env:PRISMA_SECRET}
 generate:

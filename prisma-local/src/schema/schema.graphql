@@ -79,7 +79,6 @@ input CreateCommentInput {
   title: String!
   body: String!
   queue: ID!
-  author: ID!
 }
 
 input UpdateCommentInput {
