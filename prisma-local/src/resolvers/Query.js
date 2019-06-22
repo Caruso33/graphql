@@ -1,35 +1,38 @@
+import getUserId from "../utils/getUserId"
+
 const Query = {
   users(parent, args, { prisma }, info) {
-    const opArgs = {};
+    const opArgs = {}
 
     if (args.query)
       opArgs.where = {
         OR: [{ name_contains: args.query }, { email_contains: args.query }]
-      };
-    return prisma.bindings.query.users(opArgs, info);
-
-    // if (!args.query) return db.users;
-    // return db.users.filter(u => u.name.toLowerCase().includes(args.name));
+      }
+    return prisma.bindings.query.users(opArgs, info)
   },
   queues(parent, args, { prisma }, info) {
-    const opArgs = {};
-    if (args.query) opArgs.where = { title_contains: args.query };
+    const opArgs = {}
+    if (args.query) opArgs.where = { title_contains: args.query }
 
-    return prisma.bindings.query.queues(opArgs, info);
+    return prisma.bindings.query.queues(opArgs, info)
   },
 
-  slips(parent, args, { prisma }, info) {
-    const opArgs = {};
-    if (args.query) opArgs.where = { title_contains: args.query };
+  slips(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request)
 
-    return prisma.bindings.query.slips(opArgs, info);
+    const opArgs = { where: { user: { id: userId } } }
+    if (args.query) opArgs.where = { title_contains: args.query }
+
+    return prisma.bindings.query.slips(opArgs, info)
   },
 
-  comments(p, args, { prisma }, info) {
-    const opArgs = {};
-    if (args.query) opArgs.where = { title_contains: args.query };
+  comments(parent, args, { prisma, request }, info) {
+    getUserId(request)
+    // TODO: show only comments for queues I am in
+    const opArgs = {}
+    if (args.query) opArgs.where = { title_contains: args.query }
 
-    return prisma.bindings.query.comments(opArgs, info);
+    return prisma.bindings.query.comments(opArgs, info)
   },
 
   me() {
@@ -37,8 +40,8 @@ const Query = {
       id: "123-456",
       name: "Tobsn",
       email: "caruso33@web.de"
-    };
+    }
   }
-};
+}
 
-export default Query;
+export default Query

@@ -81,29 +81,46 @@ const Mutation = {
     return prisma.bindings.mutation.deleteQueue({ where: { id } }, info)
   },
 
-  async createSlip(parent, { data }, { prisma }, info) {
+  createSlip(parent, { data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+
     return prisma.bindings.mutation.createSlip(
       {
         data: {
           processed: false,
           how_many_before: 0,
           queue: { connect: { id: data.queue } },
-          user: { connect: { id: data.user } }
+          user: { connect: { id: userId } }
         }
       },
       info
     )
   },
 
-  async updateSlip(parent, { id, data }, { prisma }, info) {
-    const slipExists = await prisma.client.$exists.slip({ id })
+  async updateSlip(parent, { id, data }, { prisma, request }, info) {
+    const userId = getUserId(request)
+    const slipExists = await prisma.client.$exists.slip({
+      id,
+      user: { id: userId }
+    })
 
     if (!slipExists) throw new Error("Slip not found")
 
-    return prisma.bindings.mutation.updateSlip({ where: { id }, data }, info)
+    return prisma.bindings.mutation.updateSlip(
+      { where: { id }, data: { queue: { connect: { id: data.queue } } } },
+      info
+    )
   },
 
-  deleteSlip(parent, { id }, { prisma }, info) {
+  async deleteSlip(parent, { id }, { prisma, request }, info) {
+    const userId = getUserId(request)
+    const slipExists = await prisma.client.$exists.slip({
+      id,
+      user: { id: userId }
+    })
+
+    if (!slipExists) throw new Error("Slip not found")
+
     return prisma.bindings.mutation.deleteSlip({ where: { id } }, info)
   },
 

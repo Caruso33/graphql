@@ -66,12 +66,10 @@ input UpdateQueueInput {
 }
 
 input CreateSlipInput {
-  user: ID!
   queue: ID!
 }
 
 input UpdateSlipInput {
-  user: ID
   queue: ID
 }
 
