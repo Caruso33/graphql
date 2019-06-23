@@ -3,7 +3,12 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateComment {
+/* GraphQL */ `enum ActiveType {
+  ACTIVE
+  DEACTIVE
+}
+
+type AggregateComment {
   count: Int!
 }
 
@@ -362,6 +367,7 @@ type Queue {
   title: String!
   slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  active: ActiveType!
 }
 
 type QueueConnection {
@@ -375,6 +381,7 @@ input QueueCreateInput {
   title: String!
   slips: SlipCreateManyWithoutQueueInput
   comments: CommentCreateManyWithoutQueueInput
+  active: ActiveType!
 }
 
 input QueueCreateOneWithoutCommentsInput {
@@ -391,12 +398,14 @@ input QueueCreateWithoutCommentsInput {
   id: ID
   title: String!
   slips: SlipCreateManyWithoutQueueInput
+  active: ActiveType!
 }
 
 input QueueCreateWithoutSlipsInput {
   id: ID
   title: String!
   comments: CommentCreateManyWithoutQueueInput
+  active: ActiveType!
 }
 
 type QueueEdge {
@@ -409,11 +418,14 @@ enum QueueOrderByInput {
   id_DESC
   title_ASC
   title_DESC
+  active_ASC
+  active_DESC
 }
 
 type QueuePreviousValues {
   id: ID!
   title: String!
+  active: ActiveType!
 }
 
 type QueueSubscriptionPayload {
@@ -438,10 +450,12 @@ input QueueUpdateInput {
   title: String
   slips: SlipUpdateManyWithoutQueueInput
   comments: CommentUpdateManyWithoutQueueInput
+  active: ActiveType
 }
 
 input QueueUpdateManyMutationInput {
   title: String
+  active: ActiveType
 }
 
 input QueueUpdateOneRequiredWithoutCommentsInput {
@@ -461,11 +475,13 @@ input QueueUpdateOneRequiredWithoutSlipsInput {
 input QueueUpdateWithoutCommentsDataInput {
   title: String
   slips: SlipUpdateManyWithoutQueueInput
+  active: ActiveType
 }
 
 input QueueUpdateWithoutSlipsDataInput {
   title: String
   comments: CommentUpdateManyWithoutQueueInput
+  active: ActiveType
 }
 
 input QueueUpsertWithoutCommentsInput {
@@ -513,6 +529,10 @@ input QueueWhereInput {
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
+  active: ActiveType
+  active_not: ActiveType
+  active_in: [ActiveType!]
+  active_not_in: [ActiveType!]
   AND: [QueueWhereInput!]
   OR: [QueueWhereInput!]
   NOT: [QueueWhereInput!]

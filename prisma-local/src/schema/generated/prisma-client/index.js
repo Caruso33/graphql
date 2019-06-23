@@ -21,6 +21,10 @@ var models = [
     embedded: false
   },
   {
+    name: "ActiveType",
+    embedded: false
+  },
+  {
     name: "ProcessedType",
     embedded: false
   }

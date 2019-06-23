@@ -1,3 +1,5 @@
+import getUserId from "../utils/getUserId"
+
 const Subscription = {
   comment: {
     subscribe(parent, { queueId }, { prisma }, info) {
@@ -8,19 +10,20 @@ const Subscription = {
           }
         },
         info
-      );
+      )
     }
   },
-  queue: {
-    subscribe(parent, {}, { prisma }, info) {
-      return prisma.bindings.subscription.queue(null, info);
-    }
-  },
+
   slip: {
-    subscribe(parent, {}, { prisma }, info) {
-      return prisma.bindings.subscription.slip(null, info);
+    subscribe(parent, { queueId }, { prisma, request }, info) {
+      getUserId(request)
+
+      return prisma.bindings.subscription.slip(
+        { where: { node: { queue: { id: queueId } } } },
+        info
+      )
     }
   }
-};
+}
 
-export default Subscription;
+export default Subscription

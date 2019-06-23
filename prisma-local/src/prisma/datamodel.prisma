@@ -12,6 +12,7 @@ type Queue {
   title: String! @unique
   slips: [Slip!]! @relation(name: "SlipToQueue", onDelete: CASCADE)
   comments: [Comment!]! @relation(name: "CommentToQueue", onDelete: CASCADE)
+  active: ActiveType!
 }
 
 type Slip {
@@ -27,6 +28,11 @@ type Comment {
   body: String!
   queue: Queue! @relation(name: "CommentToQueue", onDelete: SET_NULL)
   author: User!  @relation(name: "CommentToUser", onDelete: SET_NULL)
+}
+
+enum ActiveType {
+  ACTIVE
+  DEACTIVE
 }
 
 enum ProcessedType {
