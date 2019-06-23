@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt"
 import getUserId from "../utils/getUserId"
 import createAuthToken from "../utils/createAuthToken"
+import hashPassword from "../utils/hashPassword"
 
 const Mutation = {
   async login(parent, { data }, { prisma }, info) {
@@ -23,13 +24,7 @@ const Mutation = {
     })
     if (emailTaken) throw new Error("Email taken.")
 
-    if (data.password.length < 8)
-      throw Error("Password does not satisfy requirements")
-
-    const password = await bcrypt.hash(
-      data.password,
-      Number(process.env.BCRYPT_SALT_ROUNDS)
-    )
+    const password = await hashPassword(data.password)
 
     const user = await prisma.bindings.mutation.createUser({
       data: { ...data, password }
@@ -43,6 +38,9 @@ const Mutation = {
 
   async updateUser(parent, { data }, { prisma, request }, info) {
     const userId = getUserId(request)
+
+    if (typeof data.password === "string")
+      data.password = await hashPassword(data.password)
 
     return prisma.bindings.mutation.updateUser(
       { where: { id: userId }, data },
