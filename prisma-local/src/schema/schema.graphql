@@ -89,8 +89,8 @@ input UpdateCommentInput {
 type User {
   id: ID!
   name: String!
-  email: String!
-  password: String!
+  email: String
+  password: String
   comments: [Comment!]!
   slips: [Slip!]!
 }
