@@ -14,6 +14,17 @@ const Subscription = {
     }
   },
 
+  queue: {
+    subscribe(parent, { id }, { prisma, request }, info) {
+      getUserId(request)
+
+      return prisma.bindings.subscription.queue(
+        { where: { node: { id } } },
+        info
+      )
+    }
+  },
+
   slip: {
     subscribe(parent, { queueId }, { prisma, request }, info) {
       getUserId(request)

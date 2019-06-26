@@ -27,6 +27,7 @@ type Mutation {
 }
 
 type Subscription {
+  queue(id: ID!): QueueSubscriptionPayload!
   comment(queueId: ID!): CommentSubscriptionPayload!
   slip(queueId: ID!): SlipSubscriptionPayload!
 }
@@ -135,6 +136,11 @@ enum MutationType {
   CREATED
   UPDATED
   DELETED
+}
+
+type QueueSubscriptionPayload {
+  mutation: MutationType!
+  node: Queue
 }
 
 type SlipSubscriptionPayload {
