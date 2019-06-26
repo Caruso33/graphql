@@ -95,6 +95,8 @@ type User {
   password: String
   comments: [Comment!]!
   slips: [Slip!]!
+  createdAt: String!
+  updateAt: String!
 }
 
 type Queue {
@@ -103,6 +105,8 @@ type Queue {
   slips: [Slip!]!
   comments: [Comment!]!
   status: StatusType!
+  createdAt: String!
+  updateAt: String!
 }
 
 enum StatusType {
@@ -122,6 +126,8 @@ type Slip {
   position: Int!
   queue: Queue!
   user: User!
+  createdAt: String!
+  updateAt: String!
 }
 
 type Comment {
@@ -130,6 +136,8 @@ type Comment {
   body: String!
   queue: Queue!
   author: User!
+  createdAt: String!
+  updateAt: String!
 }
 
 enum MutationType {

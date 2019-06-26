@@ -224,7 +224,11 @@ export type SlipOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "processed_ASC"
-  | "processed_DESC";
+  | "processed_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updateAt_ASC"
+  | "updateAt_DESC";
 
 export type ProcessedType = "WAITING" | "PROCESSED" | "CANCELLED";
 
@@ -234,7 +238,11 @@ export type CommentOrderByInput =
   | "title_ASC"
   | "title_DESC"
   | "body_ASC"
-  | "body_DESC";
+  | "body_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updateAt_ASC"
+  | "updateAt_DESC";
 
 export type QueueOrderByInput =
   | "id_ASC"
@@ -242,7 +250,11 @@ export type QueueOrderByInput =
   | "title_ASC"
   | "title_DESC"
   | "status_ASC"
-  | "status_DESC";
+  | "status_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updateAt_ASC"
+  | "updateAt_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -252,7 +264,11 @@ export type UserOrderByInput =
   | "email_ASC"
   | "email_DESC"
   | "password_ASC"
-  | "password_DESC";
+  | "password_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updateAt_ASC"
+  | "updateAt_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -280,27 +296,12 @@ export type CommentWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface CommentUpdateManyWithoutAuthorInput {
-  create?: Maybe<
-    CommentCreateWithoutAuthorInput[] | CommentCreateWithoutAuthorInput
-  >;
-  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  update?: Maybe<
-    | CommentUpdateWithWhereUniqueWithoutAuthorInput[]
-    | CommentUpdateWithWhereUniqueWithoutAuthorInput
-  >;
-  upsert?: Maybe<
-    | CommentUpsertWithWhereUniqueWithoutAuthorInput[]
-    | CommentUpsertWithWhereUniqueWithoutAuthorInput
-  >;
-  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
-  updateMany?: Maybe<
-    | CommentUpdateManyWithWhereNestedInput[]
-    | CommentUpdateManyWithWhereNestedInput
-  >;
+export interface UserUpdateWithoutSlipsDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
 export interface UserWhereInput {
@@ -366,223 +367,48 @@ export interface UserWhereInput {
   slips_every?: Maybe<SlipWhereInput>;
   slips_some?: Maybe<SlipWhereInput>;
   slips_none?: Maybe<SlipWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutAuthorDataInput;
-}
-
-export interface QueueWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  slips_every?: Maybe<SlipWhereInput>;
-  slips_some?: Maybe<SlipWhereInput>;
-  slips_none?: Maybe<SlipWhereInput>;
-  comments_every?: Maybe<CommentWhereInput>;
-  comments_some?: Maybe<CommentWhereInput>;
-  comments_none?: Maybe<CommentWhereInput>;
-  status?: Maybe<StatusType>;
-  status_not?: Maybe<StatusType>;
-  status_in?: Maybe<StatusType[] | StatusType>;
-  status_not_in?: Maybe<StatusType[] | StatusType>;
-  AND?: Maybe<QueueWhereInput[] | QueueWhereInput>;
-  OR?: Maybe<QueueWhereInput[] | QueueWhereInput>;
-  NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
-}
-
-export interface SlipCreateWithoutUserInput {
-  id?: Maybe<ID_Input>;
-  processed: ProcessedType;
-  queue: QueueCreateOneWithoutSlipsInput;
-}
-
-export interface CommentUpdateWithWhereUniqueWithoutQueueInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutQueueDataInput;
-}
-
-export interface QueueCreateOneWithoutSlipsInput {
-  create?: Maybe<QueueCreateWithoutSlipsInput>;
-  connect?: Maybe<QueueWhereUniqueInput>;
-}
-
-export interface CommentUpdateWithoutAuthorDataInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
-}
-
-export interface QueueCreateWithoutSlipsInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
-  status: StatusType;
-}
-
-export interface UserSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserWhereInput>;
-  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-}
-
-export interface CommentCreateManyWithoutQueueInput {
+export interface CommentUpdateManyWithoutAuthorInput {
   create?: Maybe<
-    CommentCreateWithoutQueueInput[] | CommentCreateWithoutQueueInput
+    CommentCreateWithoutAuthorInput[] | CommentCreateWithoutAuthorInput
   >;
+  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
   connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-}
-
-export interface QueueSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<QueueWhereInput>;
-  AND?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
-  OR?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
-  NOT?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
-}
-
-export interface CommentCreateWithoutQueueInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  body: String;
-  author: UserCreateOneWithoutCommentsInput;
-}
-
-export interface UserUpdateManyMutationInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface CommentUpdateInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
-  author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
-}
-
-export interface UserUpdateInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
-  slips?: Maybe<SlipUpdateManyWithoutUserInput>;
-}
-
-export interface QueueUpdateOneRequiredWithoutCommentsInput {
-  create?: Maybe<QueueCreateWithoutCommentsInput>;
-  update?: Maybe<QueueUpdateWithoutCommentsDataInput>;
-  upsert?: Maybe<QueueUpsertWithoutCommentsInput>;
-  connect?: Maybe<QueueWhereUniqueInput>;
-}
-
-export interface SlipUpdateManyMutationInput {
-  processed?: Maybe<ProcessedType>;
-}
-
-export interface QueueUpdateWithoutCommentsDataInput {
-  title?: Maybe<String>;
-  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
-  status?: Maybe<StatusType>;
-}
-
-export type SlipWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface QueueUpsertWithoutSlipsInput {
-  update: QueueUpdateWithoutSlipsDataInput;
-  create: QueueCreateWithoutSlipsInput;
-}
-
-export interface QueueUpdateManyMutationInput {
-  title?: Maybe<String>;
-  status?: Maybe<StatusType>;
-}
-
-export interface SlipUpdateWithWhereUniqueWithoutQueueInput {
-  where: SlipWhereUniqueInput;
-  data: SlipUpdateWithoutQueueDataInput;
-}
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  email?: Maybe<String>;
-}>;
-
-export interface SlipUpdateWithoutQueueDataInput {
-  processed?: Maybe<ProcessedType>;
-  user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
-}
-
-export interface CommentUpdateManyMutationInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-}
-
-export interface UserUpdateOneRequiredWithoutSlipsInput {
-  create?: Maybe<UserCreateWithoutSlipsInput>;
-  update?: Maybe<UserUpdateWithoutSlipsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutSlipsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface SlipUpsertWithWhereUniqueWithoutUserInput {
-  where: SlipWhereUniqueInput;
-  update: SlipUpdateWithoutUserDataInput;
-  create: SlipCreateWithoutUserInput;
-}
-
-export interface UserUpdateWithoutSlipsDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
-}
-
-export interface CommentCreateInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  body: String;
-  queue: QueueCreateOneWithoutCommentsInput;
-  author: UserCreateOneWithoutCommentsInput;
+  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  update?: Maybe<
+    | CommentUpdateWithWhereUniqueWithoutAuthorInput[]
+    | CommentUpdateWithWhereUniqueWithoutAuthorInput
+  >;
+  upsert?: Maybe<
+    | CommentUpsertWithWhereUniqueWithoutAuthorInput[]
+    | CommentUpsertWithWhereUniqueWithoutAuthorInput
+  >;
+  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  updateMany?: Maybe<
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput
+  >;
 }
 
 export interface CommentWhereInput {
@@ -630,16 +456,199 @@ export interface CommentWhereInput {
   body_not_ends_with?: Maybe<String>;
   queue?: Maybe<QueueWhereInput>;
   author?: Maybe<UserWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
   OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
   NOT?: Maybe<CommentWhereInput[] | CommentWhereInput>;
 }
 
-export interface QueueCreateWithoutCommentsInput {
+export interface SlipCreateManyWithoutUserInput {
+  create?: Maybe<SlipCreateWithoutUserInput[] | SlipCreateWithoutUserInput>;
+  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
+}
+
+export interface CommentUpdateManyWithoutQueueInput {
+  create?: Maybe<
+    CommentCreateWithoutQueueInput[] | CommentCreateWithoutQueueInput
+  >;
+  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  update?: Maybe<
+    | CommentUpdateWithWhereUniqueWithoutQueueInput[]
+    | CommentUpdateWithWhereUniqueWithoutQueueInput
+  >;
+  upsert?: Maybe<
+    | CommentUpsertWithWhereUniqueWithoutQueueInput[]
+    | CommentUpsertWithWhereUniqueWithoutQueueInput
+  >;
+  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  updateMany?: Maybe<
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface SlipCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  processed: ProcessedType;
+  queue: QueueCreateOneWithoutSlipsInput;
+  updateAt: DateTimeInput;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutAuthorDataInput;
+}
+
+export interface QueueCreateOneWithoutSlipsInput {
+  create?: Maybe<QueueCreateWithoutSlipsInput>;
+  connect?: Maybe<QueueWhereUniqueInput>;
+}
+
+export interface SlipWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  processed?: Maybe<ProcessedType>;
+  processed_not?: Maybe<ProcessedType>;
+  processed_in?: Maybe<ProcessedType[] | ProcessedType>;
+  processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
+  queue?: Maybe<QueueWhereInput>;
+  user?: Maybe<UserWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+  OR?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+  NOT?: Maybe<SlipWhereInput[] | SlipWhereInput>;
+}
+
+export interface QueueCreateWithoutSlipsInput {
   id?: Maybe<ID_Input>;
   title: String;
-  slips?: Maybe<SlipCreateManyWithoutQueueInput>;
+  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
   status: StatusType;
+  updateAt: DateTimeInput;
+}
+
+export interface QueueSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<QueueWhereInput>;
+  AND?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+  OR?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+  NOT?: Maybe<QueueSubscriptionWhereInput[] | QueueSubscriptionWhereInput>;
+}
+
+export interface CommentCreateManyWithoutQueueInput {
+  create?: Maybe<
+    CommentCreateWithoutQueueInput[] | CommentCreateWithoutQueueInput
+  >;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+}
+
+export interface UserUpdateManyMutationInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface CommentCreateWithoutQueueInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  body: String;
+  author: UserCreateOneWithoutCommentsInput;
+  updateAt: DateTimeInput;
+}
+
+export type QueueWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  title?: Maybe<String>;
+}>;
+
+export interface CommentUpdateInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
+  author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface SlipUpdateManyMutationInput {
+  processed?: Maybe<ProcessedType>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface QueueUpdateOneRequiredWithoutCommentsInput {
+  create?: Maybe<QueueCreateWithoutCommentsInput>;
+  update?: Maybe<QueueUpdateWithoutCommentsDataInput>;
+  upsert?: Maybe<QueueUpsertWithoutCommentsInput>;
+  connect?: Maybe<QueueWhereUniqueInput>;
+}
+
+export interface SlipCreateInput {
+  id?: Maybe<ID_Input>;
+  processed: ProcessedType;
+  queue: QueueCreateOneWithoutSlipsInput;
+  user: UserCreateOneWithoutSlipsInput;
+  updateAt: DateTimeInput;
+}
+
+export interface QueueUpdateWithoutCommentsDataInput {
+  title?: Maybe<String>;
+  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
+  status?: Maybe<StatusType>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface QueueUpdateManyMutationInput {
+  title?: Maybe<String>;
+  status?: Maybe<StatusType>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
@@ -648,24 +657,149 @@ export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
   create: CommentCreateWithoutQueueInput;
 }
 
-export interface SlipCreateWithoutQueueInput {
+export interface QueueCreateInput {
   id?: Maybe<ID_Input>;
-  processed: ProcessedType;
-  user: UserCreateOneWithoutSlipsInput;
+  title: String;
+  slips?: Maybe<SlipCreateManyWithoutQueueInput>;
+  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
+  status: StatusType;
+  updateAt: DateTimeInput;
+}
+
+export interface SlipUpdateWithWhereUniqueWithoutQueueInput {
+  where: SlipWhereUniqueInput;
+  data: SlipUpdateWithoutQueueDataInput;
+}
+
+export interface CommentUpdateManyMutationInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface SlipUpdateWithoutQueueDataInput {
+  processed?: Maybe<ProcessedType>;
+  user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface SlipUpsertWithWhereUniqueWithoutUserInput {
+  where: SlipWhereUniqueInput;
+  update: SlipUpdateWithoutUserDataInput;
+  create: SlipCreateWithoutUserInput;
+}
+
+export interface UserUpdateOneRequiredWithoutSlipsInput {
+  create?: Maybe<UserCreateWithoutSlipsInput>;
+  update?: Maybe<UserUpdateWithoutSlipsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutSlipsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface QueueCreateOneWithoutCommentsInput {
+  create?: Maybe<QueueCreateWithoutCommentsInput>;
+  connect?: Maybe<QueueWhereUniqueInput>;
 }
 
 export interface CommentUpdateWithoutQueueDataInput {
   title?: Maybe<String>;
   body?: Maybe<String>;
   author?: Maybe<UserUpdateOneRequiredWithoutCommentsInput>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserCreateWithoutSlipsInput {
+export interface SlipCreateManyWithoutQueueInput {
+  create?: Maybe<SlipCreateWithoutQueueInput[] | SlipCreateWithoutQueueInput>;
+  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
+}
+
+export interface QueueWhereInput {
   id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  slips_every?: Maybe<SlipWhereInput>;
+  slips_some?: Maybe<SlipWhereInput>;
+  slips_none?: Maybe<SlipWhereInput>;
+  comments_every?: Maybe<CommentWhereInput>;
+  comments_some?: Maybe<CommentWhereInput>;
+  comments_none?: Maybe<CommentWhereInput>;
+  status?: Maybe<StatusType>;
+  status_not?: Maybe<StatusType>;
+  status_in?: Maybe<StatusType[] | StatusType>;
+  status_not_in?: Maybe<StatusType[] | StatusType>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+  OR?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+  NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
+}
+
+export interface UserCreateOneWithoutSlipsInput {
+  create?: Maybe<UserCreateWithoutSlipsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutQueueInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutQueueDataInput;
+}
+
+export interface CommentCreateManyWithoutAuthorInput {
+  create?: Maybe<
+    CommentCreateWithoutAuthorInput[] | CommentCreateWithoutAuthorInput
+  >;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+}
+
+export interface CommentUpdateWithoutAuthorDataInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  queue?: Maybe<QueueUpdateOneRequiredWithoutCommentsInput>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface UserCreateOneWithoutCommentsInput {
+  create?: Maybe<UserCreateWithoutCommentsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutAuthorInput {
@@ -674,11 +808,15 @@ export interface CommentUpsertWithWhereUniqueWithoutAuthorInput {
   create: CommentCreateWithoutAuthorInput;
 }
 
-export interface CommentCreateWithoutAuthorInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  body: String;
-  queue: QueueCreateOneWithoutCommentsInput;
+export interface UserSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<UserWhereInput>;
+  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
 export interface CommentScalarWhereInput {
@@ -724,53 +862,25 @@ export interface CommentScalarWhereInput {
   body_not_starts_with?: Maybe<String>;
   body_ends_with?: Maybe<String>;
   body_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
   OR?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
   NOT?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
-}
-
-export interface UserCreateWithoutCommentsInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  slips?: Maybe<SlipCreateManyWithoutUserInput>;
-}
-
-export interface CommentUpdateManyWithWhereNestedInput {
-  where: CommentScalarWhereInput;
-  data: CommentUpdateManyDataInput;
-}
-
-export interface SlipWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  processed?: Maybe<ProcessedType>;
-  processed_not?: Maybe<ProcessedType>;
-  processed_in?: Maybe<ProcessedType[] | ProcessedType>;
-  processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
-  queue?: Maybe<QueueWhereInput>;
-  user?: Maybe<UserWhereInput>;
-  AND?: Maybe<SlipWhereInput[] | SlipWhereInput>;
-  OR?: Maybe<SlipWhereInput[] | SlipWhereInput>;
-  NOT?: Maybe<SlipWhereInput[] | SlipWhereInput>;
-}
-
-export interface CommentUpdateManyDataInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
 }
 
 export interface CommentSubscriptionWhereInput {
@@ -784,9 +894,9 @@ export interface CommentSubscriptionWhereInput {
   NOT?: Maybe<CommentSubscriptionWhereInput[] | CommentSubscriptionWhereInput>;
 }
 
-export interface UserUpsertWithoutSlipsInput {
-  update: UserUpdateWithoutSlipsDataInput;
-  create: UserCreateWithoutSlipsInput;
+export interface CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput;
+  data: CommentUpdateManyDataInput;
 }
 
 export interface UserCreateInput {
@@ -796,7 +906,28 @@ export interface UserCreateInput {
   password: String;
   comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
   slips?: Maybe<SlipCreateManyWithoutUserInput>;
+  updateAt: DateTimeInput;
 }
+
+export interface CommentUpdateManyDataInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export type SlipWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface UserUpsertWithoutSlipsInput {
+  update: UserUpdateWithoutSlipsDataInput;
+  create: UserCreateWithoutSlipsInput;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+}>;
 
 export interface SlipUpsertWithWhereUniqueWithoutQueueInput {
   where: SlipWhereUniqueInput;
@@ -804,11 +935,9 @@ export interface SlipUpsertWithWhereUniqueWithoutQueueInput {
   create: SlipCreateWithoutQueueInput;
 }
 
-export interface SlipCreateInput {
-  id?: Maybe<ID_Input>;
-  processed: ProcessedType;
-  queue: QueueCreateOneWithoutSlipsInput;
-  user: UserCreateOneWithoutSlipsInput;
+export interface QueueUpsertWithoutSlipsInput {
+  update: QueueUpdateWithoutSlipsDataInput;
+  create: QueueCreateWithoutSlipsInput;
 }
 
 export interface SlipScalarWhereInput {
@@ -830,17 +959,33 @@ export interface SlipScalarWhereInput {
   processed_not?: Maybe<ProcessedType>;
   processed_in?: Maybe<ProcessedType[] | ProcessedType>;
   processed_not_in?: Maybe<ProcessedType[] | ProcessedType>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updateAt?: Maybe<DateTimeInput>;
+  updateAt_not?: Maybe<DateTimeInput>;
+  updateAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updateAt_lt?: Maybe<DateTimeInput>;
+  updateAt_lte?: Maybe<DateTimeInput>;
+  updateAt_gt?: Maybe<DateTimeInput>;
+  updateAt_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
   OR?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
   NOT?: Maybe<SlipScalarWhereInput[] | SlipScalarWhereInput>;
 }
 
-export interface QueueCreateInput {
+export interface QueueCreateWithoutCommentsInput {
   id?: Maybe<ID_Input>;
   title: String;
   slips?: Maybe<SlipCreateManyWithoutQueueInput>;
-  comments?: Maybe<CommentCreateManyWithoutQueueInput>;
   status: StatusType;
+  updateAt: DateTimeInput;
 }
 
 export interface SlipUpdateManyWithWhereNestedInput {
@@ -848,20 +993,27 @@ export interface SlipUpdateManyWithWhereNestedInput {
   data: SlipUpdateManyDataInput;
 }
 
-export interface SlipCreateManyWithoutQueueInput {
-  create?: Maybe<SlipCreateWithoutQueueInput[] | SlipCreateWithoutQueueInput>;
-  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
+export interface UserCreateWithoutSlipsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  comments?: Maybe<CommentCreateManyWithoutAuthorInput>;
+  updateAt: DateTimeInput;
 }
 
 export interface SlipUpdateManyDataInput {
   processed?: Maybe<ProcessedType>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
-export interface CommentCreateManyWithoutAuthorInput {
-  create?: Maybe<
-    CommentCreateWithoutAuthorInput[] | CommentCreateWithoutAuthorInput
-  >;
-  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+export interface UserCreateWithoutCommentsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  slips?: Maybe<SlipCreateManyWithoutUserInput>;
+  updateAt: DateTimeInput;
 }
 
 export interface QueueUpsertWithoutCommentsInput {
@@ -869,9 +1021,13 @@ export interface QueueUpsertWithoutCommentsInput {
   create: QueueCreateWithoutCommentsInput;
 }
 
-export interface SlipCreateManyWithoutUserInput {
-  create?: Maybe<SlipCreateWithoutUserInput[] | SlipCreateWithoutUserInput>;
-  connect?: Maybe<SlipWhereUniqueInput[] | SlipWhereUniqueInput>;
+export interface UserUpdateInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  comments?: Maybe<CommentUpdateManyWithoutAuthorInput>;
+  slips?: Maybe<SlipUpdateManyWithoutUserInput>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
 export interface UserUpdateOneRequiredWithoutCommentsInput {
@@ -881,23 +1037,29 @@ export interface UserUpdateOneRequiredWithoutCommentsInput {
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export type QueueWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
+export interface QueueUpdateInput {
   title?: Maybe<String>;
-}>;
+  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
+  comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
+  status?: Maybe<StatusType>;
+  updateAt?: Maybe<DateTimeInput>;
+}
 
 export interface UserUpdateWithoutCommentsDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
   slips?: Maybe<SlipUpdateManyWithoutUserInput>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
-export interface QueueUpdateInput {
-  title?: Maybe<String>;
-  slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
-  comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
-  status?: Maybe<StatusType>;
+export interface CommentCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  body: String;
+  queue: QueueCreateOneWithoutCommentsInput;
+  author: UserCreateOneWithoutCommentsInput;
+  updateAt: DateTimeInput;
 }
 
 export interface SlipUpdateManyWithoutUserInput {
@@ -920,48 +1082,19 @@ export interface SlipUpdateManyWithoutUserInput {
   >;
 }
 
-export interface QueueCreateOneWithoutCommentsInput {
-  create?: Maybe<QueueCreateWithoutCommentsInput>;
-  connect?: Maybe<QueueWhereUniqueInput>;
-}
-
-export interface SlipUpdateWithWhereUniqueWithoutUserInput {
-  where: SlipWhereUniqueInput;
-  data: SlipUpdateWithoutUserDataInput;
-}
-
-export interface UserCreateOneWithoutCommentsInput {
-  create?: Maybe<UserCreateWithoutCommentsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface CommentUpdateManyWithoutQueueInput {
-  create?: Maybe<
-    CommentCreateWithoutQueueInput[] | CommentCreateWithoutQueueInput
-  >;
-  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  update?: Maybe<
-    | CommentUpdateWithWhereUniqueWithoutQueueInput[]
-    | CommentUpdateWithWhereUniqueWithoutQueueInput
-  >;
-  upsert?: Maybe<
-    | CommentUpsertWithWhereUniqueWithoutQueueInput[]
-    | CommentUpsertWithWhereUniqueWithoutQueueInput
-  >;
-  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
-  updateMany?: Maybe<
-    | CommentUpdateManyWithWhereNestedInput[]
-    | CommentUpdateManyWithWhereNestedInput
-  >;
+export interface CommentCreateWithoutAuthorInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  body: String;
+  queue: QueueCreateOneWithoutCommentsInput;
+  updateAt: DateTimeInput;
 }
 
 export interface QueueUpdateWithoutSlipsDataInput {
   title?: Maybe<String>;
   comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
   status?: Maybe<StatusType>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
 export interface QueueUpdateOneRequiredWithoutSlipsInput {
@@ -974,6 +1107,12 @@ export interface QueueUpdateOneRequiredWithoutSlipsInput {
 export interface SlipUpdateWithoutUserDataInput {
   processed?: Maybe<ProcessedType>;
   queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
+  updateAt?: Maybe<DateTimeInput>;
+}
+
+export interface SlipUpdateWithWhereUniqueWithoutUserInput {
+  where: SlipWhereUniqueInput;
+  data: SlipUpdateWithoutUserDataInput;
 }
 
 export interface SlipSubscriptionWhereInput {
@@ -987,9 +1126,11 @@ export interface SlipSubscriptionWhereInput {
   NOT?: Maybe<SlipSubscriptionWhereInput[] | SlipSubscriptionWhereInput>;
 }
 
-export interface UserCreateOneWithoutSlipsInput {
-  create?: Maybe<UserCreateWithoutSlipsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface SlipCreateWithoutQueueInput {
+  id?: Maybe<ID_Input>;
+  processed: ProcessedType;
+  user: UserCreateOneWithoutSlipsInput;
+  updateAt: DateTimeInput;
 }
 
 export interface UserUpsertWithoutCommentsInput {
@@ -1001,6 +1142,7 @@ export interface SlipUpdateInput {
   processed?: Maybe<ProcessedType>;
   queue?: Maybe<QueueUpdateOneRequiredWithoutSlipsInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSlipsInput>;
+  updateAt?: Maybe<DateTimeInput>;
 }
 
 export interface NodeNode {
@@ -1012,6 +1154,8 @@ export interface UserPreviousValues {
   name: String;
   email: String;
   password: String;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
 }
 
 export interface UserPreviousValuesPromise
@@ -1021,6 +1165,8 @@ export interface UserPreviousValuesPromise
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -1030,12 +1176,16 @@ export interface UserPreviousValuesSubscription
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface Queue {
   id: ID_Output;
   title: String;
   status: StatusType;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
 }
 
 export interface QueuePromise extends Promise<Queue>, Fragmentable {
@@ -1060,6 +1210,8 @@ export interface QueuePromise extends Promise<Queue>, Fragmentable {
     last?: Int;
   }) => T;
   status: () => Promise<StatusType>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
 export interface QueueSubscription
@@ -1086,6 +1238,8 @@ export interface QueueSubscription
     last?: Int;
   }) => T;
   status: () => Promise<AsyncIterator<StatusType>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface QueueNullablePromise
@@ -1112,11 +1266,15 @@ export interface QueueNullablePromise
     last?: Int;
   }) => T;
   status: () => Promise<StatusType>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
 export interface Slip {
   id: ID_Output;
   processed: ProcessedType;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
 }
 
 export interface SlipPromise extends Promise<Slip>, Fragmentable {
@@ -1124,6 +1282,8 @@ export interface SlipPromise extends Promise<Slip>, Fragmentable {
   processed: () => Promise<ProcessedType>;
   queue: <T = QueuePromise>() => T;
   user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
 export interface SlipSubscription
@@ -1133,6 +1293,8 @@ export interface SlipSubscription
   processed: () => Promise<AsyncIterator<ProcessedType>>;
   queue: <T = QueueSubscription>() => T;
   user: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface SlipNullablePromise
@@ -1142,6 +1304,75 @@ export interface SlipNullablePromise
   processed: () => Promise<ProcessedType>;
   queue: <T = QueuePromise>() => T;
   user: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
+}
+
+export interface QueueConnection {
+  pageInfo: PageInfo;
+  edges: QueueEdge[];
+}
+
+export interface QueueConnectionPromise
+  extends Promise<QueueConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<QueueEdge>>() => T;
+  aggregate: <T = AggregateQueuePromise>() => T;
+}
+
+export interface QueueConnectionSubscription
+  extends Promise<AsyncIterator<QueueConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<QueueEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateQueueSubscription>() => T;
+}
+
+export interface CommentConnection {
+  pageInfo: PageInfo;
+  edges: CommentEdge[];
+}
+
+export interface CommentConnectionPromise
+  extends Promise<CommentConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CommentEdge>>() => T;
+  aggregate: <T = AggregateCommentPromise>() => T;
+}
+
+export interface CommentConnectionSubscription
+  extends Promise<AsyncIterator<CommentConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCommentSubscription>() => T;
+}
+
+export interface SlipPreviousValues {
+  id: ID_Output;
+  processed: ProcessedType;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
+}
+
+export interface SlipPreviousValuesPromise
+  extends Promise<SlipPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  processed: () => Promise<ProcessedType>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SlipPreviousValuesSubscription
+  extends Promise<AsyncIterator<SlipPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  processed: () => Promise<AsyncIterator<ProcessedType>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface AggregateComment {
@@ -1160,174 +1391,20 @@ export interface AggregateCommentSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface User {
-  id: ID_Output;
-  name: String;
-  email: String;
-  password: String;
+export interface AggregateUser {
+  count: Int;
 }
 
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  comments: <T = FragmentableArray<Comment>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  slips: <T = FragmentableArray<Slip>>(args?: {
-    where?: SlipWhereInput;
-    orderBy?: SlipOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  slips: <T = Promise<AsyncIterator<SlipSubscription>>>(args?: {
-    where?: SlipWhereInput;
-    orderBy?: SlipOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
+  count: () => Promise<Int>;
 }
 
-export interface UserNullablePromise
-  extends Promise<User | null>,
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  comments: <T = FragmentableArray<Comment>>(args?: {
-    where?: CommentWhereInput;
-    orderBy?: CommentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  slips: <T = FragmentableArray<Slip>>(args?: {
-    where?: SlipWhereInput;
-    orderBy?: SlipOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface CommentEdge {
-  node: Comment;
-  cursor: String;
-}
-
-export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
-  node: <T = CommentPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface CommentEdgeSubscription
-  extends Promise<AsyncIterator<CommentEdge>>,
-    Fragmentable {
-  node: <T = CommentSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface Comment {
-  id: ID_Output;
-  title: String;
-  body: String;
-}
-
-export interface CommentPromise extends Promise<Comment>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  queue: <T = QueuePromise>() => T;
-  author: <T = UserPromise>() => T;
-}
-
-export interface CommentSubscription
-  extends Promise<AsyncIterator<Comment>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
-  queue: <T = QueueSubscription>() => T;
-  author: <T = UserSubscription>() => T;
-}
-
-export interface CommentNullablePromise
-  extends Promise<Comment | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  queue: <T = QueuePromise>() => T;
-  author: <T = UserPromise>() => T;
-}
-
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface UserConnection {
@@ -1349,6 +1426,39 @@ export interface UserConnectionSubscription
   pageInfo: <T = PageInfoSubscription>() => T;
   edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
   aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface CommentEdge {
+  node: Comment;
+  cursor: String;
+}
+
+export interface CommentEdgePromise extends Promise<CommentEdge>, Fragmentable {
+  node: <T = CommentPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface CommentEdgeSubscription
+  extends Promise<AsyncIterator<CommentEdge>>,
+    Fragmentable {
+  node: <T = CommentSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
 }
 
 export interface SlipSubscriptionPayload {
@@ -1376,25 +1486,83 @@ export interface SlipSubscriptionPayloadSubscription
   previousValues: <T = SlipPreviousValuesSubscription>() => T;
 }
 
-export interface CommentConnection {
-  pageInfo: PageInfo;
-  edges: CommentEdge[];
+export interface AggregateSlip {
+  count: Int;
 }
 
-export interface CommentConnectionPromise
-  extends Promise<CommentConnection>,
+export interface AggregateSlipPromise
+  extends Promise<AggregateSlip>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateSlipSubscription
+  extends Promise<AsyncIterator<AggregateSlip>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface Comment {
+  id: ID_Output;
+  title: String;
+  body: String;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
+}
+
+export interface CommentPromise extends Promise<Comment>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  queue: <T = QueuePromise>() => T;
+  author: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CommentSubscription
+  extends Promise<AsyncIterator<Comment>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+  queue: <T = QueueSubscription>() => T;
+  author: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface CommentNullablePromise
+  extends Promise<Comment | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  queue: <T = QueuePromise>() => T;
+  author: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SlipConnection {
+  pageInfo: PageInfo;
+  edges: SlipEdge[];
+}
+
+export interface SlipConnectionPromise
+  extends Promise<SlipConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<CommentEdge>>() => T;
-  aggregate: <T = AggregateCommentPromise>() => T;
+  edges: <T = FragmentableArray<SlipEdge>>() => T;
+  aggregate: <T = AggregateSlipPromise>() => T;
 }
 
-export interface CommentConnectionSubscription
-  extends Promise<AsyncIterator<CommentConnection>>,
+export interface SlipConnectionSubscription
+  extends Promise<AsyncIterator<SlipConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<CommentEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateCommentSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SlipEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSlipSubscription>() => T;
 }
 
 export interface CommentSubscriptionPayload {
@@ -1420,65 +1588,6 @@ export interface CommentSubscriptionPayloadSubscription
   node: <T = CommentSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
   previousValues: <T = CommentPreviousValuesSubscription>() => T;
-}
-
-export interface AggregateSlip {
-  count: Int;
-}
-
-export interface AggregateSlipPromise
-  extends Promise<AggregateSlip>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateSlipSubscription
-  extends Promise<AsyncIterator<AggregateSlip>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface SlipConnection {
-  pageInfo: PageInfo;
-  edges: SlipEdge[];
-}
-
-export interface SlipConnectionPromise
-  extends Promise<SlipConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SlipEdge>>() => T;
-  aggregate: <T = AggregateSlipPromise>() => T;
-}
-
-export interface SlipConnectionSubscription
-  extends Promise<AsyncIterator<SlipConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<SlipEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateSlipSubscription>() => T;
-}
-
-export interface CommentPreviousValues {
-  id: ID_Output;
-  title: String;
-  body: String;
-}
-
-export interface CommentPreviousValuesPromise
-  extends Promise<CommentPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-}
-
-export interface CommentPreviousValuesSubscription
-  extends Promise<AsyncIterator<CommentPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface QueueEdge {
@@ -1523,33 +1632,12 @@ export interface UserSubscriptionPayloadSubscription
   previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
 export interface QueuePreviousValues {
   id: ID_Output;
   title: String;
   status: StatusType;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
 }
 
 export interface QueuePreviousValuesPromise
@@ -1558,6 +1646,8 @@ export interface QueuePreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   status: () => Promise<StatusType>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
 export interface QueuePreviousValuesSubscription
@@ -1566,6 +1656,8 @@ export interface QueuePreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   status: () => Promise<AsyncIterator<StatusType>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface QueueSubscriptionPayload {
@@ -1593,60 +1685,166 @@ export interface QueueSubscriptionPayloadSubscription
   previousValues: <T = QueuePreviousValuesSubscription>() => T;
 }
 
-export interface SlipPreviousValues {
-  id: ID_Output;
-  processed: ProcessedType;
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
 }
 
-export interface SlipPreviousValuesPromise
-  extends Promise<SlipPreviousValues>,
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CommentPreviousValues {
+  id: ID_Output;
+  title: String;
+  body: String;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
+}
+
+export interface CommentPreviousValuesPromise
+  extends Promise<CommentPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  processed: () => Promise<ProcessedType>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
-export interface SlipPreviousValuesSubscription
-  extends Promise<AsyncIterator<SlipPreviousValues>>,
+export interface CommentPreviousValuesSubscription
+  extends Promise<AsyncIterator<CommentPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  processed: () => Promise<AsyncIterator<ProcessedType>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateUser {
-  count: Int;
+export interface User {
+  id: ID_Output;
+  name: String;
+  email: String;
+  password: String;
+  createdAt: DateTimeOutput;
+  updateAt: DateTimeOutput;
 }
 
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  comments: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  slips: <T = FragmentableArray<Slip>>(args?: {
+    where?: SlipWhereInput;
+    orderBy?: SlipOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
     Fragmentable {
-  count: () => Promise<Int>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  slips: <T = Promise<AsyncIterator<SlipSubscription>>>(args?: {
+    where?: SlipWhereInput;
+    orderBy?: SlipOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updateAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
+export interface UserNullablePromise
+  extends Promise<User | null>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  comments: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  slips: <T = FragmentableArray<Slip>>(args?: {
+    where?: SlipWhereInput;
+    orderBy?: SlipOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updateAt: () => Promise<DateTimeOutput>;
 }
 
-export interface QueueConnection {
-  pageInfo: PageInfo;
-  edges: QueueEdge[];
+export interface UserEdge {
+  node: User;
+  cursor: String;
 }
 
-export interface QueueConnectionPromise
-  extends Promise<QueueConnection>,
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<QueueEdge>>() => T;
-  aggregate: <T = AggregateQueuePromise>() => T;
-}
-
-export interface QueueConnectionSubscription
-  extends Promise<AsyncIterator<QueueConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<QueueEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateQueueSubscription>() => T;
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface AggregateQueue {
@@ -1683,6 +1881,11 @@ export interface SlipEdgeSubscription
 }
 
 /*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+*/
+export type Int = number;
+
+/*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 */
 export type ID_Input = string | number;
@@ -1693,12 +1896,17 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 */
 export type String = string;
 
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
-*/
-export type Int = number;
-
 export type Long = string;
+
+/*
+DateTime scalar input type, allowing Date
+*/
+export type DateTimeInput = Date | string;
+
+/*
+DateTime scalar output type, which is always a string
+*/
+export type DateTimeOutput = string;
 
 /*
 The `Boolean` scalar type represents `true` or `false`.

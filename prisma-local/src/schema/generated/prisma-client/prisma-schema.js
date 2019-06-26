@@ -29,6 +29,8 @@ type Comment {
   body: String!
   queue: Queue!
   author: User!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type CommentConnection {
@@ -43,6 +45,7 @@ input CommentCreateInput {
   body: String!
   queue: QueueCreateOneWithoutCommentsInput!
   author: UserCreateOneWithoutCommentsInput!
+  updateAt: DateTime!
 }
 
 input CommentCreateManyWithoutAuthorInput {
@@ -60,6 +63,7 @@ input CommentCreateWithoutAuthorInput {
   title: String!
   body: String!
   queue: QueueCreateOneWithoutCommentsInput!
+  updateAt: DateTime!
 }
 
 input CommentCreateWithoutQueueInput {
@@ -67,6 +71,7 @@ input CommentCreateWithoutQueueInput {
   title: String!
   body: String!
   author: UserCreateOneWithoutCommentsInput!
+  updateAt: DateTime!
 }
 
 type CommentEdge {
@@ -81,12 +86,18 @@ enum CommentOrderByInput {
   title_DESC
   body_ASC
   body_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updateAt_ASC
+  updateAt_DESC
 }
 
 type CommentPreviousValues {
   id: ID!
   title: String!
   body: String!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 input CommentScalarWhereInput {
@@ -132,6 +143,22 @@ input CommentScalarWhereInput {
   body_not_starts_with: String
   body_ends_with: String
   body_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [CommentScalarWhereInput!]
   OR: [CommentScalarWhereInput!]
   NOT: [CommentScalarWhereInput!]
@@ -160,16 +187,19 @@ input CommentUpdateInput {
   body: String
   queue: QueueUpdateOneRequiredWithoutCommentsInput
   author: UserUpdateOneRequiredWithoutCommentsInput
+  updateAt: DateTime
 }
 
 input CommentUpdateManyDataInput {
   title: String
   body: String
+  updateAt: DateTime
 }
 
 input CommentUpdateManyMutationInput {
   title: String
   body: String
+  updateAt: DateTime
 }
 
 input CommentUpdateManyWithoutAuthorInput {
@@ -205,12 +235,14 @@ input CommentUpdateWithoutAuthorDataInput {
   title: String
   body: String
   queue: QueueUpdateOneRequiredWithoutCommentsInput
+  updateAt: DateTime
 }
 
 input CommentUpdateWithoutQueueDataInput {
   title: String
   body: String
   author: UserUpdateOneRequiredWithoutCommentsInput
+  updateAt: DateTime
 }
 
 input CommentUpdateWithWhereUniqueWithoutAuthorInput {
@@ -280,6 +312,22 @@ input CommentWhereInput {
   body_not_ends_with: String
   queue: QueueWhereInput
   author: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [CommentWhereInput!]
   OR: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
@@ -288,6 +336,8 @@ input CommentWhereInput {
 input CommentWhereUniqueInput {
   id: ID
 }
+
+scalar DateTime
 
 scalar Long
 
@@ -363,6 +413,8 @@ type Queue {
   slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   status: StatusType!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type QueueConnection {
@@ -377,6 +429,7 @@ input QueueCreateInput {
   slips: SlipCreateManyWithoutQueueInput
   comments: CommentCreateManyWithoutQueueInput
   status: StatusType!
+  updateAt: DateTime!
 }
 
 input QueueCreateOneWithoutCommentsInput {
@@ -394,6 +447,7 @@ input QueueCreateWithoutCommentsInput {
   title: String!
   slips: SlipCreateManyWithoutQueueInput
   status: StatusType!
+  updateAt: DateTime!
 }
 
 input QueueCreateWithoutSlipsInput {
@@ -401,6 +455,7 @@ input QueueCreateWithoutSlipsInput {
   title: String!
   comments: CommentCreateManyWithoutQueueInput
   status: StatusType!
+  updateAt: DateTime!
 }
 
 type QueueEdge {
@@ -415,12 +470,18 @@ enum QueueOrderByInput {
   title_DESC
   status_ASC
   status_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updateAt_ASC
+  updateAt_DESC
 }
 
 type QueuePreviousValues {
   id: ID!
   title: String!
   status: StatusType!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type QueueSubscriptionPayload {
@@ -446,11 +507,13 @@ input QueueUpdateInput {
   slips: SlipUpdateManyWithoutQueueInput
   comments: CommentUpdateManyWithoutQueueInput
   status: StatusType
+  updateAt: DateTime
 }
 
 input QueueUpdateManyMutationInput {
   title: String
   status: StatusType
+  updateAt: DateTime
 }
 
 input QueueUpdateOneRequiredWithoutCommentsInput {
@@ -471,12 +534,14 @@ input QueueUpdateWithoutCommentsDataInput {
   title: String
   slips: SlipUpdateManyWithoutQueueInput
   status: StatusType
+  updateAt: DateTime
 }
 
 input QueueUpdateWithoutSlipsDataInput {
   title: String
   comments: CommentUpdateManyWithoutQueueInput
   status: StatusType
+  updateAt: DateTime
 }
 
 input QueueUpsertWithoutCommentsInput {
@@ -528,6 +593,22 @@ input QueueWhereInput {
   status_not: StatusType
   status_in: [StatusType!]
   status_not_in: [StatusType!]
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [QueueWhereInput!]
   OR: [QueueWhereInput!]
   NOT: [QueueWhereInput!]
@@ -543,6 +624,8 @@ type Slip {
   processed: ProcessedType!
   queue: Queue!
   user: User!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type SlipConnection {
@@ -556,6 +639,7 @@ input SlipCreateInput {
   processed: ProcessedType!
   queue: QueueCreateOneWithoutSlipsInput!
   user: UserCreateOneWithoutSlipsInput!
+  updateAt: DateTime!
 }
 
 input SlipCreateManyWithoutQueueInput {
@@ -572,12 +656,14 @@ input SlipCreateWithoutQueueInput {
   id: ID
   processed: ProcessedType!
   user: UserCreateOneWithoutSlipsInput!
+  updateAt: DateTime!
 }
 
 input SlipCreateWithoutUserInput {
   id: ID
   processed: ProcessedType!
   queue: QueueCreateOneWithoutSlipsInput!
+  updateAt: DateTime!
 }
 
 type SlipEdge {
@@ -590,11 +676,17 @@ enum SlipOrderByInput {
   id_DESC
   processed_ASC
   processed_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updateAt_ASC
+  updateAt_DESC
 }
 
 type SlipPreviousValues {
   id: ID!
   processed: ProcessedType!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 input SlipScalarWhereInput {
@@ -616,6 +708,22 @@ input SlipScalarWhereInput {
   processed_not: ProcessedType
   processed_in: [ProcessedType!]
   processed_not_in: [ProcessedType!]
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [SlipScalarWhereInput!]
   OR: [SlipScalarWhereInput!]
   NOT: [SlipScalarWhereInput!]
@@ -643,14 +751,17 @@ input SlipUpdateInput {
   processed: ProcessedType
   queue: QueueUpdateOneRequiredWithoutSlipsInput
   user: UserUpdateOneRequiredWithoutSlipsInput
+  updateAt: DateTime
 }
 
 input SlipUpdateManyDataInput {
   processed: ProcessedType
+  updateAt: DateTime
 }
 
 input SlipUpdateManyMutationInput {
   processed: ProcessedType
+  updateAt: DateTime
 }
 
 input SlipUpdateManyWithoutQueueInput {
@@ -685,11 +796,13 @@ input SlipUpdateManyWithWhereNestedInput {
 input SlipUpdateWithoutQueueDataInput {
   processed: ProcessedType
   user: UserUpdateOneRequiredWithoutSlipsInput
+  updateAt: DateTime
 }
 
 input SlipUpdateWithoutUserDataInput {
   processed: ProcessedType
   queue: QueueUpdateOneRequiredWithoutSlipsInput
+  updateAt: DateTime
 }
 
 input SlipUpdateWithWhereUniqueWithoutQueueInput {
@@ -735,6 +848,22 @@ input SlipWhereInput {
   processed_not_in: [ProcessedType!]
   queue: QueueWhereInput
   user: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [SlipWhereInput!]
   OR: [SlipWhereInput!]
   NOT: [SlipWhereInput!]
@@ -763,6 +892,8 @@ type User {
   password: String!
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type UserConnection {
@@ -778,6 +909,7 @@ input UserCreateInput {
   password: String!
   comments: CommentCreateManyWithoutAuthorInput
   slips: SlipCreateManyWithoutUserInput
+  updateAt: DateTime!
 }
 
 input UserCreateOneWithoutCommentsInput {
@@ -796,6 +928,7 @@ input UserCreateWithoutCommentsInput {
   email: String!
   password: String!
   slips: SlipCreateManyWithoutUserInput
+  updateAt: DateTime!
 }
 
 input UserCreateWithoutSlipsInput {
@@ -804,6 +937,7 @@ input UserCreateWithoutSlipsInput {
   email: String!
   password: String!
   comments: CommentCreateManyWithoutAuthorInput
+  updateAt: DateTime!
 }
 
 type UserEdge {
@@ -820,6 +954,10 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updateAt_ASC
+  updateAt_DESC
 }
 
 type UserPreviousValues {
@@ -827,6 +965,8 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type UserSubscriptionPayload {
@@ -853,12 +993,14 @@ input UserUpdateInput {
   password: String
   comments: CommentUpdateManyWithoutAuthorInput
   slips: SlipUpdateManyWithoutUserInput
+  updateAt: DateTime
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  updateAt: DateTime
 }
 
 input UserUpdateOneRequiredWithoutCommentsInput {
@@ -880,6 +1022,7 @@ input UserUpdateWithoutCommentsDataInput {
   email: String
   password: String
   slips: SlipUpdateManyWithoutUserInput
+  updateAt: DateTime
 }
 
 input UserUpdateWithoutSlipsDataInput {
@@ -887,6 +1030,7 @@ input UserUpdateWithoutSlipsDataInput {
   email: String
   password: String
   comments: CommentUpdateManyWithoutAuthorInput
+  updateAt: DateTime
 }
 
 input UserUpsertWithoutCommentsInput {
@@ -962,6 +1106,22 @@ input UserWhereInput {
   slips_every: SlipWhereInput
   slips_some: SlipWhereInput
   slips_none: SlipWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updateAt: DateTime
+  updateAt_not: DateTime
+  updateAt_in: [DateTime!]
+  updateAt_not_in: [DateTime!]
+  updateAt_lt: DateTime
+  updateAt_lte: DateTime
+  updateAt_gt: DateTime
+  updateAt_gte: DateTime
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

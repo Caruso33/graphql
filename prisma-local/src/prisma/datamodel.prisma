@@ -3,8 +3,10 @@ type User {
   name: String!
   email: String! @unique
   password: String!
-  comments: [Comment!]!  @relation(name: "CommentToUser", onDelete: CASCADE)
+  comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
   slips: [Slip!]! @relation(name: "SlipToUser", onDelete: CASCADE)
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type Queue {
@@ -13,6 +15,8 @@ type Queue {
   slips: [Slip!]! @relation(name: "SlipToQueue", onDelete: CASCADE)
   comments: [Comment!]! @relation(name: "CommentToQueue", onDelete: CASCADE)
   status: StatusType!
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type Slip {
@@ -20,6 +24,8 @@ type Slip {
   processed: ProcessedType!
   queue: Queue! @relation(name: "SlipToQueue", onDelete: SET_NULL)
   user: User! @relation(name: "SlipToUser", onDelete: SET_NULL)
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 type Comment {
@@ -27,7 +33,9 @@ type Comment {
   title: String!
   body: String!
   queue: Queue! @relation(name: "CommentToQueue", onDelete: SET_NULL)
-  author: User!  @relation(name: "CommentToUser", onDelete: SET_NULL)
+  author: User! @relation(name: "CommentToUser", onDelete: SET_NULL)
+  createdAt: DateTime!
+  updateAt: DateTime!
 }
 
 enum StatusType {
