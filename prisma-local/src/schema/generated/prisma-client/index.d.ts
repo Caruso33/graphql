@@ -218,7 +218,7 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type ActiveType = "ACTIVE" | "DEACTIVE";
+export type StatusType = "ACTIVE" | "DEACTIVE";
 
 export type SlipOrderByInput =
   | "id_ASC"
@@ -241,8 +241,8 @@ export type QueueOrderByInput =
   | "id_DESC"
   | "title_ASC"
   | "title_DESC"
-  | "active_ASC"
-  | "active_DESC";
+  | "status_ASC"
+  | "status_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -411,10 +411,10 @@ export interface QueueWhereInput {
   comments_every?: Maybe<CommentWhereInput>;
   comments_some?: Maybe<CommentWhereInput>;
   comments_none?: Maybe<CommentWhereInput>;
-  active?: Maybe<ActiveType>;
-  active_not?: Maybe<ActiveType>;
-  active_in?: Maybe<ActiveType[] | ActiveType>;
-  active_not_in?: Maybe<ActiveType[] | ActiveType>;
+  status?: Maybe<StatusType>;
+  status_not?: Maybe<StatusType>;
+  status_in?: Maybe<StatusType[] | StatusType>;
+  status_not_in?: Maybe<StatusType[] | StatusType>;
   AND?: Maybe<QueueWhereInput[] | QueueWhereInput>;
   OR?: Maybe<QueueWhereInput[] | QueueWhereInput>;
   NOT?: Maybe<QueueWhereInput[] | QueueWhereInput>;
@@ -446,7 +446,7 @@ export interface QueueCreateWithoutSlipsInput {
   id?: Maybe<ID_Input>;
   title: String;
   comments?: Maybe<CommentCreateManyWithoutQueueInput>;
-  active: ActiveType;
+  status: StatusType;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -520,7 +520,7 @@ export interface SlipUpdateManyMutationInput {
 export interface QueueUpdateWithoutCommentsDataInput {
   title?: Maybe<String>;
   slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
-  active?: Maybe<ActiveType>;
+  status?: Maybe<StatusType>;
 }
 
 export type SlipWhereUniqueInput = AtLeastOne<{
@@ -534,7 +534,7 @@ export interface QueueUpsertWithoutSlipsInput {
 
 export interface QueueUpdateManyMutationInput {
   title?: Maybe<String>;
-  active?: Maybe<ActiveType>;
+  status?: Maybe<StatusType>;
 }
 
 export interface SlipUpdateWithWhereUniqueWithoutQueueInput {
@@ -639,7 +639,7 @@ export interface QueueCreateWithoutCommentsInput {
   id?: Maybe<ID_Input>;
   title: String;
   slips?: Maybe<SlipCreateManyWithoutQueueInput>;
-  active: ActiveType;
+  status: StatusType;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutQueueInput {
@@ -840,7 +840,7 @@ export interface QueueCreateInput {
   title: String;
   slips?: Maybe<SlipCreateManyWithoutQueueInput>;
   comments?: Maybe<CommentCreateManyWithoutQueueInput>;
-  active: ActiveType;
+  status: StatusType;
 }
 
 export interface SlipUpdateManyWithWhereNestedInput {
@@ -897,7 +897,7 @@ export interface QueueUpdateInput {
   title?: Maybe<String>;
   slips?: Maybe<SlipUpdateManyWithoutQueueInput>;
   comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
-  active?: Maybe<ActiveType>;
+  status?: Maybe<StatusType>;
 }
 
 export interface SlipUpdateManyWithoutUserInput {
@@ -961,7 +961,7 @@ export interface CommentUpdateManyWithoutQueueInput {
 export interface QueueUpdateWithoutSlipsDataInput {
   title?: Maybe<String>;
   comments?: Maybe<CommentUpdateManyWithoutQueueInput>;
-  active?: Maybe<ActiveType>;
+  status?: Maybe<StatusType>;
 }
 
 export interface QueueUpdateOneRequiredWithoutSlipsInput {
@@ -1035,7 +1035,7 @@ export interface UserPreviousValuesSubscription
 export interface Queue {
   id: ID_Output;
   title: String;
-  active: ActiveType;
+  status: StatusType;
 }
 
 export interface QueuePromise extends Promise<Queue>, Fragmentable {
@@ -1059,7 +1059,7 @@ export interface QueuePromise extends Promise<Queue>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
-  active: () => Promise<ActiveType>;
+  status: () => Promise<StatusType>;
 }
 
 export interface QueueSubscription
@@ -1085,7 +1085,7 @@ export interface QueueSubscription
     first?: Int;
     last?: Int;
   }) => T;
-  active: () => Promise<AsyncIterator<ActiveType>>;
+  status: () => Promise<AsyncIterator<StatusType>>;
 }
 
 export interface QueueNullablePromise
@@ -1111,7 +1111,7 @@ export interface QueueNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
-  active: () => Promise<ActiveType>;
+  status: () => Promise<StatusType>;
 }
 
 export interface Slip {
@@ -1549,7 +1549,7 @@ export interface PageInfoSubscription
 export interface QueuePreviousValues {
   id: ID_Output;
   title: String;
-  active: ActiveType;
+  status: StatusType;
 }
 
 export interface QueuePreviousValuesPromise
@@ -1557,7 +1557,7 @@ export interface QueuePreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
-  active: () => Promise<ActiveType>;
+  status: () => Promise<StatusType>;
 }
 
 export interface QueuePreviousValuesSubscription
@@ -1565,7 +1565,7 @@ export interface QueuePreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
-  active: () => Promise<AsyncIterator<ActiveType>>;
+  status: () => Promise<AsyncIterator<StatusType>>;
 }
 
 export interface QueueSubscriptionPayload {
@@ -1727,7 +1727,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "ActiveType",
+    name: "StatusType",
     embedded: false
   },
   {

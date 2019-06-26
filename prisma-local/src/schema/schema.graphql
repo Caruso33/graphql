@@ -63,6 +63,7 @@ input UpdateQueueInput {
   processed: Boolean
   position: Int
   comments: ID
+  status: StatusType
 }
 
 input CreateSlipInput {
@@ -100,10 +101,10 @@ type Queue {
   title: String!
   slips: [Slip!]!
   comments: [Comment!]!
-  active: ActiveType!
+  status: StatusType!
 }
 
-enum ActiveType {
+enum StatusType {
   ACTIVE
   DEACTIVE
 }

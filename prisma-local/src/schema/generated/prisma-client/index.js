@@ -21,7 +21,7 @@ var models = [
     embedded: false
   },
   {
-    name: "ActiveType",
+    name: "StatusType",
     embedded: false
   },
   {

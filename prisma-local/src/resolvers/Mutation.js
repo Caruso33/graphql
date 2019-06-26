@@ -121,8 +121,13 @@ const Mutation = {
     return prisma.bindings.mutation.deleteSlip({ where: { id } }, info)
   },
 
-  createComment(parent, { data }, { prisma, request }, info) {
+  async createComment(parent, { data }, { prisma, request }, info) {
     const userId = getUserId(request)
+    const queueExists = await prisma.bindings.exists.Queue({
+      id: data.queue, status: 'ACTIVE'
+    })
+
+    if(!queueExists) throw new Error('Queue not found')
 
     return prisma.bindings.mutation.createComment(
       {

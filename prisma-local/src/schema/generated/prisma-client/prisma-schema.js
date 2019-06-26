@@ -3,12 +3,7 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `enum ActiveType {
-  ACTIVE
-  DEACTIVE
-}
-
-type AggregateComment {
+/* GraphQL */ `type AggregateComment {
   count: Int!
 }
 
@@ -367,7 +362,7 @@ type Queue {
   title: String!
   slips(where: SlipWhereInput, orderBy: SlipOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slip!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
-  active: ActiveType!
+  status: StatusType!
 }
 
 type QueueConnection {
@@ -381,7 +376,7 @@ input QueueCreateInput {
   title: String!
   slips: SlipCreateManyWithoutQueueInput
   comments: CommentCreateManyWithoutQueueInput
-  active: ActiveType!
+  status: StatusType!
 }
 
 input QueueCreateOneWithoutCommentsInput {
@@ -398,14 +393,14 @@ input QueueCreateWithoutCommentsInput {
   id: ID
   title: String!
   slips: SlipCreateManyWithoutQueueInput
-  active: ActiveType!
+  status: StatusType!
 }
 
 input QueueCreateWithoutSlipsInput {
   id: ID
   title: String!
   comments: CommentCreateManyWithoutQueueInput
-  active: ActiveType!
+  status: StatusType!
 }
 
 type QueueEdge {
@@ -418,14 +413,14 @@ enum QueueOrderByInput {
   id_DESC
   title_ASC
   title_DESC
-  active_ASC
-  active_DESC
+  status_ASC
+  status_DESC
 }
 
 type QueuePreviousValues {
   id: ID!
   title: String!
-  active: ActiveType!
+  status: StatusType!
 }
 
 type QueueSubscriptionPayload {
@@ -450,12 +445,12 @@ input QueueUpdateInput {
   title: String
   slips: SlipUpdateManyWithoutQueueInput
   comments: CommentUpdateManyWithoutQueueInput
-  active: ActiveType
+  status: StatusType
 }
 
 input QueueUpdateManyMutationInput {
   title: String
-  active: ActiveType
+  status: StatusType
 }
 
 input QueueUpdateOneRequiredWithoutCommentsInput {
@@ -475,13 +470,13 @@ input QueueUpdateOneRequiredWithoutSlipsInput {
 input QueueUpdateWithoutCommentsDataInput {
   title: String
   slips: SlipUpdateManyWithoutQueueInput
-  active: ActiveType
+  status: StatusType
 }
 
 input QueueUpdateWithoutSlipsDataInput {
   title: String
   comments: CommentUpdateManyWithoutQueueInput
-  active: ActiveType
+  status: StatusType
 }
 
 input QueueUpsertWithoutCommentsInput {
@@ -529,10 +524,10 @@ input QueueWhereInput {
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
-  active: ActiveType
-  active_not: ActiveType
-  active_in: [ActiveType!]
-  active_not_in: [ActiveType!]
+  status: StatusType
+  status_not: StatusType
+  status_in: [StatusType!]
+  status_not_in: [StatusType!]
   AND: [QueueWhereInput!]
   OR: [QueueWhereInput!]
   NOT: [QueueWhereInput!]
@@ -747,6 +742,11 @@ input SlipWhereInput {
 
 input SlipWhereUniqueInput {
   id: ID
+}
+
+enum StatusType {
+  ACTIVE
+  DEACTIVE
 }
 
 type Subscription {
