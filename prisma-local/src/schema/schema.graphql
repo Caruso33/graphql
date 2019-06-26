@@ -61,7 +61,7 @@ input UpdateQueueInput {
   title: String
   user: ID
   processed: Boolean
-  how_many_before: Int
+  position: Int
   comments: ID
 }
 
@@ -117,7 +117,7 @@ enum ProcessedType {
 type Slip {
   id: ID!
   processed: ProcessedType!
-  how_many_before: Int!
+  position: Int!
   queue: Queue!
   user: User!
 }

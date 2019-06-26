@@ -46,7 +46,7 @@ input UpdateQueueInput {
   title: String
   user: ID
   processed: Boolean
-  how_many_before: Int
+  position: Int
   comments: ID
 }
 
@@ -77,7 +77,7 @@ type Queue {
   id: ID!
   title: String!
   processed: Boolean!
-  how_many_before: Int!
+  position: Int!
   user: User!
   comments: [Comment!]!
 }

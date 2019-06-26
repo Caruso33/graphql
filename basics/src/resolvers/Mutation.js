@@ -54,7 +54,7 @@ const Mutation = {
       id: db.COUNTER_OF_IDS++,
       ...args.data,
       processed: false,
-      how_many_before: 0,
+      position: 0,
       comments: []
     };
 
@@ -66,7 +66,7 @@ const Mutation = {
     parent,
     {
       id,
-      data: { title, user, processed, how_many_before, comments }
+      data: { title, user, processed, position, comments }
     },
     { db, pubsub }
   ) {
@@ -77,8 +77,8 @@ const Mutation = {
     if (typeof title === "string") queue.title = title;
     if (typeof user === "string") queue.user = user;
     if (typeof processed === "boolean") queue.processed = processed;
-    if (typeof how_many_before === "number")
-      queue.how_many_before = how_many_before;
+    if (typeof position === "number")
+      queue.position = position;
     if (typeof comments === "string") queue.comments.push(comments);
 
     pubsub.publish("queue", { queue: { mutation: "UPDATED", data: queue } });

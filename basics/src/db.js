@@ -11,7 +11,7 @@ let queues = [
     id: "4",
     title: "Hospital Medication",
     processed: false,
-    how_many_before: 0,
+    position: 0,
     user: "3",
     comments: []
   },
@@ -19,7 +19,7 @@ let queues = [
     id: "5",
     title: "Hospital Medication",
     processed: false,
-    how_many_before: 1,
+    position: 1,
     user: "1",
     comments: ["9"]
   },
@@ -27,7 +27,7 @@ let queues = [
     id: "6",
     title: "Hospital Medication",
     processed: false,
-    how_many_before: 2,
+    position: 2,
     user: "2",
     comments: []
   },
@@ -35,7 +35,7 @@ let queues = [
     id: "7",
     title: "Hospital Doctor Appointment",
     processed: false,
-    how_many_before: 0,
+    position: 0,
     user: "2",
     comments: ["10"]
   },
@@ -43,7 +43,7 @@ let queues = [
     id: "8",
     title: "Hospital Doctor Appointment",
     processed: false,
-    how_many_before: 1,
+    position: 1,
     user: "3",
     comments: ["11"]
   }

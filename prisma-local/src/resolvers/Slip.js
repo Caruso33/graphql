@@ -1,23 +1,20 @@
 import getUserId from "../utils/getUserId"
 
 const Slip = {
-  how_many_before: {
-    fragment: "fragment slipId on Slip { id }",
+  position: {
+    fragment: "fragment slipId on Slip { id queue { id }}",
     async resolve(parent, { id }, { prisma, request }, info) {
-      const userId = getUserId(request)
+      getUserId(request)
 
-      // const queue = await prisma.bindings.query.queues(
-      //   {
-      //     where: {
-      //       slips: { slips_some: { id: parent.queue } }
-      //     }
-      //   },
-      //   info
-      // )
+      const queue = await prisma.bindings.query.queue(
+        {
+          where: { id: parent.queue.id }
+        },
+        " { slips { id } } "
+      )
 
-      // const index = queue.slips.indexOf(id) + 1
-      // console.log("index", queue)
-      return 0
+      const index = queue.slips.findIndex(slip => slip.id === parent.id)
+      return index
     }
   }
 }

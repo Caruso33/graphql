@@ -12,7 +12,7 @@ type Queue {
 type Slip {
   id: ID! @id
   processed: Boolean!
-  how_many_before: Int!
+  position: Int!
   queue: Queue!
   user: User!
 }
