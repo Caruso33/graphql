@@ -1,23 +1,30 @@
-import { Queue } from "./entities/Queue"
+import "reflect-metadata";
+import { HelloResolver } from "./resolvers"
 import { __prod__ } from "./utils/constants"
 import { MikroORM } from "@mikro-orm/core"
 import microTask from "./mikro-orm.config"
+import express from "express"
+import { ApolloServer } from "apollo-server-express"
+import { buildSchema } from "type-graphql"
 
 const main = async () => {
   const orm = await MikroORM.init(microTask)
   await orm.getMigrator().up()
 
-  const queue = orm.em.create(Queue, { title: "My first queue" })
-  await orm.em.persistAndFlush(queue)
-
-  await orm.em.nativeInsert(Queue, {
-    title: "my second queue",
-    createdAt: new Date(),
-    updatedAt: new Date(),
+  const app = express()
+  
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver],
+      // validate: false,
+    }),
   })
 
-  const queues = await orm.em.find(Queue, {})
-  console.dir(queues)
+  apolloServer.applyMiddleware({ app })
+
+  app.listen(4000, () => {
+    console.log("server started on localhost:4000")
+  })
 }
 
 main()
