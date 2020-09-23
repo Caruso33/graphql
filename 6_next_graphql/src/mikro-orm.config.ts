@@ -1,3 +1,4 @@
+import { User } from './entities/User';
 import { MikroORM } from "@mikro-orm/core"
 import path from "path"
 import { Queue } from "./entities/Queue"
@@ -9,7 +10,7 @@ export default {
     path: path.join(__dirname + "/migrations"),
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
-  entities: [Queue],
+  entities: [Queue, User],
   dbName: "queue",
   type: "postgresql",
   user: 'postgres_user',

@@ -5,6 +5,7 @@ import "reflect-metadata"
 import { buildSchema } from "type-graphql"
 import microTask from "./mikro-orm.config"
 import { QueueResolver } from "./resolvers/queue"
+import { UserResolver } from "./resolvers/user"
 
 const main = async () => {
   const orm = await MikroORM.init(microTask)
@@ -14,7 +15,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [QueueResolver],
+      resolvers: [QueueResolver, UserResolver],
       // validate: false,
     }),
     context: () => ({ em: orm.em }),
