@@ -1,10 +1,11 @@
-import { Entity, OneToMany, PrimaryKey, Property } from "@mikro-orm/core"
+import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core"
 import { Field, Int, ObjectType } from "type-graphql"
-import { Slip } from "./Slip"
+import { Queue } from "./Queue"
+import { User } from "./User"
 
 @ObjectType()
 @Entity()
-export class Queue {
+export class Slip {
   @Field(() => Int)
   @PrimaryKey()
   id!: number
@@ -18,10 +19,14 @@ export class Queue {
   updatedAt = new Date()
 
   @Field()
-  @Property({ type: "text" })
-  title!: string
+  @Property({ type: "bool" })
+  processed!: boolean
 
-  @Field(() => [Slip])
-  @OneToMany(() => Slip, (slip) => slip.queue)
-  slip!: Slip[]
+  @Field()
+  @ManyToOne()
+  user!: User
+
+  @Field(() => Queue)
+  @ManyToOne(() => Queue)
+  queue!: Queue
 }
