@@ -6,6 +6,7 @@ import {
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from "type-graphql"
 import { MyContext } from "../types"
@@ -53,11 +54,20 @@ export class UserResolver {
   //   return em.findOne(User, { id })
   // }
 
+  @Query(() => User, { nullable: true })
+  me(@Ctx() { em, req }: MyContext): Promise<User | null> | null {
+    if (!req.session?.userId) {
+      return null
+    }
+
+    return em.findOne(User, { id: req.session.userId })
+  }
+
   @Mutation(() => UserResponse)
   async register(
     @Arg("options")
     { username, password }: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     if (username.length <= 2) {
       return {
@@ -89,6 +99,8 @@ export class UserResolver {
       }
     }
 
+    req.session.userId = user.id
+
     return { user }
   }
 
@@ -96,7 +108,7 @@ export class UserResolver {
   async login(
     @Arg("options")
     { username, password }: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { username: username.toLowerCase() })
 
@@ -113,6 +125,8 @@ export class UserResolver {
         errors: [{ field: "password", message: "incorrect password" }],
       }
     }
+
+    req.session.userId = user.id
 
     return { user }
   }
