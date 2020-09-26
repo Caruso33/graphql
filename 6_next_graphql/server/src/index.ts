@@ -1,6 +1,7 @@
 import { MikroORM } from "@mikro-orm/core"
 import { ApolloServer } from "apollo-server-express"
 import connectRedis from "connect-redis"
+import cors from "cors"
 import express from "express"
 import session from "express-session"
 import redis from "redis"
@@ -10,7 +11,7 @@ import microTask from "./mikro-orm.config"
 import { QueueResolver } from "./resolvers/queue"
 import { UserResolver } from "./resolvers/user"
 import { MyContext } from "./types"
-import { __prod__ } from "./utils/constants"
+import { __prod__, allowedOrigins, appSecret } from "./utils/constants"
 
 const main = async () => {
   const orm = await MikroORM.init(microTask)
@@ -22,6 +23,12 @@ const main = async () => {
   const app = express()
 
   app.use(
+    cors({
+      origin: allowedOrigins,
+      credentials: true,
+    })
+  )
+  app.use(
     session({
       name: "qid",
       store: new RedisStore({ client: redisClient }),
@@ -32,7 +39,7 @@ const main = async () => {
         secure: __prod__, // cookie only works with https
       },
       saveUninitialized: false,
-      secret: "apo3hrpoaihs3[rohs[eopkhr[3iopha[rha[pirhdl[as3ras3r",
+      secret: appSecret,
       resave: false,
     })
     // in graphql need to set in order to see cookies
@@ -47,7 +54,7 @@ const main = async () => {
     context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
   })
 
-  apolloServer.applyMiddleware({ app })
+  apolloServer.applyMiddleware({ app, cors: false })
 
   app.listen(4000, () => {
     console.log("server started on localhost:4000")
