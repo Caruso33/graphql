@@ -26,7 +26,6 @@ const InputField: React.FC<InputFieldProps> = ({ label, size, ...props }) => {
         {...props}
         id={field.name}
         placeholder={props.placeholder}
-        style={{ color: theme.colors.black }}
       />
 
       <FormErrorMessage>{meta.error}</FormErrorMessage>
