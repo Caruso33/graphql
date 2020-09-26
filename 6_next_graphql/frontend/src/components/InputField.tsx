@@ -3,8 +3,9 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  theme,
 } from "@chakra-ui/core"
-import { Field, useField } from "formik"
+import { useField } from "formik"
 import React, { InputHTMLAttributes } from "react"
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -25,6 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, size, ...props }) => {
         {...props}
         id={field.name}
         placeholder={props.placeholder}
+        style={{ color: theme.colors.black }}
       />
 
       <FormErrorMessage>{meta.error}</FormErrorMessage>
