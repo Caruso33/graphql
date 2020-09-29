@@ -1,0 +1,50 @@
+import { Box, Button, Flex, Link, Spinner } from "@chakra-ui/core"
+import NextLink from "next/link"
+import React from "react"
+import { useMeQuery } from "../generated/graphql"
+
+interface NavBarProps {}
+
+const NavBar: React.FC<NavBarProps> = () => {
+  const [{ data, fetching }] = useMeQuery()
+
+  const onLogout = () => {}
+
+  let body = null
+
+  if (fetching) {
+    body = <Spinner />
+  } else if (!data?.me) {
+    body = (
+      <>
+        <NextLink href="/login">
+          <Link mr={2}>login</Link>
+        </NextLink>
+
+        <NextLink href="/register">
+          <Link>register</Link>
+        </NextLink>
+      </>
+    )
+  } else {
+    body = (
+      <Flex>
+        <Button variant="link" mr={2} onClick={onLogout}>
+          logout
+        </Button>
+
+        <Box>{data.me.username}</Box>
+      </Flex>
+    )
+  }
+
+  return (
+    <Flex bg="tomato">
+      <Box p={4} ml="auto">
+        {body}
+      </Box>
+    </Flex>
+  )
+}
+
+export default NavBar
