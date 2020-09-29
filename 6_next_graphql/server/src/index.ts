@@ -11,7 +11,12 @@ import microTask from "./mikro-orm.config"
 import { QueueResolver } from "./resolvers/queue"
 import { UserResolver } from "./resolvers/user"
 import { MyContext } from "./types"
-import { __prod__, allowedOrigins, appSecret } from "./utils/constants"
+import {
+  __prod__,
+  allowedOrigins,
+  appSecret,
+  cookieName,
+} from "./utils/constants"
 
 const main = async () => {
   const orm = await MikroORM.init(microTask)
@@ -30,7 +35,7 @@ const main = async () => {
   )
   app.use(
     session({
-      name: "qid",
+      name: cookieName,
       store: new RedisStore({ client: redisClient }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30, // one month
