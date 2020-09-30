@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Link, Spinner } from "@chakra-ui/core"
+import { Box, Button, Flex, Link, Spinner, theme } from "@chakra-ui/core"
 import NextLink from "next/link"
 import React from "react"
 import { useLogoutMutation, useMeQuery } from "../generated/graphql"
@@ -43,7 +43,7 @@ const NavBar: React.FC<NavBarProps> = () => {
   }
 
   return (
-    <Flex bg="tomato">
+    <Flex bg={theme.colors.blackAlpha}>
       <Box p={4} ml="auto">
         {body}
       </Box>

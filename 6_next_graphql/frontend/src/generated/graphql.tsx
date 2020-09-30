@@ -195,6 +195,19 @@ export type QueuesQuery = (
   )> }
 );
 
+export type QueueQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type QueueQuery = (
+  { __typename?: 'Query' }
+  & { queue?: Maybe<(
+    { __typename?: 'Queue' }
+    & RegularQueueFragment
+  )> }
+);
+
 export const RegularQueueFragmentDoc = gql`
     fragment RegularQueue on Queue {
   id
@@ -289,4 +302,15 @@ export const QueuesDocument = gql`
 
 export function useQueuesQuery(options: Omit<Urql.UseQueryArgs<QueuesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<QueuesQuery>({ query: QueuesDocument, ...options });
+};
+export const QueueDocument = gql`
+    query Queue($id: Int!) {
+  queue(id: $id) {
+    ...RegularQueue
+  }
+}
+    ${RegularQueueFragmentDoc}`;
+
+export function useQueueQuery(options: Omit<Urql.UseQueryArgs<QueueQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<QueueQuery>({ query: QueueDocument, ...options });
 };

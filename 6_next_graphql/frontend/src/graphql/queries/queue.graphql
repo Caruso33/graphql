@@ -3,3 +3,9 @@ query Queues {
     ...RegularQueue
   }
 }
+
+query Queue($id: Int!) {
+  queue(id: $id) {
+    ...RegularQueue
+  }
+}
