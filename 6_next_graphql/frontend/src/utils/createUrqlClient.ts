@@ -7,7 +7,7 @@ import {
   MeQuery,
   RegisterMutation,
 } from "../generated/graphql"
-import { graphqlUrl } from "./../../../server/src/utils/constants"
+import { graphqlUrl } from "../utils/constants"
 import { betterUpdateQuery } from "./betterUpdateQuery"
 
 export const createUrqlClient = (ssrExchange: any) => ({

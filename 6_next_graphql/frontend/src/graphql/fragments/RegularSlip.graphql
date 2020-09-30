@@ -1,0 +1,12 @@
+fragment RegularSlip on Slip {
+  id
+  createdAt
+  updatedAt
+  processed
+#   user {
+#     ...RegularUser
+#   }
+#   queue {
+#     ...RegularQueue
+#   }
+}

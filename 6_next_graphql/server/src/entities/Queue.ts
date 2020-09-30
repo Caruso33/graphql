@@ -23,5 +23,5 @@ export class Queue {
 
   @Field(() => [Slip])
   @OneToMany(() => Slip, (slip) => slip.queue)
-  slip!: Slip[]
+  slips!: Slip[]
 }

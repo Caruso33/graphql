@@ -1,0 +1,9 @@
+fragment RegularQueue on Queue {
+  id
+  createdAt
+  updatedAt
+  title
+  # slips {
+  #   ...RegularSlip
+  # }
+}
