@@ -3,10 +3,12 @@ fragment RegularSlip on Slip {
   createdAt
   updatedAt
   processed
-#   user {
-#     ...RegularUser
-#   }
-#   queue {
-#     ...RegularQueue
-#   }
+  user {
+    id
+    username
+  }
+  queue {
+    id
+    title
+  }
 }

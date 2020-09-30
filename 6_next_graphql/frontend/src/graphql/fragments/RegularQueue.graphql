@@ -4,6 +4,11 @@ fragment RegularQueue on Queue {
   updatedAt
   title
   # slips {
-  #   ...RegularSlip
+  #   id
+  #   processed
+  #   user {
+  #     id
+  #     username
+  #   }
   # }
 }

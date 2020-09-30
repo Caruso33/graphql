@@ -1,5 +1,5 @@
-query Queue {
-  queue {
+query Queues {
+  queues {
     ...RegularQueue
   }
 }

@@ -30,7 +30,7 @@ export type Queue = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   title: Scalars['String'];
-  slip: Array<Slip>;
+  slips: Array<Slip>;
 };
 
 export type Slip = {
@@ -104,6 +104,23 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type RegularQueueFragment = (
+  { __typename?: 'Queue' }
+  & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title'>
+);
+
+export type RegularSlipFragment = (
+  { __typename?: 'Slip' }
+  & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed'>
+  & { user: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ), queue: (
+    { __typename?: 'Queue' }
+    & Pick<Queue, 'id' | 'title'>
+  ) }
+);
+
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username'>
@@ -167,6 +184,41 @@ export type MeQuery = (
   )> }
 );
 
+export type QueuesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QueuesQuery = (
+  { __typename?: 'Query' }
+  & { queues: Array<(
+    { __typename?: 'Queue' }
+    & RegularQueueFragment
+  )> }
+);
+
+export const RegularQueueFragmentDoc = gql`
+    fragment RegularQueue on Queue {
+  id
+  createdAt
+  updatedAt
+  title
+}
+    `;
+export const RegularSlipFragmentDoc = gql`
+    fragment RegularSlip on Slip {
+  id
+  createdAt
+  updatedAt
+  processed
+  user {
+    id
+    username
+  }
+  queue {
+    id
+    title
+  }
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -226,4 +278,15 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const QueuesDocument = gql`
+    query Queues {
+  queues {
+    ...RegularQueue
+  }
+}
+    ${RegularQueueFragmentDoc}`;
+
+export function useQueuesQuery(options: Omit<Urql.UseQueryArgs<QueuesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<QueuesQuery>({ query: QueuesDocument, ...options });
 };
