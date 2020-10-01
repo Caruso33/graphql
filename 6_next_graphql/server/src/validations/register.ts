@@ -48,3 +48,23 @@ export const validateRegister = (options: UsernamePasswordInput) => {
 
   return errors.length > 0 ? errors : null
 }
+
+export const getValidationErrors = (errorTypes) => {
+  const errors = []
+
+  for (const errorType of errorTypes) {
+    switch (errorType) {
+      case "usernameOrEmail__notExist":
+        errors.push({
+          field: "usernameOrEmail",
+          message: "that username or email doesn't exist",
+        })
+        break
+
+      default:
+        break
+    }
+  }
+
+  return errors
+}

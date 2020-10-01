@@ -1,20 +1,19 @@
-import { validateRegister } from "./../validations/register"
-import { cookieName } from "./../utils/constants"
 import argon2 from "argon2"
-import {
-  Arg,
-  Ctx,
-  Field,
-  Int,
-  Mutation,
-  ObjectType,
-  Query,
-  Resolver,
-} from "type-graphql"
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql"
 import { MyContext } from "../types"
+import { FieldError, UsernamePasswordInput, UserResponse } from "../types/user"
+import { sendEmail } from "../utils/sendEmail"
 import { User } from "./../entities/User"
-import { UsernamePasswordInput, FieldError, UserResponse } from "../types/user"
-import { validate } from "graphql"
+import {
+  cookieName,
+  forgetPasswordPrefix,
+  frontendDomain,
+} from "./../utils/constants"
+import {
+  getValidationErrors,
+  validateRegister,
+} from "./../validations/register"
+import { v4 } from "uuid"
 
 @Resolver()
 export class UserResolver {
@@ -84,9 +83,7 @@ export class UserResolver {
 
     if (!user) {
       return {
-        errors: [
-          { field: "usernameOrEmail", message: "that username doesn't exist" },
-        ],
+        errors: getValidationErrors(["usernameOrEmail__notExist"]),
       }
     }
 
@@ -119,9 +116,20 @@ export class UserResolver {
   async forgotPassword(
     @Arg("email") email: string,
     @Ctx()
-    { req, em }: MyContext
+    { em, redis }: MyContext
   ) {
     const user = await em.findOne(User, { email })
+    if (!user) {
+      return false
+    }
+
+    const token = v4()
+    redis.set(forgetPasswordPrefix + token, user.id, "ex", 1000 * 60 * 60)
+    const link = `<a href="${frontendDomain}/change-password/${token}">Reset Password</a>`
+
+    const html = `Hi,<br/><br/>please change your password within 1 hour by following <br/>${link}<br/><br/>Cheers`
+
+    await sendEmail(email, html)
 
     return true
   }

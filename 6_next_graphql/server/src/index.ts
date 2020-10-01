@@ -9,17 +9,14 @@ import configureMiddleWare from "./utils/configureMiddleware"
 const main = async () => {
   dotenv.config()
 
-  const { RedisStore, redisClient, orm } = await configureDB()
-  // await orm.em.nativeDelete(User, {})
-
   const app = express()
 
-  configureMiddleWare(app, {
-    RedisStore,
-    redisClient,
-  })
+  const { RedisStore, redis, orm } = await configureDB()
+  // await orm.em.nativeDelete(User, {})
 
-  configureGraphql(app, { orm })
+  configureMiddleWare(app, { RedisStore, redis })
+
+  configureGraphql(app, { orm, redis })
 
   const port = process.env.PORT || 4000
   app.listen(port, () => {

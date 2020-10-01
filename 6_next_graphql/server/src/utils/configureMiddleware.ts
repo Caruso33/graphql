@@ -4,7 +4,7 @@ import { allowedOrigins, cookieName, __prod__, appSecret } from "./constants"
 
 export default function configureMiddleWare(
   app: Express,
-  { RedisStore, redisClient }
+  { RedisStore, redis }
 ) {
   app.use(
     cors({
@@ -15,7 +15,7 @@ export default function configureMiddleWare(
   app.use(
     session({
       name: cookieName,
-      store: new RedisStore({ client: redisClient }),
+      store: new RedisStore({ client: redis }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30, // one month
         httpOnly: true, // don't let the FE client access the cookie

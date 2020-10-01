@@ -6,14 +6,14 @@ import { MyContext } from "../types"
 
 export default async function configureGraphql(
   app: Express,
-  { orm }: { orm: MikroORM<IDatabaseDriver<Connection>> }
+  { orm, redis }
 ) {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [QueueResolver, UserResolver],
       // validate: false,
     }),
-    context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
+    context: ({ req, res }): MyContext => ({ em: orm.em, req, res, redis }),
   })
 
   apolloServer.applyMiddleware({ app, cors: false })
