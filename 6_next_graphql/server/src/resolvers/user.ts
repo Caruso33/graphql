@@ -147,7 +147,8 @@ export class UserResolver {
     const errors = validateChangeForgotPassword(newPassword)
     if (errors.length) return { errors }
 
-    const userId = await redis.get(forgetPasswordPrefix + token)
+    const redisKey = forgetPasswordPrefix + token
+    const userId = await redis.get(redisKey)
     if (!userId) {
       return {
         errors: getValidationErrors([UserValidationError.token__expired]),
@@ -167,7 +168,7 @@ export class UserResolver {
     user.password = hashedPassword
 
     await em.persistAndFlush(user)
-    redis.del(forgetPasswordPrefix + token)
+    await redis.del(redisKey)
 
     req.session!.userId = user.id
 

@@ -1,5 +1,5 @@
 import { Box, Button, Flex, useToast } from "@chakra-ui/core"
-import { Form, Formik } from "formik"
+import { Form, Formik, FormikProps } from "formik"
 import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React from "react"
@@ -22,7 +22,12 @@ const Login: React.FC<LoginProps> = () => {
   const [, login] = useLoginMutation()
   const [{ fetching }, forgotPassword] = useForgotPasswordMutation()
 
-  const onForgotPassword = (props) => {
+  const onForgotPassword = (
+    props: FormikProps<{
+      usernameOrEmail: string
+      password: string
+    }>
+  ) => {
     const field = props.getFieldProps("usernameOrEmail")
 
     if (!field.value) {
@@ -62,6 +67,7 @@ const Login: React.FC<LoginProps> = () => {
     <PageWrapper variant="small">
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
+        initialTouched={{ usernameOrEmail: true }}
         onSubmit={async (values, actions) => {
           const response = await login(values)
 

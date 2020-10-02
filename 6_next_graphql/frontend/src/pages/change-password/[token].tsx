@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/core"
+import { Box, Button, Flex } from "@chakra-ui/core"
 import { ErrorMessage, Form, Formik } from "formik"
 import { NextPage } from "next"
 import { withUrqlClient } from "next-urql"
@@ -18,8 +18,9 @@ interface ChangePasswordProps {
 
 const ChangePassword: NextPage<ChangePasswordProps> = ({ token }) => {
   const router = useRouter()
-  const [{ data }, changeForgotPassword] = useChangeForgotPasswordMutation()
+  const navigateToForgotLogin = () => router.push("/login")
 
+  const [, changeForgotPassword] = useChangeForgotPasswordMutation()
   return (
     <>
       <NavBar />
@@ -76,14 +77,17 @@ const ChangePassword: NextPage<ChangePasswordProps> = ({ token }) => {
                 />
               </Box>
 
-              <Button
-                mt={4}
-                variantColor="teal"
-                isLoading={props.isSubmitting}
-                type="submit"
-              >
-                Change Password
-              </Button>
+              <Flex justify="space-between" mt={4}>
+                <Button
+                  variantColor="teal"
+                  isLoading={props.isSubmitting}
+                  type="submit"
+                >
+                  Change Password
+                </Button>
+
+                <Button onClick={navigateToForgotLogin}>Forgot Password</Button>
+              </Flex>
             </Form>
           )}
         </Formik>
