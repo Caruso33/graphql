@@ -11,8 +11,10 @@ import {
 } from "./../utils/constants"
 import {
   getValidationErrors,
+  validateChangeForgotPassword,
   validateRegister,
-} from "./../validations/register"
+  UserValidationError,
+} from "../validations/user"
 import { v4 } from "uuid"
 
 @Resolver()
@@ -46,7 +48,7 @@ export class UserResolver {
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     const errors = validateRegister(options)
-    if (errors) return { errors }
+    if (errors.length) return { errors }
 
     const hashedPassword = await argon2.hash(options.password)
     const user = em.create(User, {
@@ -83,12 +85,13 @@ export class UserResolver {
 
     if (!user) {
       return {
-        errors: getValidationErrors(["usernameOrEmail__notExist"]),
+        errors: getValidationErrors([
+          UserValidationError.usernameOrEmail__notExist,
+        ]),
       }
     }
 
     const isValid = await argon2.verify(user.password, password)
-
     if (!isValid) {
       return {
         errors: [{ field: "password", message: "incorrect password" }],
@@ -132,6 +135,43 @@ export class UserResolver {
     await sendEmail(email, html)
 
     return true
+  }
+
+  @Mutation(() => UserResponse)
+  async changeForgotPassword(
+    @Arg("token") token: string,
+    @Arg("newPassword") newPassword: string,
+    @Ctx()
+    { em, redis, req }: MyContext
+  ): Promise<UserResponse> {
+    const errors = validateChangeForgotPassword(newPassword)
+    if (errors.length) return { errors }
+
+    const userId = await redis.get(forgetPasswordPrefix + token)
+    if (!userId) {
+      return {
+        errors: getValidationErrors([UserValidationError.token__expired]),
+      }
+    }
+
+    const user = await em.findOne(User, { id: parseInt(userId) })
+    if (!user) {
+      return {
+        errors: getValidationErrors([
+          UserValidationError.token__userNoLongerExist,
+        ]),
+      }
+    }
+
+    const hashedPassword = await argon2.hash(newPassword)
+    user.password = hashedPassword
+
+    await em.persistAndFlush(user)
+    redis.del(forgetPasswordPrefix + token)
+
+    req.session!.userId = user.id
+
+    return { user }
   }
 
   // @Mutation(() => User, { nullable: true })

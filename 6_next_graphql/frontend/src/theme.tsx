@@ -6,6 +6,7 @@ const breakpoints = ["40em", "52em", "64em"]
 
 const theme = {
   ...chakraTheme,
+  initialColorMode: "dark",
   colors: {
     ...chakraTheme.colors,
     // black: "#16161D",
