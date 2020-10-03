@@ -18,6 +18,25 @@ export class Slip extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
+  @Field()
+  @Column({ default: false })
+  processed!: boolean
+
+  @Field()
+  @Column({ type: "int" })
+  initialQueueSize: number
+
+  @Field()
+  @Column()
+  userId!: number
+
+  @ManyToOne(() => User, (user) => user.slips)
+  user!: User
+
+  @Field(() => Queue)
+  @ManyToOne(() => Queue, (queue) => queue.slips)
+  queue!: Queue
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date
@@ -25,16 +44,4 @@ export class Slip extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date
-
-  @Field()
-  @Column()
-  processed!: boolean
-
-  @Field()
-  @ManyToOne(() => Slip, (slip) => slip.user)
-  user!: User
-
-  @Field(() => Queue)
-  @ManyToOne(() => Slip, (slip) => slip.queue)
-  queue!: Queue
 }

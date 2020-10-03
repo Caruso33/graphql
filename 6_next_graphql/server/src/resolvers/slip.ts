@@ -1,49 +1,72 @@
-import { MyContext } from "./../types"
+import { isAuth } from "./../middleware/isAuth"
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql"
+import { Queue } from "./../entities/Queue"
 import { Slip } from "./../entities/Slip"
-import { Resolver, Query, Ctx, Arg, Int, Mutation } from "type-graphql"
+import { MyContext } from "./../types"
+
+@InputType()
+class SlipInput {
+  @Field()
+  title!: string
+  @Field()
+  queue!: Queue
+}
 
 @Resolver()
 export class SlipResolver {
-  // @Query(() => [Slip])
-  // slips(@Ctx() { em }: MyContext): Promise<Slip[]> {
-  //   return em.find(Slip, {})
-  // }
+  @Query(() => [Slip])
+  slips(@Ctx() {}: MyContext): Promise<Slip[]> {
+    return Slip.find({})
+  }
 
-  // @Query(() => Slip, { nullable: true })
-  // slip(
-  //   @Arg("id", () => Int) id: number,
-  //   @Ctx() { em }: MyContext
-  // ): Promise<Slip | null> {
-  //   return em.findOne(Slip, { id })
-  // }
+  @Query(() => Slip, { nullable: true })
+  slip(
+    @Arg("id", () => Int) id: number,
+    @Ctx() {}: MyContext
+  ): Promise<Slip | undefined> {
+    return Slip.findOne(id)
+  }
 
-  // @Mutation(() => Slip)
-  // async createSlip(
-  //   @Arg("title") title: string,
-  //   @Ctx() { em }: MyContext
-  // ): Promise<Slip> {
-  //   const slip = em.create(Slip, { title })
-  //   await em.persistAndFlush(slip)
-  //   return slip
-  // }
+  @Mutation(() => Slip)
+  @UseMiddleware(isAuth)
+  async createSlip(
+    @Arg("options") options: SlipInput,
+    @Ctx() { req }: MyContext
+  ): Promise<Slip | undefined> {
+    if (!req.session?.userId) {
+    }
+    return Slip.create({ ...options, userId: req.session!.userId }).save()
+  }
 
-  // @Mutation(() => Slip, { nullable: true })
-  // async updateSlip(
-  //   @Arg("id") id: number,
-  //   @Arg("title", () => String, { nullable: true }) title: string | null,
-  //   @Ctx() { em }: MyContext
-  // ): Promise<Slip | null> {
-  //   const slip = await em.findOne(Slip, { id })
-  //   if (!slip) {
-  //     return null
-  //   }
+  @Mutation(() => Slip, { nullable: true })
+  @UseMiddleware(isAuth)
+  async updateSlip(
+    @Arg("id") id: number,
+    @Arg("options", (options) => SlipInput, { nullable: true })
+    @Ctx()
+    {}: MyContext
+  ): Promise<Slip | null> {
+    const slip = await Slip.findOne(id)
+    if (!slip) {
+      return null
+    }
 
-  //   if (typeof title !== "undefined") slip.title = title!
+    // if (typeof title !== "undefined") slip.title = title!
 
-  //   await em.persistAndFlush(slip)
+    slip.update({ ...options })
 
-  //   return slip
-  // }
+    return slip
+  }
 
   // @Mutation(() => Boolean)
   // async deleteSlip(

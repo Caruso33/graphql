@@ -17,6 +17,21 @@ export class Queue extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
+  @Field()
+  @Column()
+  title!: string
+
+  @Field()
+  @Column({ default: "" })
+  description: string
+
+  // TODO: Admin user associated
+  // TODO: Location field
+
+  @Field(() => [Slip])
+  @OneToMany(() => Slip, (slip) => slip.queue)
+  slips!: Slip[]
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date
@@ -24,12 +39,4 @@ export class Queue extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date
-
-  @Field()
-  @Column()
-  title!: string
-
-  @Field(() => [Slip])
-  @OneToMany(() => Slip, (slip) => slip.queue)
-  slips!: Slip[]
 }

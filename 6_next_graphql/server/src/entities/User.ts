@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { Slip } from "./Slip"
 
 @ObjectType()
 @Entity()
@@ -14,14 +16,6 @@ export class User extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id!: number
-
-  @Field(() => String)
-  @CreateDateColumn()
-  createdAt: Date
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt: Date
 
   @Field()
   @Column({ unique: true })
@@ -33,4 +27,15 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string
+
+  @OneToMany(() => Slip, (slip) => slip.user)
+  slips!: Slip[]
+
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt: Date
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updatedAt: Date
 }
