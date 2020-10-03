@@ -1,14 +1,26 @@
-import { MikroORM } from "@mikro-orm/core"
-import session from "express-session"
-import microTask from "../mikro-orm.config"
-import Redis from "ioredis"
 import connectRedis from "connect-redis"
+import session from "express-session"
+import Redis from "ioredis"
+import { ConnectionOptions, createConnection } from "typeorm"
+import { Queue } from "./../entities/Queue"
+import { Slip } from "./../entities/Slip"
+import { User } from "./../entities/User"
 
 export default async function configureDB() {
-  const orm = await MikroORM.init(microTask)
-  await orm.getMigrator().up()
+  const orm = await createConnection(typeOrmConfig)
 
   const RedisStore = connectRedis(session)
   const redis = new Redis()
+
   return { RedisStore, redis, orm }
+}
+
+const typeOrmConfig: ConnectionOptions = {
+  type: "postgres",
+  database: "queue",
+  username: "postgres_user",
+  password: "postgres_pw",
+  logging: true,
+  synchronize: true,
+  entities: [User, Queue, Slip],
 }

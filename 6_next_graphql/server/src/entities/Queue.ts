@@ -1,24 +1,32 @@
-import { Entity, OneToMany, PrimaryKey, Property } from "@mikro-orm/core"
 import { Field, Int, ObjectType } from "type-graphql"
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm"
 import { Slip } from "./Slip"
 
 @ObjectType()
 @Entity()
-export class Queue {
+export class Queue extends BaseEntity {
   @Field(() => Int)
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id!: number
 
   @Field(() => String)
-  @Property({ type: "date" })
-  createdAt = new Date()
+  @CreateDateColumn()
+  createdAt: Date
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date() })
-  updatedAt = new Date()
+  @UpdateDateColumn()
+  updatedAt: Date
 
   @Field()
-  @Property({ type: "text" })
+  @Column()
   title!: string
 
   @Field(() => [Slip])

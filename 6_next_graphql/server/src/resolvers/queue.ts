@@ -1,57 +1,46 @@
-import { MyContext } from "./../types"
+import { Arg, Int, Mutation, Query, Resolver } from "type-graphql"
 import { Queue } from "./../entities/Queue"
-import { Resolver, Query, Ctx, Arg, Int, Mutation } from "type-graphql"
 
 @Resolver()
 export class QueueResolver {
   @Query(() => [Queue])
-  queues(@Ctx() { em }: MyContext): Promise<Queue[]> {
-    return em.find(Queue, {})
+  queues(): Promise<Queue[]> {
+    return Queue.find()
   }
 
   @Query(() => Queue, { nullable: true })
-  queue(
-    @Arg("id", () => Int) id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<Queue | null> {
-    return em.findOne(Queue, { id })
+  queue(@Arg("id", () => Int) id: number): Promise<Queue | undefined> {
+    return Queue.findOne(id)
   }
 
   @Mutation(() => Queue)
-  async createQueue(
-    @Arg("title") title: string,
-    @Ctx() { em }: MyContext
-  ): Promise<Queue> {
-    const queue = em.create(Queue, { title })
-    await em.persistAndFlush(queue)
+  async createQueue(@Arg("title") title: string): Promise<Queue> {
+    const queue = Queue.create({ title, slips: [] }).save()
     return queue
   }
 
   @Mutation(() => Queue, { nullable: true })
   async updateQueue(
     @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string | null,
-    @Ctx() { em }: MyContext
+    @Arg("title", () => String, { nullable: true }) title: string | undefined
   ): Promise<Queue | null> {
-    const queue = await em.findOne(Queue, { id })
+    const queue = await Queue.findOne(id)
     if (!queue) {
       return null
     }
 
-    if (typeof title !== "undefined") queue.title = title!
-
-    await em.persistAndFlush(queue)
+    if (typeof title !== "undefined") {
+      await Queue.update({ id }, { title })
+    }
 
     return queue
   }
 
   @Mutation(() => Boolean)
-  async deleteQueue(
-    @Arg("id") id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<boolean> {
+  async deleteQueue(@Arg("id") id: number): Promise<boolean> {
     try {
-      await em.nativeDelete(Queue, { id })
+      await Queue.delete(id)
+
       return true
     } catch {
       return false

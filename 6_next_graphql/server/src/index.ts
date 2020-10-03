@@ -1,7 +1,6 @@
 import dotenv from "dotenv"
 import express from "express"
 import "reflect-metadata"
-import { User } from "./entities/User"
 import configureDB from "./utils/configureDatabase"
 import configureGraphql from "./utils/configureGraphql"
 import configureMiddleWare from "./utils/configureMiddleware"
@@ -12,7 +11,6 @@ const main = async () => {
   const app = express()
 
   const { RedisStore, redis, orm } = await configureDB()
-  // await orm.em.nativeDelete(User, {})
 
   configureMiddleWare(app, { RedisStore, redis })
 
