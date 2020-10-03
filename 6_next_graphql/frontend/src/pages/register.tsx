@@ -1,14 +1,13 @@
 import { Box, Button } from "@chakra-ui/core"
-import { dir } from "console"
 import { Form, Formik } from "formik"
-import React from "react"
-import { useRouter } from "next/router"
-import InputField from "../components/InputField"
-import PageWrapper from "../components/PageWrapper"
-import { useRegisterMutation } from "../generated/graphql"
-import { toErrorMap } from "../utils/toErrorMap"
 import { withUrqlClient } from "next-urql"
+import { useRouter } from "next/router"
+import React from "react"
+import InputField from "../components/InputField"
+import Layout from "../components/Layout"
+import { useRegisterMutation } from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
+import { toErrorMap } from "../utils/toErrorMap"
 
 interface RegisterProps {}
 
@@ -18,7 +17,7 @@ const Register: React.FC<RegisterProps> = () => {
   const [, register] = useRegisterMutation()
 
   return (
-    <PageWrapper variant="small">
+    <Layout variant="small">
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, actions) => {
@@ -40,11 +39,7 @@ const Register: React.FC<RegisterProps> = () => {
             />
 
             <Box mt={4}>
-              <InputField
-                name="email"
-                placeholder="email"
-                label="Email"
-              />
+              <InputField name="email" placeholder="email" label="Email" />
             </Box>
 
             <Box mt={4}>
@@ -67,7 +62,7 @@ const Register: React.FC<RegisterProps> = () => {
           </Form>
         )}
       </Formik>
-    </PageWrapper>
+    </Layout>
   )
 }
 

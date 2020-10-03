@@ -35,6 +35,7 @@ export class QueueResolver {
   @UseMiddleware(isAuth)
   async createQueue(@Arg("options") options: QueueInput): Promise<Queue> {
     const queue = Queue.create({ ...options, slips: [] }).save()
+
     return queue
   }
 
@@ -55,7 +56,7 @@ export class QueueResolver {
 
     return queue
   }
-  
+
   @UseMiddleware(isAuth)
   @Mutation(() => Boolean)
   async deleteQueue(@Arg("id") id: number): Promise<boolean> {

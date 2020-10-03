@@ -3,10 +3,7 @@ fragment RegularSlip on Slip {
   createdAt
   updatedAt
   processed
-  user {
-    id
-    username
-  }
+  userId
   queue {
     id
     title

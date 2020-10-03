@@ -2,7 +2,7 @@ import { Flex, Spinner } from "@chakra-ui/core"
 import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React from "react"
-import NavBar from "../../components/NavBar"
+import Layout from "../../components/Layout"
 import { useQueueQuery } from "../../generated/graphql"
 import { createUrqlClient } from "../../utils/createUrqlClient"
 
@@ -17,9 +17,7 @@ const Queues: React.FC<QueueProps> = (props) => {
   })
 
   return (
-    <>
-      <NavBar />
-
+    <Layout>
       <Flex align="center" direction="column" mt={5}>
         {fetching ? (
           <Spinner />
@@ -32,7 +30,7 @@ const Queues: React.FC<QueueProps> = (props) => {
           </>
         )}
       </Flex>
-    </>
+    </Layout>
   )
 }
 

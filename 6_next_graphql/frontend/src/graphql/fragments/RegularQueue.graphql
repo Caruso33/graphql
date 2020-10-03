@@ -3,12 +3,14 @@ fragment RegularQueue on Queue {
   createdAt
   updatedAt
   title
-  # slips {
-  #   id
-  #   processed
-  #   user {
-  #     id
-  #     username
-  #   }
-  # }
+  description
+  slips {
+    id
+    processed
+
+    #   user {
+    #     id
+    #     username
+    #   }
+  }
 }

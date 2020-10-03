@@ -34,29 +34,31 @@ export type QueryUserArgs = {
 export type Queue = {
   __typename?: 'Queue';
   id: Scalars['Int'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+  slips: Array<Slip>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  title: Scalars['String'];
-  slips: Array<Slip>;
 };
 
 export type Slip = {
   __typename?: 'Slip';
   id: Scalars['Int'];
+  processed: Scalars['Boolean'];
+  initialQueueSize: Scalars['Float'];
+  userId: Scalars['Float'];
+  queue: Queue;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  processed: Scalars['Boolean'];
-  user: User;
-  queue: Queue;
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
   email: Scalars['String'];
   username: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Mutation = {
@@ -73,7 +75,7 @@ export type Mutation = {
 
 
 export type MutationCreateQueueArgs = {
-  title: Scalars['String'];
+  options: QueueInput;
 };
 
 
@@ -109,6 +111,11 @@ export type MutationChangeForgotPasswordArgs = {
   token: Scalars['String'];
 };
 
+export type QueueInput = {
+  title: Scalars['String'];
+  description: Scalars['String'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -134,16 +141,17 @@ export type RegularErrorFragment = (
 
 export type RegularQueueFragment = (
   { __typename?: 'Queue' }
-  & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title'>
+  & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'description'>
+  & { slips: Array<(
+    { __typename?: 'Slip' }
+    & Pick<Slip, 'id' | 'processed'>
+  )> }
 );
 
 export type RegularSlipFragment = (
   { __typename?: 'Slip' }
-  & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed'>
-  & { user: (
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
-  ), queue: (
+  & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed' | 'userId'>
+  & { queue: (
     { __typename?: 'Queue' }
     & Pick<Queue, 'id' | 'title'>
   ) }
@@ -176,6 +184,19 @@ export type ChangeForgotPasswordMutation = (
   & { changeForgotPassword: (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
+  ) }
+);
+
+export type CreateQueueMutationVariables = Exact<{
+  options: QueueInput;
+}>;
+
+
+export type CreateQueueMutation = (
+  { __typename?: 'Mutation' }
+  & { createQueue: (
+    { __typename?: 'Queue' }
+    & RegularQueueFragment
   ) }
 );
 
@@ -265,6 +286,11 @@ export const RegularQueueFragmentDoc = gql`
   createdAt
   updatedAt
   title
+  description
+  slips {
+    id
+    processed
+  }
 }
     `;
 export const RegularSlipFragmentDoc = gql`
@@ -273,10 +299,7 @@ export const RegularSlipFragmentDoc = gql`
   createdAt
   updatedAt
   processed
-  user {
-    id
-    username
-  }
+  userId
   queue {
     id
     title
@@ -317,6 +340,17 @@ export const ChangeForgotPasswordDocument = gql`
 
 export function useChangeForgotPasswordMutation() {
   return Urql.useMutation<ChangeForgotPasswordMutation, ChangeForgotPasswordMutationVariables>(ChangeForgotPasswordDocument);
+};
+export const CreateQueueDocument = gql`
+    mutation CreateQueue($options: QueueInput!) {
+  createQueue(options: $options) {
+    ...RegularQueue
+  }
+}
+    ${RegularQueueFragmentDoc}`;
+
+export function useCreateQueueMutation() {
+  return Urql.useMutation<CreateQueueMutation, CreateQueueMutationVariables>(CreateQueueDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {

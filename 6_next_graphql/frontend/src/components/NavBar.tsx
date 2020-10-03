@@ -48,7 +48,7 @@ const NavBar: React.FC<NavBarProps> = () => {
   }
 
   return (
-    <Flex bg={theme.colors.blackAlpha}>
+    <Flex zIndex={1} position="sticky" top={0} bg={theme.colors.blackAlpha}>
       <Box p={4} ml="auto">
         {body}
       </Box>

@@ -4,7 +4,7 @@ import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React from "react"
 import InputField from "../components/InputField"
-import NavBar from "../components/NavBar"
+import Layout from "../components/Layout"
 import PageWrapper from "../components/PageWrapper"
 import {
   useForgotPasswordMutation,
@@ -65,60 +65,56 @@ const Login: React.FC<LoginProps> = () => {
   }
 
   return (
-    <>
-      <NavBar />
+    <Layout variant="small">
+      <Formik
+        initialValues={{ usernameOrEmail: "", password: "" }}
+        initialTouched={{ usernameOrEmail: true }}
+        onSubmit={async (values, actions) => {
+          const response = await login(values)
 
-      <PageWrapper variant="small">
-        <Formik
-          initialValues={{ usernameOrEmail: "", password: "" }}
-          initialTouched={{ usernameOrEmail: true }}
-          onSubmit={async (values, actions) => {
-            const response = await login(values)
-
-            if (response.data?.login.errors) {
-              actions.setErrors(toErrorMap(response.data.login.errors))
-            } else if (response.data?.login.user) {
-              router.push("/")
-            }
-          }}
-        >
-          {(props) => (
-            <Form onSubmit={props.handleSubmit}>
+          if (response.data?.login.errors) {
+            actions.setErrors(toErrorMap(response.data.login.errors))
+          } else if (response.data?.login.user) {
+            router.push("/")
+          }
+        }}
+      >
+        {(props) => (
+          <Form onSubmit={props.handleSubmit}>
+            <InputField
+              name="usernameOrEmail"
+              placeholder="username or email"
+              label="Username or Email"
+            />
+            <Box mt={4}>
               <InputField
-                name="usernameOrEmail"
-                placeholder="username or email"
-                label="Username or Email"
+                name="password"
+                placeholder="password"
+                label="Password"
+                type="password"
               />
-              <Box mt={4}>
-                <InputField
-                  name="password"
-                  placeholder="password"
-                  label="Password"
-                  type="password"
-                />
-              </Box>
+            </Box>
 
-              <Flex justify="space-between" mt={4}>
-                <Button
-                  variantColor="teal"
-                  isLoading={props.isSubmitting}
-                  type="submit"
-                >
-                  Login
-                </Button>
+            <Flex justify="space-between" mt={4}>
+              <Button
+                variantColor="teal"
+                isLoading={props.isSubmitting}
+                type="submit"
+              >
+                Login
+              </Button>
 
-                <Button
-                  onClick={() => onForgotPassword(props)}
-                  isLoading={fetching}
-                >
-                  Forgot Password?
-                </Button>
-              </Flex>
-            </Form>
-          )}
-        </Formik>
-      </PageWrapper>
-    </>
+              <Button
+                onClick={() => onForgotPassword(props)}
+                isLoading={fetching}
+              >
+                Forgot Password?
+              </Button>
+            </Flex>
+          </Form>
+        )}
+      </Formik>
+    </Layout>
   )
 }
 

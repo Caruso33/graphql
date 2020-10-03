@@ -1,8 +1,10 @@
 import { Box } from "@chakra-ui/core"
 import React from "react"
 
+export type PageWrapperVariant = "small" | "regular"
+
 interface PageWrapperProps {
-  variant?: "small" | "regular"
+  variant?: PageWrapperVariant
 }
 
 const PageWrapper: React.FC<PageWrapperProps> = ({

@@ -1,0 +1,5 @@
+mutation CreateQueue($options: QueueInput!) {
+  createQueue(options: $options) {
+    ...RegularQueue
+  }
+}

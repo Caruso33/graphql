@@ -3,6 +3,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Textarea,
   theme,
 } from "@chakra-ui/core"
 import { useField } from "formik"
@@ -11,17 +12,26 @@ import React, { InputHTMLAttributes } from "react"
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
   label: string
+  textarea: boolean
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, size, ...props }) => {
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  size,
+  textarea,
+  ...props
+}) => {
   const [field, meta, _helpers] = useField(props)
+
+  let InputOrTextarea = Input
+  if (textarea) InputOrTextarea = Textarea
 
   return (
     <FormControl isInvalid={meta.error && meta.touched}>
       <FormLabel htmlFor={props.name}>{label}</FormLabel>
 
       {/* field: {name, onBlur, onChange, value} */}
-      <Input
+      <InputOrTextarea
         {...field}
         {...props}
         id={field.name}
