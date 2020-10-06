@@ -28,7 +28,7 @@ export class Queue extends BaseEntity {
   // TODO: Admin user associated
   // TODO: Location field
 
-  @Field(() => [Slip])
+  @Field(() => [Slip], { nullable: true })
   @OneToMany(() => Slip, (slip) => slip.queue)
   slips!: Slip[]
 

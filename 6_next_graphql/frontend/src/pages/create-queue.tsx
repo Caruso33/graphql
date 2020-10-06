@@ -7,11 +7,14 @@ import InputField from "../components/InputField"
 import Layout from "../components/Layout"
 import { useCreateQueueMutation } from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
+import { useIsAuth } from "../utils/useIsAuth"
 
 interface CreateQueueProps {}
 
 const CreateQueue: React.FC<CreateQueueProps> = () => {
   const router = useRouter()
+
+  useIsAuth()
 
   const [, createQueue] = useCreateQueueMutation()
 
@@ -22,16 +25,17 @@ const CreateQueue: React.FC<CreateQueueProps> = () => {
       <Formik
         initialValues={{ title: "", description: "" }}
         onSubmit={async (values, _actions) => {
-          const response = await createQueue({ options: values })
-          if (response.data?.createQueue.errors) {
+          const { data, error } = await createQueue({ options: values })
+
+          if (error) {
             toast({
-              title: "Something went wrong.",
-              description: "Please try again.",
+              title: "Something went wrong. Please try again.",
+              description: error?.message,
               status: "error",
               duration: 5000,
               isClosable: true,
             })
-          } else if (response.data?.createQueue.user) {
+          } else if (data?.createQueue?.id) {
             toast({
               title: "Queue created",
               description: "",

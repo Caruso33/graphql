@@ -22,7 +22,7 @@ import {
 export class UserResolver {
   @Query(() => [User])
   users(): Promise<User[]> {
-    return User.find()
+    return User.find({})
   }
 
   @Query(() => User, { nullable: true })

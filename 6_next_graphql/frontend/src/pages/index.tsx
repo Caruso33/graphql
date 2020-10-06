@@ -1,7 +1,7 @@
-import { Box, Button, Flex, Link } from "@chakra-ui/core"
+import { Button, Flex } from "@chakra-ui/core"
 import { useRouter } from "next/router"
 import React from "react"
-import NavBar from "../components/NavBar"
+import Layout from "../components/Layout"
 import PageWrapper from "../components/PageWrapper"
 import QueueList from "../components/QueueList"
 
@@ -12,9 +12,7 @@ const Index: React.FC<IndexProps> = () => {
   const navigateToCreateQueue = () => router.push("/create-queue")
 
   return (
-    <>
-      <NavBar />
-
+    <Layout>
       <PageWrapper>
         <Flex>
           <Button
@@ -29,7 +27,7 @@ const Index: React.FC<IndexProps> = () => {
         Hi
         <QueueList />
       </PageWrapper>
-    </>
+    </Layout>
   )
 }
 

@@ -7,10 +7,5 @@ fragment RegularQueue on Queue {
   slips {
     id
     processed
-
-    #   user {
-    #     id
-    #     username
-    #   }
   }
 }

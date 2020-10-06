@@ -12,7 +12,7 @@ import React, { InputHTMLAttributes } from "react"
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
   label: string
-  textarea: boolean
+  textarea?: boolean
 }
 
 const InputField: React.FC<InputFieldProps> = ({

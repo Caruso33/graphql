@@ -4,12 +4,15 @@ import NextLink from "next/link"
 import React from "react"
 import { useQueuesQuery } from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
+import { useIsAuth } from "../utils/useIsAuth"
 
 interface QueueListProps {}
 
 const QueueList: React.FC<QueueListProps> = () => {
   const [{ data, fetching }] = useQueuesQuery()
 
+  useIsAuth()
+  
   return (
     <Grid templateColumns="1fr 20rem 50rem 1fr" gap={6}>
       <Box />

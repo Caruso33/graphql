@@ -28,6 +28,7 @@ export class User extends BaseEntity {
   @Column()
   password!: string
 
+  @Field(() => [Slip], { nullable: true })
   @OneToMany(() => Slip, (slip) => slip.user)
   slips!: Slip[]
 
