@@ -1,3 +1,4 @@
+import { getConnection } from "typeorm"
 import { isAuth } from "../middleware/isAuth"
 import {
   Arg,
@@ -22,8 +23,23 @@ class QueueInput {
 @Resolver()
 export class QueueResolver {
   @Query(() => [Queue])
-  queues(): Promise<Queue[]> {
-    return Queue.find()
+  queues(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<Queue[]> {
+    const realLimit = Math.min(50, limit)
+
+    const qb = getConnection()
+      .getRepository(Queue)
+      .createQueryBuilder("q") // alias
+      .orderBy('"createdAt"', "DESC")
+      .take(realLimit)
+
+    if (cursor) {
+      qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) })
+    }
+
+    return qb.getMany()
   }
 
   @Query(() => Queue, { nullable: true })

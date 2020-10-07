@@ -22,6 +22,12 @@ export type Query = {
 };
 
 
+export type QueryQueuesArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
 export type QueryQueueArgs = {
   id: Scalars['Int'];
 };
@@ -36,7 +42,7 @@ export type Queue = {
   id: Scalars['Int'];
   title: Scalars['String'];
   description: Scalars['String'];
-  slips: Array<Slip>;
+  slips?: Maybe<Array<Slip>>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -57,6 +63,7 @@ export type User = {
   id: Scalars['Int'];
   email: Scalars['String'];
   username: Scalars['String'];
+  slips?: Maybe<Array<Slip>>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -142,10 +149,10 @@ export type RegularErrorFragment = (
 export type RegularQueueFragment = (
   { __typename?: 'Queue' }
   & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'description'>
-  & { slips: Array<(
+  & { slips?: Maybe<Array<(
     { __typename?: 'Slip' }
     & Pick<Slip, 'id' | 'processed'>
-  )> }
+  )>> }
 );
 
 export type RegularSlipFragment = (
@@ -256,7 +263,10 @@ export type MeQuery = (
   )> }
 );
 
-export type QueuesQueryVariables = Exact<{ [key: string]: never; }>;
+export type QueuesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
 
 
 export type QueuesQuery = (
@@ -404,8 +414,8 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const QueuesDocument = gql`
-    query Queues {
-  queues {
+    query Queues($limit: Int!, $cursor: String) {
+  queues(limit: $limit, cursor: $cursor) {
     ...RegularQueue
   }
 }

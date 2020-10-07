@@ -1,5 +1,5 @@
-query Queues {
-  queues {
+query Queues($limit: Int!, $cursor: String) {
+  queues(limit: $limit, cursor: $cursor) {
     ...RegularQueue
   }
 }
