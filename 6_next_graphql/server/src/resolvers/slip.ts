@@ -48,36 +48,16 @@ export class SlipResolver {
     return Slip.create({ ...options, userId: req.session!.userId }).save()
   }
 
-  @Mutation(() => Slip, { nullable: true })
-  @UseMiddleware(isAuth)
-  async updateSlip(
+  @Mutation(() => Boolean)
+  async deleteSlip(
     @Arg("id") id: number,
-    @Arg("options", (options) => SlipInput, { nullable: true })
-    @Ctx()
-    {}: MyContext
-  ): Promise<Slip | null> {
-    const slip = await Slip.findOne(id)
-    if (!slip) {
-      return null
+    @Ctx() { em }: MyContext
+  ): Promise<boolean> {
+    try {
+      await em.nativeDelete(Slip, { id })
+      return true
+    } catch {
+      return false
     }
-
-    // if (typeof title !== "undefined") slip.title = title!
-
-    slip.update({ ...options })
-
-    return slip
   }
-
-  // @Mutation(() => Boolean)
-  // async deleteSlip(
-  //   @Arg("id") id: number,
-  //   @Ctx() { em }: MyContext
-  // ): Promise<boolean> {
-  //   try {
-  //     await em.nativeDelete(Slip, { id })
-  //     return true
-  //   } catch {
-  //     return false
-  //   }
-  // }
 }

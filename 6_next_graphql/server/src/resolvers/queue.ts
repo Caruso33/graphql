@@ -7,6 +7,7 @@ import {
   InputType,
   Int,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   Root,
@@ -22,26 +23,40 @@ class QueueInput {
   description: string
 }
 
+@ObjectType()
+class PaginatedQueues {
+  @Field(() => [Queue])
+  queues!: Queue[]
+  @Field()
+  hasMore!: boolean
+}
+
 @Resolver(() => Queue)
 export class QueueResolver {
-  @Query(() => [Queue])
-  queues(
+  @Query(() => PaginatedQueues)
+  async queues(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null
-  ): Promise<Queue[]> {
+  ): Promise<PaginatedQueues> {
     const realLimit = Math.min(50, limit)
+    const realLimitHasMore = realLimit + 1 // to check if hasMore
 
     const qb = getConnection()
       .getRepository(Queue)
       .createQueryBuilder("q") // alias
       .orderBy('"createdAt"', "DESC")
-      .take(realLimit)
+      .take(realLimitHasMore)
 
     if (cursor) {
       qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) })
     }
 
-    return qb.getMany()
+    const queues = await qb.getMany()
+
+    return {
+      queues: queues.slice(0, realLimit),
+      hasMore: queues.length === realLimitHasMore,
+    }
   }
 
   @FieldResolver(() => String)

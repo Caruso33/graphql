@@ -1,6 +1,9 @@
 query Queues($limit: Int!, $cursor: String) {
   queues(limit: $limit, cursor: $cursor) {
-    ...RegularQueue
+    hasMore
+    queues {
+      ...RegularQueue
+    }
   }
 }
 

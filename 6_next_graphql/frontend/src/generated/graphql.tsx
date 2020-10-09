@@ -14,7 +14,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  queues: Array<Queue>;
+  queues: PaginatedQueues;
   queue?: Maybe<Queue>;
   users: Array<User>;
   user?: Maybe<User>;
@@ -37,6 +37,12 @@ export type QueryUserArgs = {
   id: Scalars['Int'];
 };
 
+export type PaginatedQueues = {
+  __typename?: 'PaginatedQueues';
+  queues: Array<Queue>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type Queue = {
   __typename?: 'Queue';
   id: Scalars['Int'];
@@ -52,6 +58,7 @@ export type Slip = {
   __typename?: 'Slip';
   id: Scalars['Int'];
   processed: Scalars['Boolean'];
+  active: Scalars['Boolean'];
   initialQueueSize: Scalars['Float'];
   userId: Scalars['Float'];
   queue: Queue;
@@ -272,10 +279,14 @@ export type QueuesQueryVariables = Exact<{
 
 export type QueuesQuery = (
   { __typename?: 'Query' }
-  & { queues: Array<(
-    { __typename?: 'Queue' }
-    & RegularQueueFragment
-  )> }
+  & { queues: (
+    { __typename?: 'PaginatedQueues' }
+    & Pick<PaginatedQueues, 'hasMore'>
+    & { queues: Array<(
+      { __typename?: 'Queue' }
+      & RegularQueueFragment
+    )> }
+  ) }
 );
 
 export type QueueQueryVariables = Exact<{
@@ -417,7 +428,10 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
 export const QueuesDocument = gql`
     query Queues($limit: Int!, $cursor: String) {
   queues(limit: $limit, cursor: $cursor) {
-    ...RegularQueue
+    hasMore
+    queues {
+      ...RegularQueue
+    }
   }
 }
     ${RegularQueueFragmentDoc}`;

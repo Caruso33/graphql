@@ -19,10 +19,13 @@ export const createUrqlClient = (ssrExchange: any) => ({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      keys: {
+        PaginatedQueues: () => null,
+      },
       resolvers: {
-        // Query: {
-        //   queues: cursorPagination(),
-        // },
+        Query: {
+          queues: cursorPagination(),
+        },
       },
       updates: {
         Mutation: {
@@ -88,16 +91,30 @@ export const cursorPagination = (): Resolver => {
     }
 
     const fieldKey = `${fieldName}${stringifyVariables(fieldArgs)}`
-    const isInCache = cache.resolveFieldByKey(entityKey, fieldKey)
+    const isInCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey),
+      "queues"
+    )
 
     info.partial = !isInCache
 
     const results: string[] = []
+    let hasMore = true
+
     fieldInfos.forEach((fi) => {
-      const data = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string[]
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+      const data = cache.resolve(key, "queues") as string[]
+      const hasMoreKey = cache.resolve(key, "hasMore")
+
+      if (!hasMoreKey) hasMore = false
+
       results.push(...data)
     })
 
-    return results
+    return {
+      __typename: 'PaginatedQueues',
+      hasMore,
+      queues: results,
+    }
   }
 }

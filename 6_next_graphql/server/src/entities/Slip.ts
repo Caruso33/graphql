@@ -23,6 +23,10 @@ export class Slip extends BaseEntity {
   processed!: boolean
 
   @Field()
+  @Column({ default: true })
+  active!: boolean
+
+  @Field()
   @Column({ type: "int" })
   initialQueueSize: number
 

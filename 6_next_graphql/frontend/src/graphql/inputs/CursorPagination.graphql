@@ -1,0 +1,4 @@
+input CursorPagination {
+  limit: Int!
+  cursor: String
+}

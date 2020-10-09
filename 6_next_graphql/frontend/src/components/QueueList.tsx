@@ -25,18 +25,22 @@ const QueueList: React.FC<QueueListProps> = () => {
 
   const navigateToCreateQueue = () => router.push("/create-queue")
 
-  const [pagination, setPagination] = useState({ limit: 50, cursor: "" })
+  const [pagination, setPagination] = useState({ limit: 10, cursor: "" })
 
   const [{ data, fetching }] = useQueuesQuery({ variables: pagination })
 
   const onLoadMore = () => {
-    const lastQueueCursor =
-      data?.queues?.[data.queues.length - 1]?.createdAt || ""
+    const queues = data?.queues?.queues
+    const lastQueueCursor = queues?.[queues.length - 1]?.createdAt || ""
     setPagination({ ...pagination, cursor: lastQueueCursor })
   }
 
   if (!fetching && !data) {
-    return <Box>No queues present. Create one?</Box>
+    return (
+      <Box my={4}>
+        <Text>No queues present. Create one?</Text>
+      </Box>
+    )
   }
 
   return (
@@ -62,7 +66,7 @@ const QueueList: React.FC<QueueListProps> = () => {
           </Flex>
         ) : (
           <Stack spacing={10} mt={4}>
-            {data?.queues.map((queue) => {
+            {data?.queues?.queues?.map((queue) => {
               return (
                 <Box
                   key={queue.id}
@@ -86,14 +90,14 @@ const QueueList: React.FC<QueueListProps> = () => {
         )}
       </Box>
 
-      {data && (
+      {data && data?.queues?.hasMore && (
         <Button
           my={8}
           onClick={onLoadMore}
           isDisabled={fetching}
           isLoading={fetching}
         >
-          Load More...
+          <Text>Load More...</Text>
         </Button>
       )}
     </>
