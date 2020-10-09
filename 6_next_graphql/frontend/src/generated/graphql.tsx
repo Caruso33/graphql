@@ -45,6 +45,7 @@ export type Queue = {
   slips?: Maybe<Array<Slip>>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  descriptionSnippet: Scalars['String'];
 };
 
 export type Slip = {
@@ -148,7 +149,7 @@ export type RegularErrorFragment = (
 
 export type RegularQueueFragment = (
   { __typename?: 'Queue' }
-  & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'description'>
+  & Pick<Queue, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'descriptionSnippet'>
   & { slips?: Maybe<Array<(
     { __typename?: 'Slip' }
     & Pick<Slip, 'id' | 'processed'>
@@ -296,7 +297,7 @@ export const RegularQueueFragmentDoc = gql`
   createdAt
   updatedAt
   title
-  description
+  descriptionSnippet
   slips {
     id
     processed

@@ -3,11 +3,13 @@ import { isAuth } from "../middleware/isAuth"
 import {
   Arg,
   Field,
+  FieldResolver,
   InputType,
   Int,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql"
 import { Queue } from "../entities/Queue"
@@ -17,10 +19,10 @@ class QueueInput {
   @Field()
   title!: string
   @Field()
-  description!: string
+  description: string
 }
 
-@Resolver()
+@Resolver(() => Queue)
 export class QueueResolver {
   @Query(() => [Queue])
   queues(
@@ -40,6 +42,11 @@ export class QueueResolver {
     }
 
     return qb.getMany()
+  }
+
+  @FieldResolver(() => String)
+  descriptionSnippet(@Root() root: Queue) {
+    return root.description.slice(0, 50)
   }
 
   @Query(() => Queue, { nullable: true })

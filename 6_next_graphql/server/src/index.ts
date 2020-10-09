@@ -11,6 +11,7 @@ const main = async () => {
   const app = express()
 
   const { RedisStore, redis, orm } = await configureDB()
+  await orm.runMigrations()
 
   configureMiddleWare(app, { RedisStore, redis })
 

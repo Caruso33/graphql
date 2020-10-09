@@ -3,7 +3,7 @@ fragment RegularQueue on Queue {
   createdAt
   updatedAt
   title
-  description
+  descriptionSnippet
   slips {
     id
     processed

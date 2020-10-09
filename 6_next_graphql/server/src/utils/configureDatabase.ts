@@ -10,8 +10,6 @@ import { User } from "./../entities/User"
 export default async function configureDB() {
   const orm = await createConnection(typeOrmConfig)
 
-  await orm.runMigrations()
-
   const RedisStore = connectRedis(session)
   const redis = new Redis()
 
