@@ -22,12 +22,12 @@ import {
 export class UserResolver {
   @Query(() => [User])
   users(): Promise<User[]> {
-    return User.find({})
+    return User.find({ relations: ["adminOfQueues"] })
   }
 
   @Query(() => User, { nullable: true })
   user(@Arg("id", () => Int) id: number): Promise<User | undefined> {
-    return User.findOne(id)
+    return User.findOne(id, { relations: ["adminOfQueues"] })
   }
 
   @Query(() => User, { nullable: true })

@@ -1,7 +1,9 @@
+import { MyContext } from "./../types"
 import { getConnection } from "typeorm"
 import { isAuth } from "../middleware/isAuth"
 import {
   Arg,
+  Ctx,
   Field,
   FieldResolver,
   InputType,
@@ -14,6 +16,7 @@ import {
   UseMiddleware,
 } from "type-graphql"
 import { Queue } from "../entities/Queue"
+import { User } from "../entities/User"
 
 @InputType()
 class QueueInput {
@@ -44,7 +47,8 @@ export class QueueResolver {
     const qb = getConnection()
       .getRepository(Queue)
       .createQueryBuilder("q") // alias
-      .orderBy('"createdAt"', "DESC")
+      .leftJoinAndSelect("q.admins", "u")
+      .orderBy("q.createdAt", "DESC")
       .take(realLimitHasMore)
 
     if (cursor) {
@@ -69,10 +73,25 @@ export class QueueResolver {
     return Queue.findOne(id)
   }
 
-  @Mutation(() => Queue)
+  @Mutation(() => Queue, { nullable: true })
   @UseMiddleware(isAuth)
-  async createQueue(@Arg("options") options: QueueInput): Promise<Queue> {
-    const queue = Queue.create({ ...options, slips: [] }).save()
+  async createQueue(
+    @Arg("options") options: QueueInput,
+    @Ctx() { req }: MyContext
+  ): Promise<Queue | null> {
+    const userId = req.session!.userId
+    const user = await User.findOne(userId)
+
+    if (!user) return null
+
+    const queue = await Queue.create({
+      ...options,
+      slips: [],
+      admins: [user],
+    }).save()
+
+    user.adminOfQueues = [...(user.adminOfQueues || []), queue]
+    await user.save()
 
     return queue
   }

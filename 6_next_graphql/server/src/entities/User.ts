@@ -4,10 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { Queue } from "./Queue"
 import { Slip } from "./Slip"
 
 @ObjectType()
@@ -27,6 +30,10 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string
+
+  @Field(() => [Queue], { nullable: true })
+  @ManyToMany(() => Queue, (queue) => queue.admins)
+  adminOfQueues!: Queue[]
 
   @Field(() => [Slip], { nullable: true })
   @OneToMany(() => Slip, (slip) => slip.user)
