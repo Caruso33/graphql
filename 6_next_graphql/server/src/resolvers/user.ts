@@ -36,7 +36,10 @@ export class UserResolver {
       return null
     }
 
-    return User.findOne({ where: { id: req.session.userId } })
+    return User.findOne({
+      where: { id: req.session.userId },
+      relations: ["adminOfQueues"],
+    })
   }
 
   @Mutation(() => UserResponse)

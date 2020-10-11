@@ -19,31 +19,16 @@ const NavBar: React.FC<NavBarProps> = () => {
   if (fetching) {
     body = <Spinner />
   } else if (!data?.me) {
-    body = (
-      <>
-        <NextLink href="/login">
-          <Link mr={2}>login</Link>
-        </NextLink>
-
-        <NextLink href="/register">
-          <Link>register</Link>
-        </NextLink>
-      </>
-    )
+    body = <NotLoggedIn />
   } else {
     body = (
-      <Flex>
-        <Button
-          isLoading={fetchingLogout}
-          variant="link"
-          mr={2}
-          onClick={() => logout()}
-        >
-          logout
-        </Button>
-
-        <Box>{data.me.username}</Box>
-      </Flex>
+      <IsNotLoggedIn
+        {...{
+          fetchingLogout,
+          logout,
+          data,
+        }}
+      />
     )
   }
 
@@ -57,3 +42,40 @@ const NavBar: React.FC<NavBarProps> = () => {
 }
 
 export default withUrqlClient(createUrqlClient)(NavBar)
+
+function NotLoggedIn() {
+  return (
+    <>
+      <NextLink href="/login">
+        <Link mr={2}>login</Link>
+      </NextLink>
+
+      <NextLink href="/register">
+        <Link>register</Link>
+      </NextLink>
+    </>
+  )
+}
+
+function IsNotLoggedIn({ fetchingLogout, logout, data }) {
+  return (
+    <Flex>
+      <Button
+        isLoading={fetchingLogout}
+        variant="link"
+        mr={2}
+        onClick={() => logout()}
+      >
+        logout
+      </Button>
+
+      <NextLink href={data.me.adminOfQueues.length > 0 ? "/admin" : ""}>
+        <Link mr={2}>
+          <Box>admin</Box>
+        </Link>
+      </NextLink>
+
+      <Box>{data.me.username}</Box>
+    </Flex>
+  )
+}

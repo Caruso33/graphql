@@ -9,10 +9,8 @@ interface IndexProps {}
 const Index: React.FC<IndexProps> = () => {
   return (
     <Layout>
-      <PageWrapper>
-        <Heading>Hi</Heading>
-        <QueueList />
-      </PageWrapper>
+      <Heading>Hi</Heading>
+      <QueueList />
     </Layout>
   )
 }

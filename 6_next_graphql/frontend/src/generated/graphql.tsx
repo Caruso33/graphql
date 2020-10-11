@@ -48,10 +48,22 @@ export type Queue = {
   id: Scalars['Int'];
   title: Scalars['String'];
   description: Scalars['String'];
+  admins: Array<User>;
   slips?: Maybe<Array<Slip>>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   descriptionSnippet: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Int'];
+  email: Scalars['String'];
+  username: Scalars['String'];
+  adminOfQueues?: Maybe<Array<Queue>>;
+  slips?: Maybe<Array<Slip>>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Slip = {
@@ -66,19 +78,9 @@ export type Slip = {
   updatedAt: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Int'];
-  email: Scalars['String'];
-  username: Scalars['String'];
-  slips?: Maybe<Array<Slip>>;
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  createQueue: Queue;
+  createQueue?: Maybe<Queue>;
   updateQueue?: Maybe<Queue>;
   deleteQueue: Scalars['Boolean'];
   register: UserResponse;
@@ -175,6 +177,10 @@ export type RegularSlipFragment = (
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username' | 'email'>
+  & { adminOfQueues?: Maybe<Array<(
+    { __typename?: 'Queue' }
+    & Pick<Queue, 'id' | 'title' | 'descriptionSnippet'>
+  )>> }
 );
 
 export type RegularUserResponseFragment = (
@@ -209,10 +215,10 @@ export type CreateQueueMutationVariables = Exact<{
 
 export type CreateQueueMutation = (
   { __typename?: 'Mutation' }
-  & { createQueue: (
+  & { createQueue?: Maybe<(
     { __typename?: 'Queue' }
     & RegularQueueFragment
-  ) }
+  )> }
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -339,6 +345,11 @@ export const RegularUserFragmentDoc = gql`
   id
   username
   email
+  adminOfQueues {
+    id
+    title
+    descriptionSnippet
+  }
 }
     `;
 export const RegularUserResponseFragmentDoc = gql`
