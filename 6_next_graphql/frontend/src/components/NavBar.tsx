@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Link, Spinner, theme } from "@chakra-ui/core"
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Link,
+  Spinner,
+  theme,
+} from "@chakra-ui/core"
 import { withUrqlClient } from "next-urql"
 import NextLink from "next/link"
 import React from "react"
@@ -33,7 +41,21 @@ const NavBar: React.FC<NavBarProps> = () => {
   }
 
   return (
-    <Flex zIndex={1} position="sticky" top={0} bg={theme.colors.blackAlpha}>
+    <Flex
+      zIndex={1}
+      position="sticky"
+      top={0}
+      bg={theme.colors.blackAlpha}
+      align="center"
+    >
+      <Box ml={4}>
+        <NextLink href="/">
+          <Link>
+            <Heading size="lg">Queue App</Heading>
+          </Link>
+        </NextLink>
+      </Box>
+
       <Box p={4} ml="auto">
         {body}
       </Box>
