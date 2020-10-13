@@ -38,9 +38,9 @@ export class Slip extends BaseEntity {
   @ManyToOne(() => User, (user) => user.slips)
   user!: User
 
-  @Field(() => Queue)
+  @Field(() => Queue, { nullable: true })
   @ManyToOne(() => Queue, (queue) => queue.slips)
-  queue!: Queue
+  queue: Queue
 
   @Field(() => String)
   @CreateDateColumn()

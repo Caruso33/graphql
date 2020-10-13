@@ -188,21 +188,22 @@ export class QueueResolver {
     @Arg("id") id: number,
     @Arg("slipId") slipId: number
   ): Promise<Queue | null> {
-    const queue = await Queue.findOne(id)
+    const queue = await Queue.findOne(id, { relations: ["slips"] })
     if (!queue) {
       console.log("no queue")
       return null
     }
 
-    const slip = await Slip.findOne(slipId)
+    const slip = await Slip.findOne(slipId, { relations: ["queue"] })
     if (!slip) {
       console.log("no slip")
       return null
     }
 
-    slip.active = false
+    slip.active = false // slip will still have queue relation
     await slip.save()
 
+    // queue removes this relation though
     queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
     await queue.save()
 
