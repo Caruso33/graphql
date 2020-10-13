@@ -7,27 +7,33 @@ import {
   Spinner,
   Stack,
   Flex,
+  useToast,
 } from "@chakra-ui/core"
 import { withUrqlClient } from "next-urql"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { useQueuesQuery } from "../generated/graphql"
+import {
+  useQueuesQuery,
+  useSubscribeToQueueMutation,
+} from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
 import { useIsAuth } from "../utils/useIsAuth"
 
 interface QueueListProps {}
 
-const QueueList: React.FC<QueueListProps> = () => {
+const QueueList: React.FC<QueueListProps> = ({ onSubscribeToQueue }) => {
   useIsAuth()
 
   const router = useRouter()
+  const toast = useToast()
 
   const navigateToCreateQueue = () => router.push("/create-queue")
 
   const [pagination, setPagination] = useState({ limit: 10, cursor: "" })
 
   const [{ data, fetching }] = useQueuesQuery({ variables: pagination })
+  const [, subscribeToQueue] = useSubscribeToQueueMutation()
 
   const onLoadMore = () => {
     const queues = data?.queues?.queues
@@ -68,22 +74,50 @@ const QueueList: React.FC<QueueListProps> = () => {
           <Stack spacing={10} mt={4}>
             {data?.queues?.queues?.map((queue) => {
               return (
-                <Box
+                <Flex
                   key={queue.id}
                   shadow="md"
                   borderWidth="1px"
                   p={4}
                   background="teal"
+                  align="center"
                 >
-                  <NextLink href={`/queues/${queue.id}`}>
-                    <Link>
-                      <Heading mb={4} size="md">
-                        {queue.title}
-                      </Heading>
-                      <Text>{queue.descriptionSnippet}..</Text>
-                    </Link>
-                  </NextLink>
-                </Box>
+                  <Box>
+                    <NextLink href={`/queues/${queue.id}`}>
+                      <Link>
+                        <Heading mb={4} size="md">
+                          {queue.title}
+                        </Heading>
+                        <Text>
+                          {queue.descriptionSnippet}
+                          {queue.descriptionSnippet?.length >= 50 ? ".." : ""}
+                        </Text>
+                      </Link>
+                    </NextLink>
+                  </Box>
+
+                  <Button
+                    size="sm"
+                    ml="auto"
+                    variantColor="teal"
+                    onClick={() => {
+                      subscribeToQueue({ id: queue.id }).then(({ data }) => {
+                        if (!data) {
+                          toast({
+                            title: "Already subscribed!",
+                            description:
+                              "Please check your slips. You already subscribed.",
+                            status: "error",
+                            duration: 5000,
+                            isClosable: true,
+                          })
+                        } else onSubscribeToQueue()
+                      })
+                    }}
+                  >
+                    Subscribe to Queue
+                  </Button>
+                </Flex>
               )
             })}
           </Stack>

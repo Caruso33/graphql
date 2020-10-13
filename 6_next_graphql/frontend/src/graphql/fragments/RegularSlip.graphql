@@ -1,9 +1,15 @@
 fragment RegularSlip on Slip {
   id
+
   createdAt
   updatedAt
+
   processed
-  userId
+  active
+
+  initialQueueSize
+  queuePosition
+
   queue {
     id
     title

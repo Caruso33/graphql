@@ -131,10 +131,20 @@ export class QueueResolver {
   @UseMiddleware(isAuth)
   @Mutation(() => Queue)
   async subscribeTo(
-    @Arg("id") id: number,
+    @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<Queue | null> {
     const userId = req.session!.userId
+
+    const hasActiveSlipAlready = await Slip.findOne({
+      where: {
+        queue: {
+          id: id,
+        },
+        active: true,
+      },
+    })
+    if (hasActiveSlipAlready) return null
 
     const user = await User.findOne(userId, {
       relations: ["slips"],
@@ -185,8 +195,8 @@ export class QueueResolver {
   @UseMiddleware(isAuth)
   @Mutation(() => Queue)
   async unsubscribeFrom(
-    @Arg("id") id: number,
-    @Arg("slipId") slipId: number
+    @Arg("id", () => Int) id: number,
+    @Arg("slipId", () => Int) slipId: number
   ): Promise<Queue | null> {
     const queue = await Queue.findOne(id, { relations: ["slips"] })
     if (!queue) {

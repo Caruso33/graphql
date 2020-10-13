@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "type-graphql"
+import { Field, FieldResolver, Int, ObjectType, Root } from "type-graphql"
 import {
   BaseEntity,
   Column,
@@ -29,6 +29,17 @@ export class Slip extends BaseEntity {
   @Field()
   @Column({ type: "int" })
   initialQueueSize: number
+
+  @Field(() => Int, { nullable: true })
+  async queuePosition(@Root() slip: Slip) {
+    if (!slip.queue) return null
+
+    const queue = await Queue.findOne(slip.queue?.id, { relations: ["slips"] })
+    const slipIds = (queue?.slips || []).map((slip) => slip.id)
+    const index = slipIds.indexOf(slip.id)
+
+    return index
+  }
 
   @Field()
   @Column()

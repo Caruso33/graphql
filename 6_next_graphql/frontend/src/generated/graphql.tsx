@@ -19,6 +19,8 @@ export type Query = {
   users: Array<User>;
   user?: Maybe<User>;
   me?: Maybe<User>;
+  slips: PaginatedSlips;
+  slip?: Maybe<Slip>;
 };
 
 
@@ -34,6 +36,17 @@ export type QueryQueueArgs = {
 
 
 export type QueryUserArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QuerySlipsArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
+export type QuerySlipArgs = {
   id: Scalars['Int'];
 };
 
@@ -72,10 +85,18 @@ export type Slip = {
   processed: Scalars['Boolean'];
   active: Scalars['Boolean'];
   initialQueueSize: Scalars['Float'];
+  queuePosition?: Maybe<Scalars['Int']>;
   userId: Scalars['Float'];
-  queue: Queue;
+  user: User;
+  queue?: Maybe<Queue>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type PaginatedSlips = {
+  __typename?: 'PaginatedSlips';
+  slips: Array<Slip>;
+  hasMore: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -83,6 +104,8 @@ export type Mutation = {
   createQueue?: Maybe<Queue>;
   updateQueue?: Maybe<Queue>;
   deleteQueue: Scalars['Boolean'];
+  subscribeTo: Queue;
+  unsubscribeFrom: Queue;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -104,6 +127,17 @@ export type MutationUpdateQueueArgs = {
 
 export type MutationDeleteQueueArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationSubscribeToArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationUnsubscribeFromArgs = {
+  slipId: Scalars['Int'];
+  id: Scalars['Int'];
 };
 
 
@@ -167,11 +201,11 @@ export type RegularQueueFragment = (
 
 export type RegularSlipFragment = (
   { __typename?: 'Slip' }
-  & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed' | 'userId'>
-  & { queue: (
+  & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed' | 'active' | 'initialQueueSize' | 'queuePosition'>
+  & { queue?: Maybe<(
     { __typename?: 'Queue' }
     & Pick<Queue, 'id' | 'title'>
-  ) }
+  )> }
 );
 
 export type RegularUserFragment = (
@@ -266,6 +300,33 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SubscribeToQueueMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type SubscribeToQueueMutation = (
+  { __typename?: 'Mutation' }
+  & { subscribeTo: (
+    { __typename?: 'Queue' }
+    & RegularQueueFragment
+  ) }
+);
+
+export type UnSubscribeFromQueueMutationVariables = Exact<{
+  id: Scalars['Int'];
+  slipId: Scalars['Int'];
+}>;
+
+
+export type UnSubscribeFromQueueMutation = (
+  { __typename?: 'Mutation' }
+  & { unsubscribeFrom: (
+    { __typename?: 'Queue' }
+    & RegularQueueFragment
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -308,6 +369,37 @@ export type QueueQuery = (
   )> }
 );
 
+export type SlipsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
+
+
+export type SlipsQuery = (
+  { __typename?: 'Query' }
+  & { slips: (
+    { __typename?: 'PaginatedSlips' }
+    & Pick<PaginatedSlips, 'hasMore'>
+    & { slips: Array<(
+      { __typename?: 'Slip' }
+      & RegularSlipFragment
+    )> }
+  ) }
+);
+
+export type SlipQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type SlipQuery = (
+  { __typename?: 'Query' }
+  & { slip?: Maybe<(
+    { __typename?: 'Slip' }
+    & RegularSlipFragment
+  )> }
+);
+
 export const RegularQueueFragmentDoc = gql`
     fragment RegularQueue on Queue {
   id
@@ -327,7 +419,9 @@ export const RegularSlipFragmentDoc = gql`
   createdAt
   updatedAt
   processed
-  userId
+  active
+  initialQueueSize
+  queuePosition
   queue {
     id
     title
@@ -425,6 +519,28 @@ export const RegisterDocument = gql`
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
+export const SubscribeToQueueDocument = gql`
+    mutation SubscribeToQueue($id: Int!) {
+  subscribeTo(id: $id) {
+    ...RegularQueue
+  }
+}
+    ${RegularQueueFragmentDoc}`;
+
+export function useSubscribeToQueueMutation() {
+  return Urql.useMutation<SubscribeToQueueMutation, SubscribeToQueueMutationVariables>(SubscribeToQueueDocument);
+};
+export const UnSubscribeFromQueueDocument = gql`
+    mutation unSubscribeFromQueue($id: Int!, $slipId: Int!) {
+  unsubscribeFrom(id: $id, slipId: $slipId) {
+    ...RegularQueue
+  }
+}
+    ${RegularQueueFragmentDoc}`;
+
+export function useUnSubscribeFromQueueMutation() {
+  return Urql.useMutation<UnSubscribeFromQueueMutation, UnSubscribeFromQueueMutationVariables>(UnSubscribeFromQueueDocument);
+};
 export const MeDocument = gql`
     query Me {
   me {
@@ -460,4 +576,29 @@ export const QueueDocument = gql`
 
 export function useQueueQuery(options: Omit<Urql.UseQueryArgs<QueueQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<QueueQuery>({ query: QueueDocument, ...options });
+};
+export const SlipsDocument = gql`
+    query Slips($limit: Int!, $cursor: String) {
+  slips(limit: $limit, cursor: $cursor) {
+    hasMore
+    slips {
+      ...RegularSlip
+    }
+  }
+}
+    ${RegularSlipFragmentDoc}`;
+
+export function useSlipsQuery(options: Omit<Urql.UseQueryArgs<SlipsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SlipsQuery>({ query: SlipsDocument, ...options });
+};
+export const SlipDocument = gql`
+    query Slip($id: Int!) {
+  slip(id: $id) {
+    ...RegularSlip
+  }
+}
+    ${RegularSlipFragmentDoc}`;
+
+export function useSlipQuery(options: Omit<Urql.UseQueryArgs<SlipQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SlipQuery>({ query: SlipDocument, ...options });
 };

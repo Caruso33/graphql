@@ -15,7 +15,7 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
     <Box
       m={8}
       mx="auto"
-      maxW={variant === "regular" ? "800px" : "400px"}
+      maxW={variant === "regular" ? "1000px" : "400px"}
       w="100%"
     >
       {children}

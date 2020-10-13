@@ -6,6 +6,7 @@ import {
   InputType,
   Int,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
   UseMiddleware,
@@ -13,20 +14,44 @@ import {
 import { Queue } from "./../entities/Queue"
 import { Slip } from "./../entities/Slip"
 import { MyContext } from "./../types"
+import { getConnection } from "typeorm"
 
-@InputType()
-class SlipInput {
+@ObjectType()
+class PaginatedSlips {
+  @Field(() => [Slip])
+  slips!: Slip[]
   @Field()
-  title!: string
-  @Field()
-  queue!: Queue
+  hasMore!: boolean
 }
 
 @Resolver()
 export class SlipResolver {
-  @Query(() => [Slip])
-  slips(@Ctx() {}: MyContext): Promise<Slip[]> {
-    return Slip.find({ relations: ["user", "queue"] })
+  @Query(() => PaginatedSlips)
+  async slips(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<PaginatedSlips> {
+    const realLimit = Math.min(50, limit)
+    const realLimitHasMore = realLimit + 1 // to check if hasMore
+
+    const qb = getConnection()
+      .getRepository(Slip)
+      .createQueryBuilder("s") // alias
+      .leftJoinAndSelect("s.queue", "q")
+      .leftJoinAndSelect("s.user", "u")
+      .orderBy("s.createdAt", "DESC")
+      .take(realLimitHasMore)
+
+    if (cursor) {
+      qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) })
+    }
+
+    const slips = await qb.getMany()
+
+    return {
+      slips: slips.slice(0, realLimit),
+      hasMore: slips.length === realLimitHasMore,
+    }
   }
 
   @Query(() => Slip, { nullable: true })

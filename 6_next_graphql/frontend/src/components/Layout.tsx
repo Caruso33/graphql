@@ -10,6 +10,7 @@ const Layout: React.FC<LayoutProps> = ({ children, variant = "regular" }) => {
   return (
     <>
       <NavBar />
+
       <PageWrapper variant={variant}>{children}</PageWrapper>
     </>
   )

@@ -1,0 +1,11 @@
+mutation SubscribeToQueue($id: Int!) {
+  subscribeTo(id: $id) {
+    ...RegularQueue
+  }
+}
+
+mutation unSubscribeFromQueue($id: Int!, $slipId: Int!) {
+  unsubscribeFrom(id: $id, slipId: $slipId) {
+    ...RegularQueue
+  }
+}

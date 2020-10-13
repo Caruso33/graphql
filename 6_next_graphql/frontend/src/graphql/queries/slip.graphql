@@ -1,0 +1,14 @@
+query Slips($limit: Int!, $cursor: String) {
+  slips(limit: $limit, cursor: $cursor) {
+    hasMore
+    slips {
+      ...RegularSlip
+    }
+  }
+}
+
+query Slip($id: Int!) {
+  slip(id: $id) {
+    ...RegularSlip
+  }
+}
