@@ -1,6 +1,3 @@
-import { MyContext } from "./../types"
-import { getConnection } from "typeorm"
-import { isAuth } from "../middleware/isAuth"
 import {
   Arg,
   Ctx,
@@ -15,8 +12,12 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql"
+import { getConnection } from "typeorm"
 import { Queue } from "../entities/Queue"
+import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
+import { isAuth } from "../middleware/isAuth"
+import { MyContext } from "./../types"
 
 @InputType()
 class QueueInput {
@@ -48,6 +49,7 @@ export class QueueResolver {
       .getRepository(Queue)
       .createQueryBuilder("q") // alias
       .leftJoinAndSelect("q.admins", "u")
+      .leftJoinAndSelect("q.slips", "s")
       .orderBy("q.createdAt", "DESC")
       .take(realLimitHasMore)
 
@@ -70,7 +72,7 @@ export class QueueResolver {
 
   @Query(() => Queue, { nullable: true })
   queue(@Arg("id", () => Int) id: number): Promise<Queue | undefined> {
-    return Queue.findOne(id)
+    return Queue.findOne(id, { relations: ["admins", "slips"] })
   }
 
   @Mutation(() => Queue, { nullable: true })
@@ -124,5 +126,86 @@ export class QueueResolver {
     } catch {
       return false
     }
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => Queue)
+  async subscribeTo(
+    @Arg("id") id: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Queue | null> {
+    const userId = req.session!.userId
+
+    const user = await User.findOne(userId, {
+      relations: ["slips"],
+    })
+    if (!user) {
+      console.log("no user")
+      return null
+    }
+
+    const queue = await Queue.findOne(id, {
+      relations: ["slips"],
+    })
+    if (!queue) {
+      console.log("no queue")
+      return null
+    }
+
+    // const slip = await getConnection()
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into(Slip)
+    //   .values([
+    //     {
+    //       initialQueueSize: queue?.slips?.length ?? 0,
+    //       userId,
+    //       user,
+    //       queue,
+    //     },
+    //   ])
+    //   .execute()
+
+    const slip = await Slip.create({
+      userId,
+      user,
+      queue,
+      initialQueueSize: queue?.slips?.length ?? 0,
+    })
+
+    queue.slips = [...(queue.slips || []), slip]
+    await queue.save()
+
+    user.slips = [...(user.slips || []), slip]
+    await user.save()
+
+    return queue
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => Queue)
+  async unsubscribeFrom(
+    @Arg("id") id: number,
+    @Arg("slipId") slipId: number
+  ): Promise<Queue | null> {
+    const queue = await Queue.findOne(id)
+    if (!queue) {
+      console.log("no queue")
+      return null
+    }
+
+    const slip = await Slip.findOne(slipId)
+    if (!slip) {
+      console.log("no slip")
+      return null
+    }
+
+    slip.active = false
+    await slip.save()
+
+    queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
+    await queue.save()
+
+    return queue
   }
 }

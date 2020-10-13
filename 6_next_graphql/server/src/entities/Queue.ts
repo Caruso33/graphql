@@ -29,13 +29,14 @@ export class Queue extends BaseEntity {
   description: string
 
   @Field(() => [User])
-  @ManyToMany(() => User, user => user.adminOfQueues)
+  @ManyToMany(() => User, (user) => user.adminOfQueues)
   @JoinTable()
   admins!: User[]
 
   // TODO: Location field
+
   @Field(() => [Slip], { nullable: true })
-  @OneToMany(() => Slip, (slip) => slip.queue)
+  @OneToMany(() => Slip, (slip) => slip.queue, { cascade: true })
   slips!: Slip[]
 
   @Field(() => String)

@@ -34,6 +34,7 @@ export class Slip extends BaseEntity {
   @Column()
   userId!: number
 
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.slips)
   user!: User
 

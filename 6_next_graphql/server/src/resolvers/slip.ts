@@ -26,7 +26,7 @@ class SlipInput {
 export class SlipResolver {
   @Query(() => [Slip])
   slips(@Ctx() {}: MyContext): Promise<Slip[]> {
-    return Slip.find({})
+    return Slip.find({ relations: ["user", "queue"] })
   }
 
   @Query(() => Slip, { nullable: true })
@@ -34,30 +34,30 @@ export class SlipResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() {}: MyContext
   ): Promise<Slip | undefined> {
-    return Slip.findOne(id)
+    return Slip.findOne(id, { relations: ["user", "queue"] })
   }
 
-  @Mutation(() => Slip)
-  @UseMiddleware(isAuth)
-  async createSlip(
-    @Arg("options") options: SlipInput,
-    @Ctx() { req }: MyContext
-  ): Promise<Slip | undefined> {
-    if (!req.session?.userId) {
-    }
-    return Slip.create({ ...options, userId: req.session!.userId }).save()
-  }
+  // @Mutation(() => Slip)
+  // @UseMiddleware(isAuth)
+  // async createSlip(
+  //   @Arg("options") options: SlipInput,
+  //   @Ctx() { req }: MyContext
+  // ): Promise<Slip | undefined> {
+  //   if (!req.session?.userId) {
+  //   }
+  //   return Slip.create({ ...options, userId: req.session!.userId }).save()
+  // }
 
-  @Mutation(() => Boolean)
-  async deleteSlip(
-    @Arg("id") id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<boolean> {
-    try {
-      await em.nativeDelete(Slip, { id })
-      return true
-    } catch {
-      return false
-    }
-  }
+  // @Mutation(() => Boolean)
+  // async deleteSlip(
+  //   @Arg("id") id: number,
+  //   @Ctx() { em }: MyContext
+  // ): Promise<boolean> {
+  //   try {
+  //     await em.nativeDelete(Slip, { id })
+  //     return true
+  //   } catch {
+  //     return false
+  //   }
+  // }
 }

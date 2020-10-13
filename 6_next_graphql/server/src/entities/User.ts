@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -36,7 +35,7 @@ export class User extends BaseEntity {
   adminOfQueues!: Queue[]
 
   @Field(() => [Slip], { nullable: true })
-  @OneToMany(() => Slip, (slip) => slip.user)
+  @OneToMany(() => Slip, (slip) => slip.user, { cascade: true })
   slips!: Slip[]
 
   @Field(() => String)

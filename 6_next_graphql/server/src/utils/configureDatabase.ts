@@ -21,7 +21,7 @@ const typeOrmConfig: ConnectionOptions = {
   database: "queue",
   username: "postgres_user",
   password: "postgres_pw",
-  logging: true,
+  // logging: true,
   synchronize: true,
   entities: [User, Queue, Slip],
   migrations: [path.join(__dirname, "..", "./migrations/*")],

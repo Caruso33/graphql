@@ -22,12 +22,14 @@ import {
 export class UserResolver {
   @Query(() => [User])
   users(): Promise<User[]> {
-    return User.find({ relations: ["adminOfQueues"] })
+    return User.find({ relations: ["adminOfQueues", "slips", "slips.queue"] })
   }
 
   @Query(() => User, { nullable: true })
   user(@Arg("id", () => Int) id: number): Promise<User | undefined> {
-    return User.findOne(id, { relations: ["adminOfQueues"] })
+    return User.findOne(id, {
+      relations: ["adminOfQueues", "slips", "slips.queue"],
+    })
   }
 
   @Query(() => User, { nullable: true })
@@ -57,6 +59,8 @@ export class UserResolver {
         username: options.username,
         password: hashedPassword,
         email: options.email,
+        adminOfQueues: [],
+        // slips: [],
       }).save()
 
       // const result = await getConnection()
