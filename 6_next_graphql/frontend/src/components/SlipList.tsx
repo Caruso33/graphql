@@ -1,14 +1,9 @@
-import {
-  MutationSubscribeToArgs,
-  useSubscribeToQueueMutation,
-  useUnSubscribeFromQueueMutation,
-} from "./../generated/graphql"
+import { useUnSubscribeFromQueueMutation } from "./../generated/graphql"
 import {
   Box,
   Button,
   Text,
   Heading,
-  Link,
   Spinner,
   Stack,
   Flex,
@@ -38,21 +33,39 @@ const SlipList: React.FC<SlipListProps> = () => {
     setPagination({ ...pagination, cursor: lastSlipCursor })
   }
 
-  console.log('slippi');
-  
+  const navigateToQueueList = () => router.push("/queues")
 
   if (!fetching && !data) {
     return (
-      <Box my={4}>
-        <Text>No slips present. Subscribe to a Queue?</Text>
-      </Box>
+      <Flex my={4}>
+        <Heading size="lg">No slips present. Subscribe to a Queue?</Heading>
+
+        <Button
+          size="sm"
+          ml="auto"
+          variantColor="teal"
+          onClick={navigateToQueueList}
+        >
+          Subscribe to Queue
+        </Button>
+      </Flex>
     )
   }
 
   return (
     <>
       <Box my={4}>
-        <Heading size="lg">Current Slips:</Heading>
+        <Flex>
+          <Heading size="lg">Current Slips:</Heading>
+          <Button
+            size="sm"
+            ml="auto"
+            variantColor="teal"
+            onClick={navigateToQueueList}
+          >
+            Subscribe to Queue
+          </Button>
+        </Flex>
       </Box>
 
       <Box>

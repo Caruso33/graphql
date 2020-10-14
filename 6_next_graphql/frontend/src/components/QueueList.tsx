@@ -22,13 +22,13 @@ import { useIsAuth } from "../utils/useIsAuth"
 
 interface QueueListProps {}
 
-const QueueList: React.FC<QueueListProps> = ({ onSubscribeToQueue }) => {
+const QueueList: React.FC<QueueListProps> = () => {
   useIsAuth()
 
   const router = useRouter()
   const toast = useToast()
 
-  const navigateToCreateQueue = () => router.push("/create-queue")
+  const navigateTo = (url) => router.push(url)
 
   const [pagination, setPagination] = useState({ limit: 10, cursor: "" })
 
@@ -54,14 +54,25 @@ const QueueList: React.FC<QueueListProps> = ({ onSubscribeToQueue }) => {
       <Box my={4}>
         <Flex>
           <Heading size="lg">Current Queues:</Heading>
-          <Button
-            size="sm"
-            ml="auto"
-            variantColor="teal"
-            onClick={navigateToCreateQueue}
-          >
-            Create new Queue
-          </Button>
+
+          <Box ml="auto">
+            <Button
+              size="sm"
+              variantColor="teal"
+              onClick={() => navigateTo("/create-queue")}
+            >
+              Create new Queue
+            </Button>
+
+            <Button
+              ml={4}
+              size="sm"
+              variantColor="teal"
+              onClick={() => navigateTo("/")}
+            >
+              See Slips
+            </Button>
+          </Box>
         </Flex>
       </Box>
 
@@ -111,7 +122,7 @@ const QueueList: React.FC<QueueListProps> = ({ onSubscribeToQueue }) => {
                             duration: 5000,
                             isClosable: true,
                           })
-                        } else onSubscribeToQueue()
+                        }
                       })
                     }}
                   >
