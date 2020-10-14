@@ -37,6 +37,7 @@ export class SlipResolver {
     const qb = getConnection()
       .getRepository(Slip)
       .createQueryBuilder("s") // alias
+      .where("s.active = true")
       .leftJoinAndSelect("s.queue", "q")
       .leftJoinAndSelect("s.user", "u")
       .orderBy("s.createdAt", "DESC")

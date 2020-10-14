@@ -41,7 +41,7 @@ const QueueList: React.FC<QueueListProps> = () => {
     setPagination({ ...pagination, cursor: lastQueueCursor })
   }
 
-  if (!fetching && !data) {
+  if (!fetching && !data?.queues?.queues?.length === 0) {
     return (
       <Box my={4}>
         <Text>No queues present. Create one?</Text>

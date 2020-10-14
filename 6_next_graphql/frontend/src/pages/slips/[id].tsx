@@ -1,31 +1,31 @@
-import { Flex, Spinner, Heading, Box, Button } from "@chakra-ui/core"
+import { Flex, Spinner, Box, Button } from "@chakra-ui/core"
 import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React from "react"
 import { getLocalStringFromUnix } from "../../utils/date"
 import Layout from "../../components/Layout"
-import { useQueueQuery } from "../../generated/graphql"
+import { useQueueQuery, useSlipQuery } from "../../generated/graphql"
 import { createUrqlClient } from "../../utils/createUrqlClient"
 
-interface QueueProps {}
+interface SlipProps {}
 
-const Queues: React.FC<QueueProps> = (props) => {
+const Queues: React.FC<SlipProps> = (props) => {
   const router = useRouter()
   const { id } = router.query
 
-  const [{ data, fetching }] = useQueueQuery({
+  const [{ data, fetching }] = useSlipQuery({
     variables: { id: parseInt(id) },
   })
 
   const navigateBack = () => router.back()
 
-  const queue = data?.queue ?? {}
+  const slip = data?.slip ?? {}
 
-  const createAtString = queue?.createdAt
-    ? getLocalStringFromUnix(parseInt(queue.createdAt))
+  const createAtString = slip?.createdAt
+    ? getLocalStringFromUnix(parseInt(slip.createdAt))
     : "-"
-  const updatedAtString = queue?.updatedAt
-    ? getLocalStringFromUnix(parseInt(queue.updatedAt))
+  const updatedAtString = slip?.updatedAt
+    ? getLocalStringFromUnix(parseInt(slip.updatedAt))
     : "-"
 
   return (
@@ -41,8 +41,7 @@ const Queues: React.FC<QueueProps> = (props) => {
           <Spinner />
         ) : (
           <>
-            <div>title: {queue?.title}</div>
-            <div>description snippet: {queue?.descriptionSnippet}</div>
+            <div>Position in Queue: {slip?.queuePosition}</div>
             <div>createdAt: {createAtString}</div>
             <div>updatedAt: {updatedAtString}</div>
           </>

@@ -3,11 +3,13 @@ import {
   Box,
   Button,
   Text,
+  Link,
   Heading,
   Spinner,
   Stack,
   Flex,
 } from "@chakra-ui/core"
+import NextLink from "next/link"
 import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
@@ -35,7 +37,7 @@ const SlipList: React.FC<SlipListProps> = () => {
 
   const navigateToQueueList = () => router.push("/queues")
 
-  if (!fetching && !data) {
+  if (!fetching && data?.slips?.slips?.length === 0) {
     return (
       <Flex my={4}>
         <Heading size="lg">No slips present. Subscribe to a Queue?</Heading>
@@ -86,10 +88,14 @@ const SlipList: React.FC<SlipListProps> = () => {
                   align="center"
                 >
                   <Box>
-                    <Heading mb={4} size="md">
-                      {slip?.queue?.title || "No Queue"}
-                    </Heading>
-                    <Text>{slip.active ? "Active" : "Inactive"}</Text>
+                    <NextLink href={`/slips/${slip.id}`}>
+                      <Link>
+                        <Heading mb={4} size="md">
+                          {slip?.queue?.title || "No Queue"}
+                        </Heading>
+                        <Text>{slip.active ? "Active" : "Inactive"}</Text>
+                      </Link>
+                    </NextLink>
                   </Box>
 
                   {slip.active && (
