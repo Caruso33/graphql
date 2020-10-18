@@ -4,7 +4,7 @@ import { Redis } from "ioredis"
 import { buildSchema } from "type-graphql"
 import { QueueResolver } from "../resolvers/queue"
 import { UserResolver } from "../resolvers/user"
-import { MyContext } from "../types"
+import { MyContext } from "../types/types"
 import { SlipResolver } from "./../resolvers/slip"
 
 export default async function configureGraphql(
@@ -14,6 +14,7 @@ export default async function configureGraphql(
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [QueueResolver, UserResolver, SlipResolver],
+      // resolvers: [__dirname + "../resolvers/**/*.ts"],
       // validate: false,
     }),
     context: ({ req, res }): MyContext => ({ req, res, redis }),

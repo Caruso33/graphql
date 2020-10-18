@@ -30,6 +30,10 @@ export class User extends BaseEntity {
   @Column()
   password!: string
 
+  @Field(() => Boolean)
+  @Column({ default: false })
+  isSuperAdmin: boolean
+
   @Field(() => [Queue], { nullable: true })
   @ManyToMany(() => Queue, (queue) => queue.admins)
   adminOfQueues!: Queue[]

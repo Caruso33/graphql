@@ -29,14 +29,14 @@ export class Queue extends BaseEntity {
   description: string
 
   @Field(() => [User])
-  @ManyToMany(() => User, (user) => user.adminOfQueues)
+  @ManyToMany(() => User, (user) => user.adminOfQueues, { onDelete: "CASCADE" })
   @JoinTable()
   admins!: User[]
 
   // TODO: Location field
 
   @Field(() => [Slip], { nullable: true })
-  @OneToMany(() => Slip, (slip) => slip.queue, { cascade: true })
+  @OneToMany(() => Slip, (slip) => slip.queue)
   slips!: Slip[]
 
   @Field(() => String)
@@ -46,4 +46,8 @@ export class Queue extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date
+}
+
+export enum QueueSubscription {
+  queue_update,
 }

@@ -50,7 +50,7 @@ export class Slip extends BaseEntity {
   user!: User
 
   @Field(() => Queue, { nullable: true })
-  @ManyToOne(() => Queue, (queue) => queue.slips)
+  @ManyToOne(() => Queue, (queue) => queue.slips, { onDelete: "CASCADE" })
   queue: Queue
 
   @Field(() => String)

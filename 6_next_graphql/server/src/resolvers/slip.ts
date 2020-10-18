@@ -1,7 +1,7 @@
 import { Arg, Ctx, Field, Int, ObjectType, Query, Resolver } from "type-graphql"
 import { getConnection } from "typeorm"
 import { Slip } from "./../entities/Slip"
-import { MyContext } from "./../types"
+import { MyContext } from "../types/types"
 
 @ObjectType()
 class PaginatedSlips {

@@ -1,7 +1,7 @@
 import argon2 from "argon2"
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql"
 import { v4 } from "uuid"
-import { MyContext } from "../types"
+import { MyContext } from "../types/types"
 import { UsernamePasswordInput, UserResponse } from "../types/user"
 import { sendEmail } from "../utils/sendEmail"
 import {
@@ -16,7 +16,6 @@ import {
   forgetPasswordPrefix,
   frontendDomain,
 } from "./../utils/constants"
-// import { getConnection } from "typeorm"
 
 @Resolver()
 export class UserResolver {
@@ -60,7 +59,7 @@ export class UserResolver {
         password: hashedPassword,
         email: options.email,
         adminOfQueues: [],
-        // slips: [],
+        slips: [],
       }).save()
 
       // const result = await getConnection()
@@ -113,6 +112,7 @@ export class UserResolver {
     }
 
     req.session!.userId = user.id
+    req.session!.isSuperAdmin = user.isSuperAdmin
 
     return { user }
   }

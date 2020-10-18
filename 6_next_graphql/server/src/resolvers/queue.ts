@@ -1,5 +1,7 @@
+import { isSuperAdmin } from "./../middleware/authentication"
 import {
   Arg,
+  Args,
   Ctx,
   Field,
   FieldResolver,
@@ -10,14 +12,15 @@ import {
   Query,
   Resolver,
   Root,
+  Subscription,
   UseMiddleware,
 } from "type-graphql"
 import { getConnection } from "typeorm"
 import { Queue } from "../entities/Queue"
 import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
-import { isAuth } from "../middleware/isAuth"
-import { MyContext } from "./../types"
+import { isAdminOfQueue, isAuth } from "../middleware/authentication"
+import { MyContext } from "../types/types"
 
 @InputType()
 class QueueInput {
@@ -82,7 +85,7 @@ export class QueueResolver {
     @Ctx() { req }: MyContext
   ): Promise<Queue | null> {
     const userId = req.session!.userId
-    const user = await User.findOne(userId)
+    const user = await User.findOne(userId, { relations: ["adminOfQueues"] })
 
     if (!user) return null
 
@@ -93,6 +96,9 @@ export class QueueResolver {
     }).save()
 
     user.adminOfQueues = [...(user.adminOfQueues || []), queue]
+
+    req!.session!.adminOfQueues = user.adminOfQueues.map((queue) => queue.id)
+
     await user.save()
 
     return queue
@@ -116,7 +122,14 @@ export class QueueResolver {
     return queue
   }
 
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, isSuperAdmin)
+  @Mutation(() => Boolean, { nullable: true })
+  async deleteQueues() {
+    await Queue.remove(await Queue.find())
+    return true
+  }
+
+  @UseMiddleware(isAuth, isAdminOfQueue)
   @Mutation(() => Boolean)
   async deleteQueue(@Arg("id") id: number): Promise<boolean> {
     try {
@@ -129,7 +142,7 @@ export class QueueResolver {
   }
 
   @UseMiddleware(isAuth)
-  @Mutation(() => Queue)
+  @Mutation(() => Queue, { nullable: true })
   async subscribeTo(
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
@@ -193,7 +206,7 @@ export class QueueResolver {
   }
 
   @UseMiddleware(isAuth)
-  @Mutation(() => Queue)
+  @Mutation(() => Queue, { nullable: true })
   async unsubscribeFrom(
     @Arg("id", () => Int) id: number,
     @Arg("slipId", () => Int) slipId: number
@@ -217,6 +230,66 @@ export class QueueResolver {
     queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
     await queue.save()
 
+    return queue
+  }
+
+  // @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, isAdminOfQueue)
+  @Mutation(() => Queue, { nullable: true })
+  async processSlip(
+    @Arg("id", () => Int) id: number,
+    @Arg("slipId", () => Int, { nullable: true }) slipId?: number
+  ) {
+    const queue = await Queue.findOne(id, { relations: ["slips"] })
+    if (!queue) {
+      console.log("no queue")
+      return null
+    }
+
+    return queue
+
+    if (!queue?.slips?.length || 0 > 0) {
+      return null
+    }
+
+    if (!slipId) {
+      slipId = queue.slips[0].id
+    }
+
+    const slip = await Slip.findOne(slipId, { relations: ["queue"] })
+    if (!slip) {
+      console.log("no slip")
+      return null
+    }
+
+    slip.processed = true
+    slip.active = false // slip will still have queue relation
+    await slip.save()
+
+    // queue removes this relation though
+    queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
+    await queue.save()
+
+    return queue
+  }
+
+  @UseMiddleware(isAuth)
+  @Subscription({
+    topics: ["queue_update"], // or topics array
+    // topics: ({ args, payload, context }) => args.topic // or dynamic topic function
+    filter: ({ payload, args }) => {
+      console.log({ payload })
+      console.log({ args })
+
+      return args.queues.slips
+        .map((slip: Slip) => slip.id)
+        .includes(payload.slipId)
+    },
+  })
+  queueUpdate(
+    @Root() queue: Queue
+    // @Args() slipId: number
+  ): Queue {
     return queue
   }
 }
