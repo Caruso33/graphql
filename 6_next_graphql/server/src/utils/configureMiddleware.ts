@@ -1,11 +1,21 @@
+import { Express } from "express"
+import { Redis } from "ioredis"
 import cors from "cors"
 import session from "express-session"
 import { allowedOrigins, cookieName, __prod__, appSecret } from "./constants"
+import { RedisStore } from "connect-redis"
+
+interface RedisInterface {
+  RedisStore: RedisStore
+  redis: Redis
+}
 
 export default function configureMiddleWare(
   app: Express,
-  { RedisStore, redis }
+  other: RedisInterface
 ) {
+  const { RedisStore, redis } = other
+
   app.use(
     cors({
       origin: allowedOrigins,

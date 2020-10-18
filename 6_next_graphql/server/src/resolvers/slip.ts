@@ -1,20 +1,7 @@
-import { isAuth } from "./../middleware/isAuth"
-import {
-  Arg,
-  Ctx,
-  Field,
-  InputType,
-  Int,
-  Mutation,
-  ObjectType,
-  Query,
-  Resolver,
-  UseMiddleware,
-} from "type-graphql"
-import { Queue } from "./../entities/Queue"
+import { Arg, Ctx, Field, Int, ObjectType, Query, Resolver } from "type-graphql"
+import { getConnection } from "typeorm"
 import { Slip } from "./../entities/Slip"
 import { MyContext } from "./../types"
-import { getConnection } from "typeorm"
 
 @ObjectType()
 class PaginatedSlips {
