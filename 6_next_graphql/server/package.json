@@ -28,6 +28,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "graphql": "^15.3.0",
+    "graphql-redis-subscriptions": "^2.3.1",
     "ioredis": "^4.17.3",
     "next": "^9.5.3",
     "nodemailer": "^6.4.11",

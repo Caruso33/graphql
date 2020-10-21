@@ -1,7 +1,5 @@
-import { isSuperAdmin } from "./../middleware/authentication"
 import {
   Arg,
-  Args,
   Ctx,
   Field,
   FieldResolver,
@@ -23,6 +21,7 @@ import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
 import { isAdminOfQueue, isAuth } from "../middleware/authentication"
 import { MyContext } from "../types/types"
+import { isSuperAdmin } from "./../middleware/authentication"
 
 @InputType()
 class QueueInput {
@@ -284,28 +283,20 @@ export class QueueResolver {
 
   // @UseMiddleware(isAuth)
   @Subscription(() => Int, {
-    topics: ["queue_update"], // or topics array
-    // topics: ({ args, payload, context }) => {
-    //   console.log({ context })
-    //   console.log({ payload })
-    //   console.log({ args })
-    //   return args.topic
-    // }, // or dynamic topic function
-    // filter: ({ payload, args }) => {
-    //   console.log({ payload })
-    //   console.log({ args })
-    //   return args.queues.slips
-    //     .map((slip: Slip) => slip.id)
-    //     .includes(payload.slipId)
-    // },
+    topics: ["queue_update"],
+    filter: ({ payload, args }) => {
+      const queueId = args.id
+
+      return payload.id === queueId
+    },
   })
   queueUpdate(
     @Root() queue: Queue,
-    @Arg("id") id: number,
-    @Arg("slipId") slipId: number
+    @Arg("slipId") slipId: number,
+    @Arg("id") _id: number,
+    @Ctx() { req }: MyContext
   ): number {
-    console.log({ queue })
-    // const queue = await Queue.findOne(id, { relations: ["slips"] })
+    console.log({ req })
     const queueIndex = queue?.slips.findIndex((slip) => slip.id === slipId)
 
     return queueIndex

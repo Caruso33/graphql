@@ -1,29 +1,46 @@
-import { ApolloServer, PubSub } from "apollo-server-express"
+import { ApolloServer } from "apollo-server-express"
 import { Express } from "express"
+import { RedisPubSub } from "graphql-redis-subscriptions"
 import { Redis } from "ioredis"
 import path from "path"
 import { buildSchema } from "type-graphql"
+// import { User } from "../entities/User"
 import { MyContext } from "../types/types"
 
 export default async function configureGraphql(
   app: Express,
-  { redis }: { redis: Redis }
+  { redis, redisPubsub }: { redis: Redis; redisPubsub: RedisPubSub }
 ) {
-  const pubsub = new PubSub()
-
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      // resolvers: [QueueResolver, UserResolver, SlipResolver],
       resolvers: [path.join(__dirname, "..", "resolvers") + "/**/*.{ts,js}"],
       // validate: false,
+      pubSub: redisPubsub,
     }),
     subscriptions: {
-      // path: "/subscriptions",
-      // other options and hooks, like `onConnect`
-      onConnect: () => console.log("Connected to websocket"),
+      onConnect: async (_connectionParams: any, _webSocket, _context) => {
+        // if (!_connectionParams?.session) {
+        //   throw new Error("no session found")
+        // }
+
+        // const userId = _connectionParams!.session?.userId
+
+        // if (!userId) {
+        //   throw new Error("not authenticated")
+        // }
+
+        // const user = await User.findOne(userId)
+
+        // if (!user) {
+        //   throw new Error("user does not exist")
+        // }
+
+        console.log("Connected to websocket")
+      },
+      onDisconnect: () => console.log("Disconnected from websocket"),
     },
     context: ({ req, res }): MyContext => {
-      return { req, res, redis, pubsub }
+      return { req, res, redis }
     },
   })
 

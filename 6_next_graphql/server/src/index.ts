@@ -1,33 +1,24 @@
-import http from "http"
-import { Redis } from "ioredis"
-import { RedisStore } from "connect-redis"
 import dotenv from "dotenv"
 import express from "express"
+import http from "http"
 import "reflect-metadata"
-import configureDB from "./utils/configureDatabase"
+import configureDB, { ConfigureDBInterface } from "./utils/configureDatabase"
 import configureGraphql from "./utils/configureGraphql"
 import configureMiddleWare from "./utils/configureMiddleware"
-import { Connection } from "typeorm"
 
 const main = async () => {
   dotenv.config()
 
-  const {
-    RedisStore,
-    redis,
-    orm,
-  }: {
-    RedisStore: RedisStore
-    redis: Redis
-    orm: Connection
-  } = await configureDB()
+  const dbInterface: ConfigureDBInterface = await configureDB()
+  const { RedisStore, redis, redisPubsub, orm } = dbInterface
+
   await orm.runMigrations()
 
   const app = express()
 
   configureMiddleWare(app, { RedisStore, redis })
 
-  const { apolloServer } = await configureGraphql(app, { redis })
+  const { apolloServer } = await configureGraphql(app, { redis, redisPubsub })
 
   const httpServer = http.createServer(app)
   apolloServer.installSubscriptionHandlers(httpServer)
@@ -41,4 +32,4 @@ const main = async () => {
   })
 }
 
-main()
+main().catch(console.error)

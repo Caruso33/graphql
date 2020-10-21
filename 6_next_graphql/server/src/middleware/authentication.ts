@@ -4,7 +4,7 @@ import { MyContext } from "../types/types"
 
 export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   if (!context.req.session?.userId) {
-    throw new Error("not authenticatd")
+    throw new Error("not authenticated")
   }
 
   return next()
@@ -15,7 +15,7 @@ export const isAdminOfQueue: MiddlewareFn<MyContext> = async (
   next
 ) => {
   if (!context.req.session?.userId) {
-    throw new Error("not authenticatd")
+    throw new Error("not authenticated")
   }
 
   const user = await User.findOne(context.req.session.userId, {
@@ -33,7 +33,7 @@ export const isAdminOfQueue: MiddlewareFn<MyContext> = async (
 
 export const isSuperAdmin: MiddlewareFn<MyContext> = ({ context }, next) => {
   if (!context.req.session?.userId) {
-    throw new Error("not authenticatd")
+    throw new Error("not authenticated")
   }
 
   if (!context.req.session?.isSuperAdmin) {
