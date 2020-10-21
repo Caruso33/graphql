@@ -9,6 +9,8 @@ import {
   Int,
   Mutation,
   ObjectType,
+  PubSub,
+  PubSubEngine,
   Query,
   Resolver,
   Root,
@@ -145,7 +147,8 @@ export class QueueResolver {
   @Mutation(() => Queue, { nullable: true })
   async subscribeTo(
     @Arg("id", () => Int) id: number,
-    @Ctx() { req }: MyContext
+    @Ctx() { req }: MyContext,
+    @PubSub() pubSub: PubSubEngine
   ): Promise<Queue | null> {
     const userId = req.session!.userId
 
@@ -202,6 +205,8 @@ export class QueueResolver {
     user.slips = [...(user.slips || []), slip]
     await user.save()
 
+    await pubSub.publish("queue_update", queue)
+
     return queue
   }
 
@@ -209,7 +214,8 @@ export class QueueResolver {
   @Mutation(() => Queue, { nullable: true })
   async unsubscribeFrom(
     @Arg("id", () => Int) id: number,
-    @Arg("slipId", () => Int) slipId: number
+    @Arg("slipId", () => Int) slipId: number,
+    @PubSub() pubSub: PubSubEngine
   ): Promise<Queue | null> {
     const queue = await Queue.findOne(id, { relations: ["slips"] })
     if (!queue) {
@@ -230,6 +236,8 @@ export class QueueResolver {
     queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
     await queue.save()
 
+    await pubSub.publish("queue_update", queue)
+
     return queue
   }
 
@@ -237,6 +245,7 @@ export class QueueResolver {
   @UseMiddleware(isAuth, isAdminOfQueue)
   @Mutation(() => Queue, { nullable: true })
   async processSlip(
+    @PubSub() pubSub: PubSubEngine,
     @Arg("id", () => Int) id: number,
     @Arg("slipId", () => Int, { nullable: true }) slipId?: number
   ) {
@@ -245,8 +254,6 @@ export class QueueResolver {
       console.log("no queue")
       return null
     }
-
-    return queue
 
     if (!queue?.slips?.length || 0 > 0) {
       return null
@@ -270,26 +277,37 @@ export class QueueResolver {
     queue.slips = (queue.slips || []).filter((slip) => slip.id !== slipId)
     await queue.save()
 
+    await pubSub.publish("queue_update", queue)
+
     return queue
   }
 
-  @UseMiddleware(isAuth)
-  @Subscription({
+  // @UseMiddleware(isAuth)
+  @Subscription(() => Int, {
     topics: ["queue_update"], // or topics array
-    // topics: ({ args, payload, context }) => args.topic // or dynamic topic function
-    filter: ({ payload, args }) => {
-      console.log({ payload })
-      console.log({ args })
-
-      return args.queues.slips
-        .map((slip: Slip) => slip.id)
-        .includes(payload.slipId)
-    },
+    // topics: ({ args, payload, context }) => {
+    //   console.log({ context })
+    //   console.log({ payload })
+    //   console.log({ args })
+    //   return args.topic
+    // }, // or dynamic topic function
+    // filter: ({ payload, args }) => {
+    //   console.log({ payload })
+    //   console.log({ args })
+    //   return args.queues.slips
+    //     .map((slip: Slip) => slip.id)
+    //     .includes(payload.slipId)
+    // },
   })
   queueUpdate(
-    @Root() queue: Queue
-    // @Args() slipId: number
-  ): Queue {
-    return queue
+    @Root() queue: Queue,
+    @Arg("id") id: number,
+    @Arg("slipId") slipId: number
+  ): number {
+    console.log({ queue })
+    // const queue = await Queue.findOne(id, { relations: ["slips"] })
+    const queueIndex = queue?.slips.findIndex((slip) => slip.id === slipId)
+
+    return queueIndex
   }
 }

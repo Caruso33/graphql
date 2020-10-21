@@ -1,3 +1,4 @@
+import { User } from "../entities/User"
 import { MiddlewareFn } from "type-graphql"
 import { MyContext } from "../types/types"
 
@@ -9,7 +10,7 @@ export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   return next()
 }
 
-export const isAdminOfQueue: MiddlewareFn<MyContext> = (
+export const isAdminOfQueue: MiddlewareFn<MyContext> = async (
   { args, context },
   next
 ) => {
@@ -17,10 +18,13 @@ export const isAdminOfQueue: MiddlewareFn<MyContext> = (
     throw new Error("not authenticatd")
   }
 
-  if (
-    !context.req.session?.adminOfQueues ||
-    !context.req.session.adminOfQueues.includes(args?.id)
-  ) {
+  const user = await User.findOne(context.req.session.userId, {
+    relations: ["adminOfQueues"],
+  })
+
+  const adminOfQueues = user?.adminOfQueues?.map?.((queue) => queue.id) || []
+
+  if (!adminOfQueues?.includes?.(args?.id)) {
     throw new Error("not admin of queue")
   }
 

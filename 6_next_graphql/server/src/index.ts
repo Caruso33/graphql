@@ -1,3 +1,4 @@
+import http from "http"
 import { Redis } from "ioredis"
 import { RedisStore } from "connect-redis"
 import dotenv from "dotenv"
@@ -11,8 +12,6 @@ import { Connection } from "typeorm"
 const main = async () => {
   dotenv.config()
 
-  const app = express()
-
   const {
     RedisStore,
     redis,
@@ -24,13 +23,21 @@ const main = async () => {
   } = await configureDB()
   await orm.runMigrations()
 
+  const app = express()
+
   configureMiddleWare(app, { RedisStore, redis })
 
-  configureGraphql(app, { redis })
+  const { apolloServer } = await configureGraphql(app, { redis })
+
+  const httpServer = http.createServer(app)
+  apolloServer.installSubscriptionHandlers(httpServer)
 
   const port = process.env.PORT || 4000
-  app.listen(port, () => {
-    console.log(`server started on localhost:${port}`)
+  httpServer.listen(port, () => {
+    console.log(`
+    express \t\t\t>> localhost:${port}
+    apollo graphql \t\t>> http://localhost:${port}${apolloServer?.graphqlPath}
+    apollo subscriptions \t>> ws://localhost:${port}${apolloServer?.subscriptionsPath}`)
   })
 }
 

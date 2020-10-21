@@ -1,24 +1,33 @@
-import { ApolloServer } from "apollo-server-express"
+import { ApolloServer, PubSub } from "apollo-server-express"
 import { Express } from "express"
 import { Redis } from "ioredis"
+import path from "path"
 import { buildSchema } from "type-graphql"
-import { QueueResolver } from "../resolvers/queue"
-import { UserResolver } from "../resolvers/user"
 import { MyContext } from "../types/types"
-import { SlipResolver } from "./../resolvers/slip"
 
 export default async function configureGraphql(
   app: Express,
   { redis }: { redis: Redis }
 ) {
+  const pubsub = new PubSub()
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [QueueResolver, UserResolver, SlipResolver],
-      // resolvers: [__dirname + "../resolvers/**/*.ts"],
+      // resolvers: [QueueResolver, UserResolver, SlipResolver],
+      resolvers: [path.join(__dirname, "..", "resolvers") + "/**/*.{ts,js}"],
       // validate: false,
     }),
-    context: ({ req, res }): MyContext => ({ req, res, redis }),
+    subscriptions: {
+      // path: "/subscriptions",
+      // other options and hooks, like `onConnect`
+      onConnect: () => console.log("Connected to websocket"),
+    },
+    context: ({ req, res }): MyContext => {
+      return { req, res, redis, pubsub }
+    },
   })
 
   apolloServer.applyMiddleware({ app, cors: false })
+
+  return { apolloServer }
 }
