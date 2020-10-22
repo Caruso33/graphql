@@ -1,4 +1,6 @@
 import { ColorModeProvider, CSSReset, ThemeProvider } from "@chakra-ui/core"
+import React from "react"
+import StoreProvider from "state/app"
 import theme from "../theme"
 
 function MyApp({ Component, pageProps }) {
@@ -6,7 +8,9 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <ColorModeProvider value="dark">
         <CSSReset />
-        <Component {...pageProps} />
+        <StoreProvider>
+          <Component {...pageProps} />
+        </StoreProvider>
       </ColorModeProvider>
     </ThemeProvider>
   )

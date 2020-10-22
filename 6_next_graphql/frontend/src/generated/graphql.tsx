@@ -10,62 +10,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  queues: PaginatedQueues;
-  queue?: Maybe<Queue>;
-  users: Array<User>;
-  user?: Maybe<User>;
-  me?: Maybe<User>;
-  slips: PaginatedSlips;
-  slip?: Maybe<Slip>;
-};
-
-
-export type QueryQueuesArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
-
-
-export type QueryQueueArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryUserArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QuerySlipsArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
-
-
-export type QuerySlipArgs = {
-  id: Scalars['Int'];
-};
-
-export type PaginatedQueues = {
-  __typename?: 'PaginatedQueues';
-  queues: Array<Queue>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type Queue = {
-  __typename?: 'Queue';
-  id: Scalars['Int'];
-  title: Scalars['String'];
-  description: Scalars['String'];
-  admins: Array<User>;
-  slips?: Maybe<Array<Slip>>;
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  descriptionSnippet: Scalars['String'];
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type User = {
@@ -73,6 +19,7 @@ export type User = {
   id: Scalars['Int'];
   email: Scalars['String'];
   username: Scalars['String'];
+  isSuperAdmin: Scalars['Boolean'];
   adminOfQueues?: Maybe<Array<Queue>>;
   slips?: Maybe<Array<Slip>>;
   createdAt: Scalars['String'];
@@ -93,19 +40,112 @@ export type Slip = {
   updatedAt: Scalars['String'];
 };
 
+export type Queue = {
+  __typename?: 'Queue';
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+  admins: Array<User>;
+  slips?: Maybe<Array<Slip>>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  descriptionSnippet: Scalars['String'];
+};
+
+export type PaginatedQueues = {
+  __typename?: 'PaginatedQueues';
+  queues: Array<Queue>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type PaginatedSlips = {
   __typename?: 'PaginatedSlips';
   slips: Array<Slip>;
   hasMore: Scalars['Boolean'];
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  id: Scalars['ID'];
+  message?: Maybe<Scalars['String']>;
+  date: Scalars['DateTime'];
+};
+
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
+};
+
+export type QueueInput = {
+  title: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type UsernamePasswordInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  queues: PaginatedQueues;
+  queue?: Maybe<Queue>;
+  slips: PaginatedSlips;
+  slip?: Maybe<Slip>;
+  hello: Scalars['String'];
+  users: Array<User>;
+  user?: Maybe<User>;
+  me?: Maybe<User>;
+};
+
+
+export type QueryQueuesArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
+export type QueryQueueArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QuerySlipsArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
+export type QuerySlipArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createQueue?: Maybe<Queue>;
   updateQueue?: Maybe<Queue>;
+  deleteQueues?: Maybe<Scalars['Boolean']>;
   deleteQueue: Scalars['Boolean'];
-  subscribeTo: Queue;
-  unsubscribeFrom: Queue;
+  subscribeTo?: Maybe<Queue>;
+  unsubscribeFrom?: Maybe<Queue>;
+  processSlip?: Maybe<Queue>;
+  pubSubMutation: Scalars['Boolean'];
+  publisherMutation: Scalars['Boolean'];
+  pubSubMutationToDynamicTopic: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -141,6 +181,28 @@ export type MutationUnsubscribeFromArgs = {
 };
 
 
+export type MutationProcessSlipArgs = {
+  slipId?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
+};
+
+
+export type MutationPubSubMutationArgs = {
+  message?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationPublisherMutationArgs = {
+  message?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationPubSubMutationToDynamicTopicArgs = {
+  message?: Maybe<Scalars['String']>;
+  topic: Scalars['String'];
+};
+
+
 export type MutationRegisterArgs = {
   options: UsernamePasswordInput;
 };
@@ -162,27 +224,24 @@ export type MutationChangeForgotPasswordArgs = {
   token: Scalars['String'];
 };
 
-export type QueueInput = {
-  title: Scalars['String'];
-  description: Scalars['String'];
+export type Subscription = {
+  __typename?: 'Subscription';
+  queueUpdate: Scalars['Int'];
+  subscription: Scalars['String'];
+  normalSubscription: Notification;
+  subscriptionWithFilter: Notification;
+  subscriptionWithFilterToDynamicTopic: Notification;
 };
 
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
+
+export type SubscriptionQueueUpdateArgs = {
+  id: Scalars['Float'];
+  slipId: Scalars['Float'];
 };
 
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
 
-export type UsernamePasswordInput = {
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type SubscriptionSubscriptionWithFilterToDynamicTopicArgs = {
+  topic: Scalars['String'];
 };
 
 export type RegularErrorFragment = (
@@ -204,7 +263,7 @@ export type RegularSlipFragment = (
   & Pick<Slip, 'id' | 'createdAt' | 'updatedAt' | 'processed' | 'active' | 'initialQueueSize' | 'queuePosition'>
   & { queue?: Maybe<(
     { __typename?: 'Queue' }
-    & Pick<Queue, 'id' | 'title'>
+    & Pick<Queue, 'id' | 'title' | 'descriptionSnippet'>
   )> }
 );
 
@@ -307,10 +366,10 @@ export type SubscribeToQueueMutationVariables = Exact<{
 
 export type SubscribeToQueueMutation = (
   { __typename?: 'Mutation' }
-  & { subscribeTo: (
+  & { subscribeTo?: Maybe<(
     { __typename?: 'Queue' }
     & RegularQueueFragment
-  ) }
+  )> }
 );
 
 export type UnSubscribeFromQueueMutationVariables = Exact<{
@@ -321,10 +380,10 @@ export type UnSubscribeFromQueueMutationVariables = Exact<{
 
 export type UnSubscribeFromQueueMutation = (
   { __typename?: 'Mutation' }
-  & { unsubscribeFrom: (
+  & { unsubscribeFrom?: Maybe<(
     { __typename?: 'Queue' }
     & RegularQueueFragment
-  ) }
+  )> }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -425,6 +484,7 @@ export const RegularSlipFragmentDoc = gql`
   queue {
     id
     title
+    descriptionSnippet
   }
 }
     `;

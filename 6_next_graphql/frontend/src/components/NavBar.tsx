@@ -9,32 +9,45 @@ import {
 } from "@chakra-ui/core"
 import { withUrqlClient } from "next-urql"
 import NextLink from "next/link"
-import React from "react"
-import { useLogoutMutation, useMeQuery } from "../generated/graphql"
+import { useRouter } from "next/router"
+import React, { useContext } from "react"
+import { StoreContext } from "state/app"
+import { useIsAuth } from "utils/useIsAuth"
+import { useLogoutMutation } from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
-import { isServer } from "../utils/isServer"
 
 interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = () => {
-  const [{ data, fetching }] = useMeQuery({
-    pause: isServer(),
-  })
+  const router = useRouter()
+  const { fetching } = useIsAuth()
+
   const [{ fetching: fetchingLogout }, logout] = useLogoutMutation()
+
+  const onLogout = () => {
+    dispatch({ type: "logout" })
+    logout()
+    router.push("/login?next=/")
+  }
+
+  const {
+    state: { user },
+    dispatch,
+  } = useContext(StoreContext)
 
   let body = null
 
   if (fetching) {
     body = <Spinner />
-  } else if (!data?.me) {
+  } else if (!user?.id) {
     body = <NotLoggedIn />
   } else {
     body = (
-      <IsNotLoggedIn
+      <LoggedIn
         {...{
           fetchingLogout,
-          logout,
-          data,
+          onLogout,
+          user,
         }}
       />
     )
@@ -79,25 +92,25 @@ function NotLoggedIn() {
   )
 }
 
-function IsNotLoggedIn({ fetchingLogout, logout, data }) {
+function LoggedIn({ fetchingLogout, onLogout, user }) {
   return (
     <Flex>
       <Button
         isLoading={fetchingLogout}
         variant="link"
         mr={2}
-        onClick={() => logout()}
+        onClick={onLogout}
       >
         logout
       </Button>
 
-      <NextLink href={data.me.adminOfQueues.length > 0 ? "/admin" : ""}>
+      <NextLink href={user.adminOfQueues.length > 0 ? "/admin" : ""}>
         <Link mr={2}>
           <Box>admin</Box>
         </Link>
       </NextLink>
 
-      <Box>{data.me.username}</Box>
+      <Box>{user.username}</Box>
     </Flex>
   )
 }

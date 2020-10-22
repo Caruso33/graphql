@@ -13,5 +13,6 @@ fragment RegularSlip on Slip {
   queue {
     id
     title
+    descriptionSnippet
   }
 }

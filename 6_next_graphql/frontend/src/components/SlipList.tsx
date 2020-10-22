@@ -87,31 +87,42 @@ const SlipList: React.FC<SlipListProps> = () => {
                   background="teal"
                   align="center"
                 >
-                  <Box>
+                  <Box w="100%" mr="2rem">
                     <NextLink href={`/slips/${slip.id}`}>
                       <Link>
                         <Heading mb={4} size="md">
-                          {slip?.queue?.title || "No Queue"}
+                          {slip?.queue?.title || "No Queue"}{" "}
+                          {slip?.queue?.descriptionSnippet}
                         </Heading>
-                        <Text>{slip.active ? "Active" : "Inactive"}</Text>
+
+                        <Flex justifyContent="space-between">
+                          <Box>
+                            <Text>Position in Queue: {slip.queuePosition}</Text>
+                          </Box>
+                          <Box>
+                            <Text>{slip.active ? "Active" : "Inactive"}</Text>
+                          </Box>
+                        </Flex>
                       </Link>
                     </NextLink>
                   </Box>
 
                   {slip.active && (
-                    <Button
-                      size="sm"
-                      ml="auto"
-                      variantColor="teal"
-                      onClick={() => {
-                        unsubscribeFromQueue({
-                          id: slip?.queue?.id,
-                          slipId: slip?.id,
-                        })
-                      }}
-                    >
-                      Unsubscribe from Queue
-                    </Button>
+                    <Box w="200" ml="auto">
+                      <Button
+                        size="sm"
+                        ml="auto"
+                        variantColor="teal"
+                        onClick={() => {
+                          unsubscribeFromQueue({
+                            id: slip?.queue?.id,
+                            slipId: slip?.id,
+                          })
+                        }}
+                      >
+                        Unsubscribe from Queue
+                      </Button>
+                    </Box>
                   )}
                 </Flex>
               )
