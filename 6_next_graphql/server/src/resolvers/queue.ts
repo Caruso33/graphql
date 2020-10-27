@@ -15,7 +15,7 @@ import {
   Subscription,
   UseMiddleware,
 } from "type-graphql"
-import { getConnection } from "typeorm"
+import { getConnection, In } from "typeorm"
 import { Queue } from "../entities/Queue"
 import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
@@ -41,6 +41,30 @@ class PaginatedQueues {
 
 @Resolver(() => Queue)
 export class QueueResolver {
+  @FieldResolver(() => Slip)
+  slips(@Root() queue: Queue) {
+    return Slip.find({
+      where: {
+        queue,
+      },
+    })
+  }
+
+  @FieldResolver(() => User)
+  async admins(@Root() queue: Queue) {
+    const q = await Queue.findOne(queue.id, { relations: ["admins"] })
+
+    if (!q) return null
+
+    const admins = q.admins?.map?.((user) => user.id)
+
+    return User.find({
+      where: {
+        id: In(admins),
+      },
+    })
+  }
+
   @Query(() => PaginatedQueues)
   async queues(
     @Arg("limit", () => Int) limit: number,
@@ -52,8 +76,8 @@ export class QueueResolver {
     const qb = getConnection()
       .getRepository(Queue)
       .createQueryBuilder("q") // alias
-      .leftJoinAndSelect("q.admins", "u")
-      .leftJoinAndSelect("q.slips", "s")
+      // .leftJoinAndSelect("q.admins", "u")
+      // .leftJoinAndSelect("q.slips", "s")
       .orderBy("q.createdAt", "DESC")
       .take(realLimitHasMore)
 

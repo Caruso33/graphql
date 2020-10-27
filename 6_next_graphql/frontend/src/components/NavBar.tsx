@@ -37,7 +37,7 @@ const NavBar: React.FC<NavBarProps> = () => {
 
   let body = null
 
-  if (fetching) {
+  if (fetching && !user?.id) {
     body = <Spinner />
   } else if (!user?.id) {
     body = <NotLoggedIn />

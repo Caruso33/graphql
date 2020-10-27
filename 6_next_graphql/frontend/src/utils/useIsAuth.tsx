@@ -8,9 +8,13 @@ import { isServer } from "./isServer"
 export const useIsAuth = (args = { pause: isServer() }) => {
   const router = useRouter()
 
-  const [{ data, fetching }] = useMeQuery(args)
+  const {
+    dispatch,
+    // state: { user },
+  }: StoreContextType = useContext(StoreContext)
 
-  const { dispatch }: StoreContextType = useContext(StoreContext)
+  // TODO: This should not fetch on rerender if data is already there
+  const [{ data, fetching }] = useMeQuery(args)
 
   const prevMe = usePrevious(data)
   useEffect(() => {
