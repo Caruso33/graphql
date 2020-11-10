@@ -22,6 +22,8 @@ export const isAdminOfQueue: MiddlewareFn<MyContext> = async (
     relations: ["adminOfQueues"],
   })
 
+  if (user?.isSuperAdmin) return next()
+
   const adminOfQueues = user?.adminOfQueues?.map?.((queue) => queue.id) || []
 
   if (!adminOfQueues?.includes?.(args?.id)) {

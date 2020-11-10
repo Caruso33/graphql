@@ -4,6 +4,9 @@ import { RedisPubSub } from "graphql-redis-subscriptions"
 import { Redis } from "ioredis"
 import path from "path"
 import { buildSchema } from "type-graphql"
+import { createSlipFromQueueLoader } from "../dataloaders/createSlipFromQueueLoader"
+import { createUserFromQueueLoader } from "../dataloaders/createUserFromQueueAdmin"
+import { createUserLoader } from "../dataloaders/createUserLoader"
 // import { User } from "../entities/User"
 import { MyContext } from "../types/types"
 
@@ -40,7 +43,14 @@ export default async function configureGraphql(
       onDisconnect: () => console.log("Disconnected from websocket"),
     },
     context: ({ req, res }): MyContext => {
-      return { req, res, redis }
+      return {
+        req,
+        res,
+        redis,
+        userLoader: createUserLoader(),
+        slipFromQueueLoader: createSlipFromQueueLoader(),
+        userFromQueueLoader: createUserFromQueueLoader(),
+      }
     },
   })
 

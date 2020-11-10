@@ -15,7 +15,7 @@ import {
   Subscription,
   UseMiddleware,
 } from "type-graphql"
-import { getConnection, In } from "typeorm"
+import { getConnection } from "typeorm"
 import { Queue } from "../entities/Queue"
 import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
@@ -42,27 +42,32 @@ class PaginatedQueues {
 @Resolver(() => Queue)
 export class QueueResolver {
   @FieldResolver(() => Slip)
-  slips(@Root() queue: Queue) {
-    return Slip.find({
-      where: {
-        queue,
-      },
-    })
+  slips(@Root() queue: Queue, @Ctx() { slipFromQueueLoader }: MyContext) {
+    const slips = slipFromQueueLoader.load(queue.id)
+
+    return slips
   }
 
   @FieldResolver(() => User)
-  async admins(@Root() queue: Queue) {
-    const q = await Queue.findOne(queue.id, { relations: ["admins"] })
+  async admins(
+    @Root() queue: Queue,
+    @Ctx() { userFromQueueLoader }: MyContext
+  ) {
+    const users = await userFromQueueLoader.load(queue.id)
 
-    if (!q) return null
+    console.log(users)
+    return users
+    // const q = await Queue.findOne(queue.id, { relations: ["admins"] })
 
-    const admins = q.admins?.map?.((user) => user.id)
+    // if (!q) return null
 
-    return User.find({
-      where: {
-        id: In(admins),
-      },
-    })
+    // const admins = q.admins?.map?.((user) => user.id)
+
+    // return User.find({
+    //   where: {
+    //     id: In(admins),
+    //   },
+    // })
   }
 
   @Query(() => PaginatedQueues)

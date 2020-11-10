@@ -1,5 +1,14 @@
+import { isAuth, isAdminOfQueue } from "./../middleware/authentication"
 import argon2 from "argon2"
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql"
+import {
+  Arg,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql"
 import { v4 } from "uuid"
 import { MyContext } from "../types/types"
 import { UsernamePasswordInput, UserResponse } from "../types/user"
@@ -10,12 +19,13 @@ import {
   validateChangeForgotPassword,
   validateRegister,
 } from "../validations/user"
-import { User } from "./../entities/User"
+import { User } from "../entities/User"
 import {
   cookieName,
   forgetPasswordPrefix,
   frontendDomain,
 } from "./../utils/constants"
+import { Queue } from "../entities/Queue"
 
 @Resolver()
 export class UserResolver {
@@ -187,6 +197,61 @@ export class UserResolver {
     req.session!.userId = user.id
 
     return { user }
+  }
+
+  @UseMiddleware(isAuth, isAdminOfQueue)
+  @Mutation(() => User, { nullable: true })
+  async addAdmin(
+    @Arg("id") id: number,
+    @Arg("userId") userId: number
+  ): Promise<User | null> {
+    const user = await User.findOne({
+      where: { id: userId },
+      relations: ["adminOfQueues"],
+    })
+
+    if (!user) {
+      return null
+    }
+
+    const queue = await Queue.findOne({ id })
+
+    if (!queue) {
+      return null
+    }
+
+    const adminOfQueues = [
+      ...user.adminOfQueues,
+      ...(user.adminOfQueues.find((queue) => queue?.id === id) ? [] : [queue]),
+    ]
+
+    user.adminOfQueues = adminOfQueues
+    user.save()
+
+    return user
+  }
+
+  @UseMiddleware(isAuth, isAdminOfQueue)
+  @Mutation(() => User, { nullable: true })
+  async removeAdmin(
+    @Arg("id") id: number,
+    @Arg("userId") userId: number
+  ): Promise<User | null> {
+    const user = await User.findOne({
+      where: { id: userId },
+      relations: ["adminOfQueues"],
+    })
+
+    if (!user) {
+      return null
+    }
+
+    const adminOfQueues = user.adminOfQueues.filter((queue) => queue?.id !== id)
+
+    user.adminOfQueues = adminOfQueues
+    user.save()
+
+    return user
   }
 
   // @Mutation(() => User, { nullable: true })
