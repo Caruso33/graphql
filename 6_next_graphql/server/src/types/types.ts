@@ -1,8 +1,9 @@
 import { Request, Response } from "express"
 import { Redis } from "ioredis"
-import { createUserLoader } from "../dataloaders/createUserLoader"
+import { createQueueFromQueueAdminLoader } from "../dataloaders/createQueueFromQueueAdminLoader"
 import { createSlipFromQueueLoader } from "../dataloaders/createSlipFromQueueLoader"
-import { createUserFromQueueLoader } from "../dataloaders/createUserFromQueueAdmin"
+import { createUserFromQueueAdminLoader } from "../dataloaders/createUserFromQueueAdminLoader"
+import { createUserLoader } from "../dataloaders/createUserLoader"
 
 export type MyContext = {
   req: Request
@@ -10,5 +11,6 @@ export type MyContext = {
   redis: Redis
   userLoader: ReturnType<typeof createUserLoader>
   slipFromQueueLoader: ReturnType<typeof createSlipFromQueueLoader>
-  userFromQueueLoader: ReturnType<typeof createUserFromQueueLoader>
+  userFromQueueAdminLoader: ReturnType<typeof createUserFromQueueAdminLoader>
+  queueFromQueueAdminLoader: ReturnType<typeof createQueueFromQueueAdminLoader>
 }

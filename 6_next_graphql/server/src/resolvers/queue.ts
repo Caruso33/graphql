@@ -53,18 +53,9 @@ export class QueueResolver {
   @FieldResolver(() => [User])
   async admins(
     @Root() queue: Queue,
-    @Ctx() { userFromQueueLoader }: MyContext
+    @Ctx() { userFromQueueAdminLoader }: MyContext
   ) {
-    const adminQueues = await AdminQueue.find({
-      where: {
-        queueId: queue.id,
-      },
-      relations: ["user"],
-    })
-
-    // const admins = await userFromQueueLoader.load(queue.id)
-
-    return adminQueues?.map?.((aq) => aq.user) || []
+    return userFromQueueAdminLoader.load(queue.id)
   }
 
   @Query(() => PaginatedQueues)

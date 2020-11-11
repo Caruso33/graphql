@@ -4,8 +4,9 @@ import { RedisPubSub } from "graphql-redis-subscriptions"
 import { Redis } from "ioredis"
 import path from "path"
 import { buildSchema } from "type-graphql"
+import { createQueueFromQueueAdminLoader } from "../dataloaders/createQueueFromQueueAdminLoader"
 import { createSlipFromQueueLoader } from "../dataloaders/createSlipFromQueueLoader"
-import { createUserFromQueueLoader } from "../dataloaders/createUserFromQueueAdmin"
+import { createUserFromQueueAdminLoader } from "../dataloaders/createUserFromQueueAdminLoader"
 import { createUserLoader } from "../dataloaders/createUserLoader"
 // import { User } from "../entities/User"
 import { MyContext } from "../types/types"
@@ -49,7 +50,8 @@ export default async function configureGraphql(
         redis,
         userLoader: createUserLoader(),
         slipFromQueueLoader: createSlipFromQueueLoader(),
-        userFromQueueLoader: createUserFromQueueLoader(),
+        userFromQueueAdminLoader: createUserFromQueueAdminLoader(),
+        queueFromQueueAdminLoader: createQueueFromQueueAdminLoader(),
       }
     },
   })

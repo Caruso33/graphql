@@ -35,18 +35,9 @@ export class UserResolver {
   @FieldResolver(() => [Queue])
   async adminOfQueues(
     @Root() user: User,
-    @Ctx() { userFromQueueLoader }: MyContext
+    @Ctx() { queueFromQueueAdminLoader }: MyContext
   ) {
-    const adminQueues = await AdminQueue.find({
-      where: {
-        userId: user.id,
-      },
-      relations: ["queue"],
-    })
-
-    // const users = await userFromQueueLoader.load({ queueId: queue.id })
-
-    return adminQueues?.map?.((aq) => aq.queue) || []
+    return queueFromQueueAdminLoader.load(user.id)
   }
 
   @Query(() => [User])
