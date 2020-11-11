@@ -4,14 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { AdminQueue } from "./AdminQueue"
 import { Slip } from "./Slip"
-import { User } from "./User"
 
 @ObjectType()
 @Entity()
@@ -28,13 +26,12 @@ export class Queue extends BaseEntity {
   @Column({ default: "" })
   description: string
 
-  @Field(() => [User])
-  @ManyToMany(() => User, (user) => user.adminOfQueues, { onDelete: "CASCADE" })
-  @JoinTable()
-  admins!: User[]
+  @OneToMany(() => AdminQueue, (adminQueue) => adminQueue.queue, {
+    onDelete: "CASCADE",
+  })
+  admins!: AdminQueue[]
 
   // TODO: Location field
-
   @Field(() => [Slip], { nullable: true })
   @OneToMany(() => Slip, (slip) => slip.queue)
   slips!: Slip[]

@@ -1,15 +1,19 @@
-import { isAuth, isAdminOfQueue } from "./../middleware/authentication"
 import argon2 from "argon2"
+import { Queue } from "../entities/Queue"
 import {
   Arg,
   Ctx,
+  FieldResolver,
   Int,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql"
 import { v4 } from "uuid"
+import { AdminQueue } from "../entities/AdminQueue"
+import { User } from "../entities/User"
 import { MyContext } from "../types/types"
 import { UsernamePasswordInput, UserResponse } from "../types/user"
 import { sendEmail } from "../utils/sendEmail"
@@ -19,16 +23,32 @@ import {
   validateChangeForgotPassword,
   validateRegister,
 } from "../validations/user"
-import { User } from "../entities/User"
+import { isAdminOfQueue, isAuth } from "./../middleware/authentication"
 import {
   cookieName,
   forgetPasswordPrefix,
   frontendDomain,
 } from "./../utils/constants"
-import { Queue } from "../entities/Queue"
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
+  @FieldResolver(() => [Queue])
+  async adminOfQueues(
+    @Root() user: User,
+    @Ctx() { userFromQueueLoader }: MyContext
+  ) {
+    const adminQueues = await AdminQueue.find({
+      where: {
+        userId: user.id,
+      },
+      relations: ["queue"],
+    })
+
+    // const users = await userFromQueueLoader.load({ queueId: queue.id })
+
+    return adminQueues?.map?.((aq) => aq.queue) || []
+  }
+
   @Query(() => [User])
   users(): Promise<User[]> {
     return User.find({ relations: ["adminOfQueues", "slips", "slips.queue"] })
@@ -200,35 +220,12 @@ export class UserResolver {
   }
 
   @UseMiddleware(isAuth, isAdminOfQueue)
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => AdminQueue, { nullable: true })
   async addAdmin(
-    @Arg("id") id: number,
+    @Arg("queueId") queueId: number,
     @Arg("userId") userId: number
-  ): Promise<User | null> {
-    const user = await User.findOne({
-      where: { id: userId },
-      relations: ["adminOfQueues"],
-    })
-
-    if (!user) {
-      return null
-    }
-
-    const queue = await Queue.findOne({ id })
-
-    if (!queue) {
-      return null
-    }
-
-    const adminOfQueues = [
-      ...user.adminOfQueues,
-      ...(user.adminOfQueues.find((queue) => queue?.id === id) ? [] : [queue]),
-    ]
-
-    user.adminOfQueues = adminOfQueues
-    user.save()
-
-    return user
+  ): Promise<AdminQueue | null> {
+    return AdminQueue.create({ userId, queueId }).save()
   }
 
   @UseMiddleware(isAuth, isAdminOfQueue)

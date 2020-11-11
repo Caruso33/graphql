@@ -1,3 +1,5 @@
+import _ from "lodash"
+import { AdminQueue } from "../entities/AdminQueue"
 import {
   Arg,
   Ctx,
@@ -48,26 +50,21 @@ export class QueueResolver {
     return slips
   }
 
-  @FieldResolver(() => User)
+  @FieldResolver(() => [User])
   async admins(
     @Root() queue: Queue,
     @Ctx() { userFromQueueLoader }: MyContext
   ) {
-    const users = await userFromQueueLoader.load(queue.id)
+    const adminQueues = await AdminQueue.find({
+      where: {
+        queueId: queue.id,
+      },
+      relations: ["user"],
+    })
 
-    console.log(users)
-    return users
-    // const q = await Queue.findOne(queue.id, { relations: ["admins"] })
+    // const admins = await userFromQueueLoader.load(queue.id)
 
-    // if (!q) return null
-
-    // const admins = q.admins?.map?.((user) => user.id)
-
-    // return User.find({
-    //   where: {
-    //     id: In(admins),
-    //   },
-    // })
+    return adminQueues?.map?.((aq) => aq.user) || []
   }
 
   @Query(() => PaginatedQueues)
@@ -115,21 +112,13 @@ export class QueueResolver {
     @Ctx() { req }: MyContext
   ): Promise<Queue | null> {
     const userId = req.session!.userId
-    const user = await User.findOne(userId, { relations: ["adminOfQueues"] })
 
-    if (!user) return null
+    const queue = await Queue.create({ ...options, slips: [] }).save()
+    await AdminQueue.create({ userId, queueId: queue.id }).save()
 
-    const queue = await Queue.create({
-      ...options,
-      slips: [],
-      admins: [user],
-    }).save()
-
-    user.adminOfQueues = [...(user.adminOfQueues || []), queue]
-
-    req!.session!.adminOfQueues = user.adminOfQueues.map((queue) => queue.id)
-
-    await user.save()
+    req!.session!.adminOfQueues = req!.session!.adminOfQueues
+      ? [...req!.session!.adminOfQueues, queue.id]
+      : []
 
     return queue
   }

@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { AdminQueue } from "./AdminQueue"
 import { Queue } from "./Queue"
 import { Slip } from "./Slip"
 
@@ -34,9 +35,10 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isSuperAdmin: boolean
 
-  @Field(() => [Queue], { nullable: true })
-  @ManyToMany(() => Queue, (queue) => queue.admins)
-  adminOfQueues!: Queue[]
+  @OneToMany(() => AdminQueue, (adminQueue) => adminQueue.user, {
+    onDelete: "CASCADE",
+  })
+  adminOfQueues!: AdminQueue[]
 
   @Field(() => [Slip], { nullable: true })
   @OneToMany(() => Slip, (slip) => slip.user, { cascade: true })

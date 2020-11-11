@@ -3,9 +3,6 @@ import session from "express-session"
 import Redis from "ioredis"
 import path from "path"
 import { Connection, ConnectionOptions, createConnection } from "typeorm"
-import { Queue } from "./../entities/Queue"
-import { Slip } from "./../entities/Slip"
-import { User } from "./../entities/User"
 import { RedisPubSub } from "graphql-redis-subscriptions"
 
 export default async function configureDB() {
@@ -26,7 +23,8 @@ const getTypeOrmConfig = (): ConnectionOptions => {
     password: process.env.DB_PASSWORD,
     // logging: true,
     synchronize: true,
-    entities: [User, Queue, Slip],
+    // entities: [User, Queue, Slip, AdminQueue],
+    entities: [path.join(__dirname, "..", "./entities/*")],
     migrations: [path.join(__dirname, "..", "./migrations/*")],
   }
 }

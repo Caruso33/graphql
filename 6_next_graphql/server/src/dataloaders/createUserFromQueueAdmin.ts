@@ -1,46 +1,33 @@
 import DataLoader from "dataloader"
 import { User } from "../entities/User"
 import { In } from "typeorm"
+import { AdminQueue } from "../entities/AdminQueue"
 
-// [queueId]
+// [queueId, userId]
 // => [{User}]
 
+interface AdminQueueDataloaderKey {
+  queueId: number
+  userId: number
+}
+
 export const createUserFromQueueLoader = () =>
-  new DataLoader<number, User>(async (queueIds) => {
-    const users = await User.find({
-      join: {
-        alias: "userQueue",
-        innerJoinAndSelect: {
-          adminOfQueues: "userQueue.adminOfQueues",
-        },
-      },
-      where: { adminOfQueues: In(queueIds as number[]) },
+  new DataLoader<AdminQueueDataloaderKey, User | null>(async (keys) => {
+    const adminQueues = await AdminQueue.findByIds(keys as any)
+
+    console.log({ adminQueues })
+
+    const adminQueueIdsToUser: Record<string, AdminQueue> = {}
+
+    adminQueues.forEach((adminQueue: AdminQueue) => {
+      const adminQueueId = `${adminQueue.userId}__${adminQueue.queueId}`
+
+      adminQueueIdsToUser[adminQueueId] = adminQueue
     })
 
-    console.log({ users })
+    return keys.map((adminQueue: AdminQueueDataloaderKey) => {
+      const adminQueueId = `${adminQueue.userId}__${adminQueue.queueId}`
 
-    const userIdToUser: Record<number, User> = {}
-    users.forEach((user: User) => {
-      const usersQueues = user.adminOfQueues
-      usersQueues.forEach((userQueue) => {
-        const userQueueId = userQueue.id
-
-        userIdToUser[userQueueId] = userIdToUser[userQueueId]
-          ? [...userIdToUser[userQueueId], user]
-          : [user]
-      })
+      return adminQueueIdsToUser[adminQueueId]
     })
-
-    return queueIds.map((queueId) => userIdToUser[queueId])
   })
-
-  // const users = await User.find({
-  //   join: {
-  //     alias: "userQueue",
-  //     innerJoinAndSelect: {
-  //       sdf: "userQueue.adminOfQueues",
-  //     },
-  //   },
-  //   where: { adminOfQueues: In(queueIds as number[]) },
-  //   relations: ["adminOfQueues"],
-  // })
