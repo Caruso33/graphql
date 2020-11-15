@@ -4,7 +4,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  theme,
 } from "@chakra-ui/core"
 import { useField } from "formik"
 import React, { InputHTMLAttributes } from "react"

@@ -4,9 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "next:dev": "next dev",
-    "next:build": "next build",
-    "next:start": "next start",
     "build": "tsc",
     "watch": "tsc --w",
     "dev": "nodemon dist/index.js",
