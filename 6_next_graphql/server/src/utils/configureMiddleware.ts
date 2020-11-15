@@ -1,9 +1,9 @@
-import { Express } from "express"
-import { Redis } from "ioredis"
-import cors from "cors"
-import session from "express-session"
-import { allowedOrigins, cookieName, __prod__, appSecret } from "./constants"
 import { RedisStore } from "connect-redis"
+import cors from "cors"
+import { Express } from "express"
+import session from "express-session"
+import { Redis } from "ioredis"
+import { cookieName, __prod__ } from "./constants"
 
 interface RedisInterface {
   RedisStore: RedisStore
@@ -18,7 +18,7 @@ export default function configureMiddleWare(
 
   app.use(
     cors({
-      origin: allowedOrigins,
+      origin: process.env.FRONTEND_DOMAIN,
       credentials: true,
     })
   )
@@ -33,7 +33,7 @@ export default function configureMiddleWare(
         secure: __prod__, // cookie only works with https
       },
       saveUninitialized: false,
-      secret: appSecret,
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
     // in graphql need to set in order to see cookies

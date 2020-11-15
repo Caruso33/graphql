@@ -163,7 +163,7 @@ export class UserResolver {
 
     const token = v4()
     redis.set(forgetPasswordPrefix + token, user.id, "ex", 1000 * 60 * 60)
-    const link = `<a href="${frontendDomain}/change-password/${token}">Reset Password</a>`
+    const link = `<a href="${process.env.FRONTEND_DOMAIN}/change-password/${token}">Reset Password</a>`
 
     const html = `Hi,<br/><br/>please change your password within 1 hour by following <br/>${link}<br/><br/>Cheers`
 
