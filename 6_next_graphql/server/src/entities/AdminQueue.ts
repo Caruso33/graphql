@@ -17,7 +17,7 @@ export class AdminQueue extends BaseEntity {
   userId: number
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.adminOfQueueConnection, {
+  @ManyToOne(() => User, (user) => user.adminOfQueues, {
     primary: true,
     onDelete: "CASCADE",
   })
@@ -29,7 +29,7 @@ export class AdminQueue extends BaseEntity {
   queueId: number
 
   @Field(() => Queue)
-  @ManyToOne(() => Queue, (queue) => queue.adminConnection, {
+  @ManyToOne(() => Queue, (queue) => queue.admins, {
     primary: true,
     onDelete: "CASCADE",
   })

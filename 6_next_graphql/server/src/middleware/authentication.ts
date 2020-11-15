@@ -24,7 +24,8 @@ export const isAdminOfQueue: MiddlewareFn<MyContext> = async (
 
   if (user?.isSuperAdmin) return next()
 
-  const adminOfQueues = user?.adminOfQueues?.map?.((queue) => queue.id) || []
+  const adminOfQueues =
+    user?.adminOfQueues?.map?.((adminQueue) => adminQueue.queueId) || []
 
   if (!adminOfQueues?.includes?.(args?.id)) {
     throw new Error("not admin of queue")

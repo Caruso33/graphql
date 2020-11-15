@@ -6,13 +6,13 @@ import { Slip } from "../entities/Slip"
 // => [{Slip}]
 
 export const createSlipFromQueueLoader = () =>
-  new DataLoader<number, Slip>(async (queueIds) => {
+  new DataLoader<number, Slip[] | null>(async (queueIds) => {
     const slips = await Slip.find({
       where: { queue: In(queueIds as number[]) },
       relations: ["queue"],
     })
 
-    const slipIdToSlip: Record<number, Slip> = {}
+    const slipIdToSlip: Record<number, Slip[]> = {}
     slips.forEach((slip: Slip) => {
       const slipsQueueId = slip.queue.id
 

@@ -1,5 +1,3 @@
-import _ from "lodash"
-import { AdminQueue } from "../entities/AdminQueue"
 import {
   Arg,
   Ctx,
@@ -18,6 +16,7 @@ import {
   UseMiddleware,
 } from "type-graphql"
 import { getConnection } from "typeorm"
+import { AdminQueue } from "../entities/AdminQueue"
 import { Queue } from "../entities/Queue"
 import { Slip } from "../entities/Slip"
 import { User } from "../entities/User"
@@ -109,7 +108,7 @@ export class QueueResolver {
 
     req!.session!.adminOfQueues = req!.session!.adminOfQueues
       ? [...req!.session!.adminOfQueues, queue.id]
-      : []
+      : [queue.id]
 
     return queue
   }

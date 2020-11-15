@@ -4,13 +4,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
 import { AdminQueue } from "./AdminQueue"
-import { Queue } from "./Queue"
 import { Slip } from "./Slip"
 
 @ObjectType()

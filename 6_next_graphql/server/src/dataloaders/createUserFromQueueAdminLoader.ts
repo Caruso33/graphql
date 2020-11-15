@@ -7,15 +7,15 @@ import { User } from "../entities/User"
 // => [{User}]
 
 export const createUserFromQueueAdminLoader = () =>
-  new DataLoader<number, User | null>(async (queueIds: number[]) => {
+  new DataLoader<number, User[] | null>(async (queueIds) => {
     const adminQueues = await AdminQueue.find({
       where: {
-        queueId: In(queueIds),
+        queueId: In(queueIds as number[]),
       },
       relations: ["user"],
     })
 
-    const adminQueueIdsToUser: Record<string, AdminQueue> = {}
+    const adminQueueIdsToUser: Record<string, AdminQueue[]> = {}
 
     adminQueues.forEach((adminQueue: AdminQueue) => {
       const { queueId } = adminQueue
@@ -28,6 +28,10 @@ export const createUserFromQueueAdminLoader = () =>
     })
 
     return queueIds.map((queueId) => {
-      return adminQueueIdsToUser[queueId]?.map?.((aq) => aq.user) || []
+      const queueAdmins = adminQueueIdsToUser[queueId]
+
+      const queueAdminUsers = queueAdmins?.map?.((aq) => aq.user) || []
+
+      return queueAdminUsers
     })
   })

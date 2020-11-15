@@ -1,5 +1,5 @@
 import DataLoader from "dataloader"
-import { User } from "../entities/User"
+import { Queue } from "src/entities/Queue"
 import { In } from "typeorm"
 import { AdminQueue } from "../entities/AdminQueue"
 
@@ -7,15 +7,15 @@ import { AdminQueue } from "../entities/AdminQueue"
 // => [{User}]
 
 export const createQueueFromQueueAdminLoader = () =>
-  new DataLoader<number, User | null>(async (userIds: number[]) => {
+  new DataLoader<number, Queue[] | null>(async (userIds) => {
     const adminQueues = await AdminQueue.find({
       where: {
-        userId: In(userIds),
+        userId: In(userIds as number[]),
       },
       relations: ["queue"],
     })
 
-    const adminUserIdsToQueue: Record<string, AdminQueue> = {}
+    const adminUserIdsToQueue: Record<string, AdminQueue[]> = {}
 
     adminQueues.forEach((adminQueue: AdminQueue) => {
       const { userId } = adminQueue

@@ -214,32 +214,42 @@ export class UserResolver {
   @Mutation(() => AdminQueue, { nullable: true })
   async addAdmin(
     @Arg("queueId") queueId: number,
-    @Arg("userId") userId: number
+    @Arg("userId") userId: number,
+    @Ctx() { req }: MyContext
   ): Promise<AdminQueue | null> {
-    return AdminQueue.create({ userId, queueId }).save()
+    const adminQueue = await AdminQueue.create({ userId, queueId }).save()
+
+    req!.session!.adminOfQueues = req!.session!.adminOfQueues
+      ? [...req!.session!.adminOfQueues, queueId]
+      : [queueId]
+
+    return adminQueue
   }
 
   @UseMiddleware(isAuth, isAdminOfQueue)
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => AdminQueue, { nullable: true })
   async removeAdmin(
-    @Arg("id") id: number,
-    @Arg("userId") userId: number
-  ): Promise<User | null> {
-    const user = await User.findOne({
-      where: { id: userId },
-      relations: ["adminOfQueues"],
+    @Arg("queueId") queueId: number,
+    @Arg("userId") userId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<AdminQueue | null> {
+    const adminQueue = await AdminQueue.findOne({
+      where: { queueId, userId },
     })
 
-    if (!user) {
+    if (!adminQueue) {
       return null
     }
 
-    const adminOfQueues = user.adminOfQueues.filter((queue) => queue?.id !== id)
+    req!.session!.adminOfQueues = req!.session!.adminOfQueues
+      ? req!.session!.adminOfQueues.filter(
+          (contextQueueId: number) => contextQueueId !== queueId
+        )
+      : []
 
-    user.adminOfQueues = adminOfQueues
-    user.save()
+    AdminQueue.remove(adminQueue)
 
-    return user
+    return adminQueue
   }
 
   // @Mutation(() => User, { nullable: true })
